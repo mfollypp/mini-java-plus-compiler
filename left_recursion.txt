@@ -1,0 +1,68 @@
+  PROG -> MAIN {CLASSE}
+  MAIN -> class id '{' public static void main '(' String '[' ']' id ')' '{' CMD '}' '}'
+CLASSE -> class id [extends id] '{' {VAR} {METODO} '}'
+   VAR -> TIPO id ;
+METODO -> public TIPO id '(' [PARAMS] ')' '{' {VAR} {CMD} return EXP ; '}'
+PARAMS -> TIPO id {, TIPO id}
+  TIPO -> int '[' ']'
+        | boolean
+        | int
+        | id
+   CMD -> '{' {CMD} '}'
+        | if '(' EXP ')' CMD
+        | if '(' EXP ')' CMD else CMD
+        | while '(' EXP ')' CMD
+        | System.out.println '(' EXP ')' ;
+        | id = EXP ;
+        | id '[' EXP ']' = EXP ;
+   EXP -> REXP EXP'
+  REXP -> AEXP REXP'
+  AEXP -> MEXP AEXP'
+  MEXP -> SEXP MEXP'
+  SEXP -> ! SEXP
+        | - SEXP
+        | true
+        | false
+        | num
+        | null
+        | new int '[' EXP ']'
+        | PEXP . length
+        | PEXP '[' EXP ']'
+        | PEXP
+  PEXP -> id PEXP'
+        | this PEXP'
+        | new id '(' ')' PEXP'
+        | '(' EXP ')' PEXP'
+  EXPS -> ! SEXP MEXP' AEXP' REXP' EXP' {, EXP}
+        | - SEXP MEXP' AEXP' REXP' EXP' {, EXP}
+        | true MEXP' AEXP' REXP' EXP' {, EXP}
+        | false MEXP' AEXP' REXP' EXP' {, EXP}
+        | num MEXP' AEXP' REXP' EXP' {, EXP}
+        | null MEXP' AEXP' REXP' EXP' {, EXP}
+        | new int '[' EXP ']' MEXP' AEXP' REXP' EXP' {, EXP}
+        | id PEXP' . length MEXP' AEXP' REXP' EXP' {, EXP}
+        | this PEXP' . length MEXP' AEXP' REXP' EXP' {, EXP}
+        | new id '(' ')' PEXP' . length MEXP' AEXP' REXP' EXP' {, EXP}
+        | '(' EXP ')' PEXP' . length MEXP' AEXP' REXP' EXP' {, EXP}
+        | id PEXP' '[' EXP ']' MEXP' AEXP' REXP' EXP' {, EXP}
+        | this PEXP' '[' EXP ']' MEXP' AEXP' REXP' EXP' {, EXP}
+        | new id '(' ')' PEXP' '[' EXP ']' MEXP' AEXP' REXP' EXP' {, EXP}
+        | '(' EXP ')' PEXP' '[' EXP ']' MEXP' AEXP' REXP' EXP' {, EXP}
+        | id PEXP' MEXP' AEXP' REXP' EXP' {, EXP}
+        | this PEXP' MEXP' AEXP' REXP' EXP' {, EXP}
+        | new id '(' ')' PEXP' MEXP' AEXP' REXP' EXP' {, EXP}
+        | '(' EXP ')' PEXP' MEXP' AEXP' REXP' EXP' {, EXP}
+  EXP' -> && REXP EXP'
+        | ϵ
+ REXP' -> < AEXP REXP'
+        | == AEXP REXP'
+        | != AEXP REXP'
+        | ϵ
+ AEXP' -> + MEXP AEXP'
+        | - MEXP AEXP'
+        | ϵ
+ MEXP' -> * SEXP MEXP'
+        | ϵ
+ PEXP' -> . id PEXP'
+        | . id '(' [EXPS] ')' PEXP'
+        | ϵ
