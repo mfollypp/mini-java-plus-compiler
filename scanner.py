@@ -1,5 +1,12 @@
 import re
 
+class Token:
+    def __init__(self, kind, value, line, column):
+        self.kind = kind
+        self.value = value
+        self.line = line
+        self.column = column
+
 class Scanner:
     def __init__(self):
         # Regular expressions for different token types
@@ -16,7 +23,7 @@ class Scanner:
         
     def scan(self, code):
         tokens = []
-        line_num = 1
+        line = 1
         line_start = 0
 
         for match in self.regex.finditer(code):
@@ -26,29 +33,30 @@ class Scanner:
             
             if kind == 'WHITESPACE':
                 if '\n' in value:
-                    line_num += value.count('\n')
+                    line += value.count('\n')
                     line_start = match.end()
                 continue
 
             elif kind == 'COMMENT':
                 if '\n' in value:
-                    line_num += value.count('\n')
+                    line += value.count('\n')
                     line_start = match.end()
                 continue
 
             elif kind == 'NUMBER':
                 value = int(value)  # Convert number to an integer
 
-            tokens.append((kind, value, line_num, column))
+            token = Token(kind, value, line, column)
+            tokens.append(token)
 
         return tokens
 
 # Example usage
 if __name__ == "__main__":
     code = """
-    class Example {
-        public static void main(String[] args) {
-            System.out.println(42);
+    class Factorial{
+        public static void main(String[] a){
+            System.out.println(new Fac().ComputeFac(10));
         }
     }
     """
