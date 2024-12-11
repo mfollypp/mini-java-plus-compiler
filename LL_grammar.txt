@@ -1,0 +1,90 @@
+PROG -> MAIN CLASSE_LIST
+CLASSE_LIST -> CLASSE CLASSE_LIST
+             | ε
+
+MAIN -> class id '{' public static void main '(' String '[' ']' id ')' '{' CMD_LIST '}' '}'
+
+CLASSE -> class id CLASSE_EXT '{' VAR_LIST METODO_LIST '}'
+CLASSE_EXT -> extends id
+            | ε
+
+VAR_LIST -> VAR VAR_LIST
+          | ε
+
+METODO_LIST -> METODO METODO_LIST
+             | ε
+
+VAR -> TIPO id ;
+
+METODO -> public TIPO id '(' PARAMS ')' '{' VAR_LIST CMD_LIST return EXP ; '}'
+
+PARAMS -> PARAM PARAM_LIST
+        | ε
+
+PARAM -> TIPO id
+
+PARAM_LIST -> , PARAM PARAM_LIST
+            | ε
+
+TIPO -> int '[' ']'
+      | boolean
+      | int
+      | id
+
+CMD_LIST -> CMD CMD_LIST
+          | ε
+
+CMD -> '{' CMD_LIST '}'
+     | if '(' EXP ')' CMD CMD_ELSE
+     | while '(' EXP ')' CMD
+     | System.out.println '(' EXP ')' ;
+     | id CMD_ID
+CMD_ELSE -> else CMD
+           | ε
+CMD_ID -> = EXP ;
+        | '[' EXP ']' = EXP ;
+
+EXP -> REXP EXP_TAIL
+EXP_TAIL -> && REXP EXP_TAIL
+          | ε
+
+REXP -> AEXP REXP_TAIL
+REXP_TAIL -> < AEXP
+            | == AEXP
+            | != AEXP
+            | ε
+
+AEXP -> MEXP AEXP_TAIL
+AEXP_TAIL -> + MEXP AEXP_TAIL
+            | - MEXP AEXP_TAIL
+            | ε
+
+MEXP -> SEXP MEXP_TAIL
+MEXP_TAIL -> * SEXP MEXP_TAIL
+            | ε
+
+SEXP -> ! SEXP
+      | - SEXP
+      | true
+      | false
+      | num
+      | null
+      | new int '[' EXP ']'
+      | PEXP . length
+      | PEXP '[' EXP ']'
+      | PEXP
+
+PEXP -> id PEXP_TAIL
+      | this
+      | new id '(' ')'
+      | '(' EXP ')'
+
+PEXP_TAIL -> . id PEXP_TAIL
+            | . id '(' EXPS ')'
+            | ε
+
+EXPS -> EXP EXPS_LIST
+       | ε
+
+EXPS_LIST -> , EXP EXPS_LIST
+            | ε
