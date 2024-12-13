@@ -71,7 +71,7 @@ class Parser:
             ],
             "CLASSE_LIST": [
                 ["CLASSE", "CLASSE_LIST"], 
-                ["ε"]
+                [""]
             ],
             "MAIN": [
                 ["class", "IDENTIFIER", "{", "public", "static", "void", "main", "(", "String", "[", "]", "IDENTIFIER", ")", "{", "CMD_LIST", "}", "}"]
@@ -81,15 +81,15 @@ class Parser:
             ],
             "CLASSE_EXT": [
                 ["extends", "IDENTIFIER"], 
-                ["ε"]
+                [""]
             ],
             "VAR_LIST": [
                 ["VAR", "VAR_LIST"],
-                ["ε"]
+                [""]
             ],
             "METODO_LIST": [
                 ["METODO", "METODO_LIST"], 
-                ["ε"]
+                [""]
             ],
             "VAR": [
                 ["TIPO", "IDENTIFIER", ";"]
@@ -99,14 +99,14 @@ class Parser:
             ],
             "PARAMS": [
                 ["PARAM", "PARAM_LIST"], 
-                ["ε"]
+                [""]
             ],
             "PARAM": [
                 ["TIPO", "IDENTIFIER"]
             ],
             "PARAM_LIST": [
                 [",", "PARAM", "PARAM_LIST"], 
-                ["ε"]
+                [""]
             ],
             "TIPO": [
                 ["int", "TIPO_TAIL"],
@@ -115,11 +115,11 @@ class Parser:
             ],
             "TIPO_TAIL": [
                 ["[", "]"],
-                ["ε"]
+                [""]
             ],
             "CMD_LIST": [
                 ["CMD", "CMD_LIST"],
-                ["ε"]
+                [""]
             ],
             "CMD": [
                 ["{", "CMD_LIST", "}"],
@@ -130,7 +130,7 @@ class Parser:
             ],
             "CMD_ELSE": [
                 ["else", "CMD"], 
-                ["ε"]
+                [""]
             ],
             "CMD_ID": [
                 ["=", "EXP", ";"], 
@@ -141,7 +141,7 @@ class Parser:
             ],
             "EXP_TAIL": [
                 ["&&", "REXP", "EXP_TAIL"], 
-                ["ε"]
+                [""]
             ],
             "REXP": [
                 ["AEXP", "REXP_TAIL"]
@@ -150,7 +150,7 @@ class Parser:
                 ["<", "AEXP"], 
                 ["==", "AEXP"], 
                 ["!=", "AEXP"], 
-                ["ε"]
+                [""]
             ],
             "AEXP": [
                 ["MEXP", "AEXP_TAIL"]
@@ -158,14 +158,14 @@ class Parser:
             "AEXP_TAIL": [
                 ["+", "MEXP", "AEXP_TAIL"], 
                 ["-", "MEXP", "AEXP_TAIL"], 
-                ["ε"]
+                [""]
             ],
             "MEXP": [
                 ["SEXP", "MEXP_TAIL"]
             ],
             "MEXP_TAIL": [
                 ["*", "SEXP", "MEXP_TAIL"], 
-                ["ε"]
+                [""]
             ],
             "SEXP": [
                 ["!", "SEXP"],
@@ -180,7 +180,7 @@ class Parser:
             "SEXP_TAIL": [
                 [".", "length"],
                 ["[", "EXP", "]"],
-                ["ε"]
+                [""]
             ],
             "PEXP": [
                 ["IDENTIFIER", "PEXP_TAIL"],
@@ -190,7 +190,7 @@ class Parser:
             ],
             "PEXP_TAIL": [
                 [".", "IDENTIFIER", "PEXP_TAIL_TAIL"],
-                ["ε"]
+                [""]
             ],
             "PEXP_TAIL_TAIL": [
                 ["PEXP_TAIL"],
@@ -198,11 +198,11 @@ class Parser:
             ],
             "EXPS": [
                 ["EXP", "EXPS_LIST"], 
-                ["ε"]
+                [""]
             ],
             "EXPS_LIST": [
                 [",", "EXP", "EXPS_LIST"], 
-                ["ε"]
+                [""]
             ]
         }
 
@@ -223,7 +223,15 @@ class Parser:
 
         if expected_value and expected_value != 'IDENTIFIER' and token.value != expected_value:
             raise ParserError(f"Expected {expected_value}, got {token.value}")
+        
+        if expected_value and expected_value == 'IDENTIFIER' and token.kind != 'IDENTIFIER':
+            raise ParserError(f"Expected {expected_value}, got {token.value}")
+        
+        # Check if the rule have empty string "" as expected value and the token is not a whitespace to raise an error
+        if expected_value == "":
+            raise ParserError(f"Expected {expected_value}, got {token.value}")
 
+        print(f"-------------- (Consuming token with value: {token.value} with kind {token.kind}) (Expected: {expected_value}) (Current: {self.current})")
         self.current += 1
         return token
 
