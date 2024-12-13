@@ -59,282 +59,203 @@ class Scanner:
 
 
 # region Parser
+class ParserError(Exception):
+    pass
+
 class Parser:
     def __init__(self, tokens):
         self.tokens = tokens
-        self.current_index = 0
-        self.current_token = tokens[0] if tokens else None
+        self.grammar = {
+            "PROG": [
+                ["MAIN", "CLASSE_LIST"]
+            ],
+            "CLASSE_LIST": [
+                ["CLASSE", "CLASSE_LIST"], 
+                ["ε"]
+            ],
+            "MAIN": [
+                ["class", "IDENTIFIER", "{", "public", "static", "void", "main", "(", "String", "[", "]", "IDENTIFIER", ")", "{", "CMD_LIST", "}", "}"]
+            ],
+            "CLASSE": [
+                ["class", "IDENTIFIER", "CLASSE_EXT", "{", "VAR_LIST", "METODO_LIST", "}"]
+            ],
+            "CLASSE_EXT": [
+                ["extends", "IDENTIFIER"], 
+                ["ε"]
+            ],
+            "VAR_LIST": [
+                ["VAR", "VAR_LIST"],
+                ["ε"]
+            ],
+            "METODO_LIST": [
+                ["METODO", "METODO_LIST"], 
+                ["ε"]
+            ],
+            "VAR": [
+                ["TIPO", "IDENTIFIER", ";"]
+            ],
+            "METODO": [
+                ["public", "TIPO", "IDENTIFIER", "(", "PARAMS", ")", "{", "VAR_LIST", "CMD_LIST", "return", "EXP", ";", "}"]
+            ],
+            "PARAMS": [
+                ["PARAM", "PARAM_LIST"], 
+                ["ε"]
+            ],
+            "PARAM": [
+                ["TIPO", "IDENTIFIER"]
+            ],
+            "PARAM_LIST": [
+                [",", "PARAM", "PARAM_LIST"], 
+                ["ε"]
+            ],
+            "TIPO": [
+                ["int", "TIPO_TAIL"],
+                ["boolean"],
+                ["IDENTIFIER"]
+            ],
+            "TIPO_TAIL": [
+                ["[", "]"],
+                ["ε"]
+            ],
+            "CMD_LIST": [
+                ["CMD", "CMD_LIST"],
+                ["ε"]
+            ],
+            "CMD": [
+                ["{", "CMD_LIST", "}"],
+                ["if", "(", "EXP", ")", "CMD", "CMD_ELSE"],
+                ["while", "(", "EXP", ")", "CMD"],
+                ["System.out.println", "(", "EXP", ")", ";"],
+                ["IDENTIFIER", "CMD_ID"]
+            ],
+            "CMD_ELSE": [
+                ["else", "CMD"], 
+                ["ε"]
+            ],
+            "CMD_ID": [
+                ["=", "EXP", ";"], 
+                ["[", "EXP", "]", "=", "EXP", ";"]
+            ],
+            "EXP": [
+                ["REXP", "EXP_TAIL"]
+            ],
+            "EXP_TAIL": [
+                ["&&", "REXP", "EXP_TAIL"], 
+                ["ε"]
+            ],
+            "REXP": [
+                ["AEXP", "REXP_TAIL"]
+            ],
+            "REXP_TAIL": [
+                ["<", "AEXP"], 
+                ["==", "AEXP"], 
+                ["!=", "AEXP"], 
+                ["ε"]
+            ],
+            "AEXP": [
+                ["MEXP", "AEXP_TAIL"]
+            ],
+            "AEXP_TAIL": [
+                ["+", "MEXP", "AEXP_TAIL"], 
+                ["-", "MEXP", "AEXP_TAIL"], 
+                ["ε"]
+            ],
+            "MEXP": [
+                ["SEXP", "MEXP_TAIL"]
+            ],
+            "MEXP_TAIL": [
+                ["*", "SEXP", "MEXP_TAIL"], 
+                ["ε"]
+            ],
+            "SEXP": [
+                ["!", "SEXP"],
+                ["-", "SEXP"],
+                ["true"],
+                ["false"],
+                ["NUMBER"],
+                ["null"],
+                ["new", "int", "[", "EXP", "]"],
+                ["PEXP", "SEXP_TAIL"]
+            ],
+            "SEXP_TAIL": [
+                [".", "length"],
+                ["[", "EXP", "]"],
+                ["ε"]
+            ],
+            "PEXP": [
+                ["IDENTIFIER", "PEXP_TAIL"],
+                ["this"],
+                ["new", "IDENTIFIER", "(", ")"],
+                ["(", "EXP", ")"]
+            ],
+            "PEXP_TAIL": [
+                [".", "IDENTIFIER", "PEXP_TAIL_TAIL"],
+                ["ε"]
+            ],
+            "PEXP_TAIL_TAIL": [
+                ["PEXP_TAIL"],
+                ["(", "EXPS", ")"]
+            ],
+            "EXPS": [
+                ["EXP", "EXPS_LIST"], 
+                ["ε"]
+            ],
+            "EXPS_LIST": [
+                [",", "EXP", "EXPS_LIST"], 
+                ["ε"]
+            ]
+        }
 
-    def match(self, expected_kind):
-        if self.current_token:
-            print(f"Matching {expected_kind} with {self.current_token.kind}: {self.current_token.value}")
-        if self.current_token and self.current_token.kind == expected_kind:
-            self.current_index += 1
-            self.current_token = (
-                self.tokens[self.current_index] if self.current_index < len(self.tokens) else None
-            )
-        else:
-            raise SyntaxError(f"Expected {expected_kind}, found {self.current_token.kind if self.current_token else 'EOF'}")
+        self.current = 0
 
+    def current_token(self):
+        if self.current < len(self.tokens):
+            return self.tokens[self.current]
+
+    def consume(self, expected_value=None):
+        token = self.current_token()
+
+        if token is None:
+            raise ParserError(f"Unexpected end of input, expected {expected_value}")
+
+        if token.value is None:
+            raise ParserError(f"Unexpected end of input, expected {expected_value}")
+
+        if expected_value and expected_value != 'IDENTIFIER' and token.value != expected_value:
+            raise ParserError(f"Expected {expected_value}, got {token.value}")
+
+        self.current += 1
+        return token
+
+    def parse_rule(self, rule_name):
+        print(f"Rule: {rule_name}")
+        rules = self.grammar[rule_name]
+        for rule in rules:
+            state = self.current
+            try:
+                return self.match_sequence(rule)
+            except ParserError:
+                self.current = state
+        raise ParserError(f"Failed to match rule: {rule_name}")
+
+    def match_sequence(self, sequence):
+        children = []
+        # children.append(sequence)
+        for element in sequence:
+            print(f"Element: {element}")
+            if isinstance(element, list):
+                try:
+                    children.append(self.match_sequence(element))
+                except ParserError:
+                    continue
+            elif element in self.grammar:  # Não terminal
+                children.append(self.parse_rule(element))
+            else:  # Terminal
+                children.append(self.consume(expected_value=element).value)
+        return children
 
     def parse(self):
-        # Start parsing from the starting rule of the grammar
-        return self.parse_PROG()
-
-    # Recursive functions for non-terminals
-    def parse_PROG(self):
-        self.parse_MAIN()
-        while self.current_token and self.current_token.kind == 'RESERVED' and self.current_token.value == 'class':
-            self.parse_CLASSE()
-
-    def parse_MAIN(self):
-        self.match('RESERVED')  # class
-        self.match('IDENTIFIER')  # id
-        self.match('OPERATOR')  # '{'
-        self.match('RESERVED')  # public
-        self.match('RESERVED')  # static
-        self.match('RESERVED')  # void
-        self.match('RESERVED')  # main
-        self.match('OPERATOR')  # '('
-        self.match('RESERVED')  # String
-        self.match('OPERATOR')  # '['
-        self.match('OPERATOR')  # ']'
-        self.match('IDENTIFIER')  # id
-        self.match('OPERATOR')  # ')'
-        self.match('OPERATOR')  # '{'
-        self.parse_CMD_LIST()
-        self.match('OPERATOR')  # '}'
-        self.match('OPERATOR')  # '}'
-
-    def parse_CLASSE(self):
-        self.match('RESERVED')  # class
-        self.match('IDENTIFIER')  # id
-        if self.current_token and self.current_token.kind == 'RESERVED' and self.current_token.value == 'extends':
-            self.match('RESERVED')  # extends
-            self.match('IDENTIFIER')  # id
-        self.match('OPERATOR')  # '{'
-        self.parse_VAR_LIST()
-        self.parse_METODO_LIST()
-        self.match('OPERATOR')  # '}'
-
-    def parse_VAR_LIST(self):
-        while self.current_token and self.current_token.kind in ('RESERVED', 'IDENTIFIER'):
-            self.parse_VAR()
-
-    def parse_VAR(self):
-        self.parse_TIPO()
-        self.match('IDENTIFIER')
-        self.match('OPERATOR')  # ';'
-
-    def parse_METODO_LIST(self):
-        while self.current_token and self.current_token.kind == 'RESERVED' and self.current_token.value == 'public':
-            self.parse_METODO()
-
-    def parse_METODO(self):
-        self.match('RESERVED')  # public
-        self.parse_TIPO()
-        self.match('IDENTIFIER')
-        self.match('OPERATOR')  # '('
-        if self.current_token and self.current_token.kind in ('RESERVED', 'IDENTIFIER'):
-            self.parse_PARAMS()
-        self.match('OPERATOR')  # ')'
-        self.match('OPERATOR')  # '{'
-        self.parse_VAR_LIST()
-        self.parse_CMD_LIST()
-        self.match('RESERVED')  # return
-        self.parse_EXP()
-        self.match('OPERATOR')  # ';'
-        self.match('OPERATOR')  # '}'
-
-    def parse_TIPO(self):
-        if self.current_token.kind == 'RESERVED':
-            if self.current_token.value in ('int', 'boolean'):
-                self.match('RESERVED')
-                if self.current_token and self.current_token.kind == 'OPERATOR' and self.current_token.value == '[':
-                    self.match('OPERATOR')  # '['
-                    self.match('OPERATOR')  # ']'
-            else:
-                raise SyntaxError(f"Invalid type {self.current_token.value}")
-        elif self.current_token.kind == 'IDENTIFIER':
-            self.match('IDENTIFIER')
-        else:
-            raise SyntaxError(f"Invalid type {self.current_token.kind}")
-
-    def parse_CMD_LIST(self):
-        while self.current_token and self.current_token.kind != 'OPERATOR' or self.current_token.value != '}':
-            self.parse_CMD()
-
-    def parse_CMD(self):
-        if self.current_token.kind == 'OPERATOR' and self.current_token.value == '{':
-            self.match('OPERATOR')  # '{'
-            self.parse_CMD_LIST()
-            self.match('OPERATOR')  # '}'
-        elif self.current_token.kind == 'RESERVED' and self.current_token.value == 'if':
-            self.match('RESERVED')  # if
-            self.match('OPERATOR')  # '('
-            self.parse_EXP()
-            self.match('OPERATOR')  # ')'
-            self.parse_CMD()
-            if self.current_token and self.current_token.kind == 'RESERVED' and self.current_token.value == 'else':
-                self.match('RESERVED')  # else
-                self.parse_CMD()
-        elif self.current_token.kind == 'RESERVED' and self.current_token.value == 'while':
-            self.match('RESERVED')  # while
-            self.match('OPERATOR')  # '('
-            self.parse_EXP()
-            self.match('OPERATOR')  # ')'
-            self.parse_CMD()
-        elif self.current_token.kind == 'RESERVED' and self.current_token.value == 'System.out.println':
-            self.match('RESERVED')  # System.out.println
-            self.match('OPERATOR')  # '('
-            self.parse_EXP()
-            self.match('OPERATOR')  # ')'
-            self.match('OPERATOR')  # ';'
-        elif self.current_token.kind == 'IDENTIFIER':
-            self.match('IDENTIFIER')
-            if self.current_token and self.current_token.kind == 'OPERATOR' and self.current_token.value == '=':
-                self.match('OPERATOR')  # '='
-                self.parse_EXP()
-                self.match('OPERATOR')  # ';'
-            elif self.current_token and self.current_token.kind == 'OPERATOR' and self.current_token.value == '[':
-                self.match('OPERATOR')  # '['
-                self.parse_EXP()
-                self.match('OPERATOR')  # ']'
-                self.match('OPERATOR')  # '='
-                self.parse_EXP()
-                self.match('OPERATOR')  # ';'
-            else:
-                raise SyntaxError(f"Unexpected token {self.current_token.kind}")
-        else:
-            raise SyntaxError(f"Invalid command {self.current_token.kind}")
-        
-    def parse_EXP(self):
-        self.parse_REXP()
-        while self.current_token and self.current_token.kind == 'OPERATOR' and self.current_token.value == '&&':
-            self.match('OPERATOR')  # &&
-            self.parse_REXP()
-
-    def parse_REXP(self):
-        self.parse_AEXP()
-        if self.current_token and self.current_token.kind == 'OPERATOR' and self.current_token.value in ('<', '==', '!='):
-            self.match('OPERATOR')  # <, ==, or !=
-            self.parse_AEXP()
-
-    def parse_AEXP(self):
-        self.parse_MEXP()
-        while self.current_token and self.current_token.kind == 'OPERATOR' and self.current_token.value in ('+', '-'):
-            self.match('OPERATOR')  # + or -
-            self.parse_MEXP()
-
-    def parse_MEXP(self):
-        self.parse_SEXP()
-        while self.current_token and self.current_token.kind == 'OPERATOR' and self.current_token.value == '*':
-            self.match('OPERATOR')  # *
-            self.parse_SEXP()
-
-    def parse_SEXP(self):
-        if self.current_token and self.current_token.kind == 'OPERATOR' and self.current_token.value in ('!', '-'):
-            self.match('OPERATOR')  # ! or -
-            self.parse_SEXP()
-        elif self.current_token and self.current_token.kind == 'RESERVED' and self.current_token.value in ('true', 'false', 'null'):
-            self.match('RESERVED')  # true, false, or null
-        elif self.current_token and self.current_token.kind == 'NUMBER':
-            self.match('NUMBER')
-        elif self.current_token and self.current_token.kind == 'RESERVED' and self.current_token.value == 'new':
-            self.match('RESERVED')  # new
-            if self.current_token and self.current_token.kind == 'RESERVED' and self.current_token.value == 'int':
-                self.match('RESERVED')  # int
-                self.match('OPERATOR')  # [
-                self.parse_EXP()
-                self.match('OPERATOR')  # ]
-            elif self.current_token and self.current_token.kind == 'IDENTIFIER':
-                self.match('IDENTIFIER')
-                self.match('OPERATOR')  # (
-                self.match('OPERATOR')  # )
-        elif self.current_token and self.current_token.kind == 'OPERATOR' and self.current_token.value == '(':
-            self.match('OPERATOR')  # (
-            self.parse_EXP()
-            self.match('OPERATOR')  # )
-        elif self.current_token and self.current_token.kind == 'IDENTIFIER':
-            self.match('IDENTIFIER')
-            self.parse_PEXP_TAIL()
-        elif self.current_token and self.current_token.kind == 'RESERVED' and self.current_token.value == 'this':
-            self.match('RESERVED')  # this
-        else:
-            raise SyntaxError(f"Unexpected token {self.current_token.kind}")
-
-    def parse_PEXP_TAIL(self):
-        while self.current_token and self.current_token.kind == 'OPERATOR' and self.current_token.value in ('.', '['):
-            if self.current_token.value == '.':
-                self.match('OPERATOR')  # .
-                self.match('IDENTIFIER')  # Handle dot-access like `.ComputeFac`
-                if self.current_token and self.current_token.kind == 'OPERATOR' and self.current_token.value == '(':
-                    self.match('OPERATOR')  # (
-                    if self.current_token and self.current_token.kind not in ('OPERATOR', 'RESERVED', 'NUMBER'):
-                        self.parse_EXPS()  # Handle arguments
-                    self.match('OPERATOR')  # )
-            elif self.current_token.value == '[':
-                self.match('OPERATOR')  # [
-                self.parse_EXP()
-                self.match('OPERATOR')  # ]
-
-    def parse_EXPS(self):
-        self.parse_EXP()
-        while self.current_token and self.current_token.kind == 'OPERATOR' and self.current_token.value == ',':
-            self.match('OPERATOR')  # ,
-            self.parse_EXP()
-
-    def parse_CMD_LIST(self):
-        while self.current_token and self.current_token.kind != 'OPERATOR' or self.current_token.value != '}':
-            self.parse_CMD()
-
-    def parse_CMD(self):
-        if self.current_token.kind == 'OPERATOR' and self.current_token.value == '{':
-            self.match('OPERATOR')  # {
-            self.parse_CMD_LIST()
-            self.match('OPERATOR')  # }
-        elif self.current_token.kind == 'RESERVED' and self.current_token.value == 'if':
-            self.match('RESERVED')  # if
-            self.match('OPERATOR')  # (
-            self.parse_EXP()
-            self.match('OPERATOR')  # )
-            self.parse_CMD()
-            if self.current_token and self.current_token.kind == 'RESERVED' and self.current_token.value == 'else':
-                self.match('RESERVED')  # else
-                self.parse_CMD()
-        elif self.current_token.kind == 'RESERVED' and self.current_token.value == 'while':
-            self.match('RESERVED')  # while
-            self.match('OPERATOR')  # (
-            self.parse_EXP()
-            self.match('OPERATOR')  # )
-            self.parse_CMD()
-        elif self.current_token.kind == 'RESERVED' and self.current_token.value == 'System.out.println':
-            self.match('RESERVED')  # System.out.println
-            self.match('OPERATOR')  # (
-            self.parse_EXP()
-            self.match('OPERATOR')  # )
-            self.match('OPERATOR')  # ;
-        elif self.current_token.kind == 'IDENTIFIER':
-            self.match('IDENTIFIER')
-            if self.current_token and self.current_token.kind == 'OPERATOR' and self.current_token.value == '=':
-                self.match('OPERATOR')  # =
-                self.parse_EXP()
-                self.match('OPERATOR')  # ;
-            elif self.current_token and self.current_token.kind == 'OPERATOR' and self.current_token.value == '[':
-                self.match('OPERATOR')  # [
-                self.parse_EXP()
-                self.match('OPERATOR')  # ]
-                self.match('OPERATOR')  # =
-                self.parse_EXP()
-                self.match('OPERATOR')  # ;
-            else:
-                # Fallback for unexpected identifiers
-                raise SyntaxError(f"Unexpected identifier usage: {self.current_token.value}")
-        else:
-            raise SyntaxError(f"Invalid command {self.current_token.kind}")
-
-
-    # Define similar methods for EXP, REXP, AEXP, etc., based on the grammar.
+        return self.parse_rule("PROG")
 # endregion Parser
 
 # Example usage
