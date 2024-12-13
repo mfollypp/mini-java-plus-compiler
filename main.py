@@ -244,6 +244,7 @@ class Parser:
                 return self.match_sequence(rule)
             except ParserError:
                 self.current = state
+                print(f"Heading back to grammar rule: {rule_name}")
         raise ParserError(f"Failed to match rule: {rule_name}")
 
     def match_sequence(self, sequence):
