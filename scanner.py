@@ -1,12 +1,10 @@
 import re
 
 class Token:
-    def __init__(self, kind, value, line, column):
+    def __init__(self, kind, value):
         self.kind = kind
         self.value = value
-        self.line = line
-        self.column = column
-
+        
 class Scanner:
     def __init__(self):
         # Regular expressions for different token types
@@ -23,30 +21,18 @@ class Scanner:
         
     def scan(self, code):
         tokens = []
-        line = 1
-        line_start = 0
 
         for match in self.regex.finditer(code):
             kind = match.lastgroup # Grupo foi informado no grupo de captura
             value = match.group(kind)
-            column = match.start() - line_start
             
-            if kind == 'WHITESPACE':
-                if '\n' in value:
-                    line += value.count('\n')
-                    line_start = match.end()
-                continue
-
-            elif kind == 'COMMENT':
-                if '\n' in value:
-                    line += value.count('\n')
-                    line_start = match.end()
+            if kind in ['WHITESPACE', 'COMMENT']:
                 continue
 
             elif kind == 'NUMBER':
                 value = int(value)  # Convert number to an integer
 
-            token = Token(kind, value, line, column)
+            token = Token(kind, value)
             tokens.append(token)
 
         return tokens
