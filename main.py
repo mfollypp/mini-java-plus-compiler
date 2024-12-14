@@ -2,9 +2,10 @@ import re
 from graphviz import Digraph
 
 class Node:
-    def __init__(self, value, children=None):
+    def __init__(self, value=None, children=None, terminal=False):
         self.value = value
         self.children = children if children is not None else []
+        self.terminal = terminal
 
     def add_child(self, child):
         self.children.append(child)
@@ -33,7 +34,7 @@ class Scanner:
             ('RESERVED',       r'\b(?:boolean|class|extends|public|static|void|main|String|return|int|if|else|while|System\.out\.println|length|true|false|this|new|null)\b'),
             ('IDENTIFIER',     r'[a-zA-Z][a-zA-Z0-9_]*'),
             ('NUMBER',         r'\b\d+\b'), 
-            ('OPERATOR',       r'[=<>!]=|[+\-*&]|&&|!|\.|;|,|\(|\)|\[|\]|\{|\}'), 
+            ('OPERATOR',       r'\(|\)|\[|\]|\{|\}|;|\.|,|=|<|>|>=|<=|==|!=|\+|-|\*|&&|!'), 
         ]
 
         self.regex = re.compile('|'.join(f'(?P<{name}>{pattern})' for name, pattern in self.token_specification), re.DOTALL | re.MULTILINE) # Usa grupo de captura -> funciona da esquerda para direita
@@ -121,11 +122,11 @@ class Parser:
                 [""]
             ],
             "TIPO": [
-                ["int", "TIPO_TAIL"],
+                ["int", "TIPO_1"],
                 ["boolean"],
                 ["IDENTIFIER"]
             ],
-            "TIPO_TAIL": [
+            "TIPO_1": [
                 ["[", "]"],
                 [""]
             ],
@@ -149,34 +150,34 @@ class Parser:
                 ["[", "EXP", "]", "=", "EXP", ";"]
             ],
             "EXP": [
-                ["REXP", "EXP_TAIL"]
+                ["REXP", "EXP_1"]
             ],
-            "EXP_TAIL": [
-                ["&&", "REXP", "EXP_TAIL"], 
+            "EXP_1": [
+                ["&&", "REXP", "EXP_1"], 
                 [""]
             ],
             "REXP": [
-                ["AEXP", "REXP_TAIL"]
+                ["AEXP", "REXP_1"]
             ],
-            "REXP_TAIL": [
+            "REXP_1": [
                 ["<", "AEXP"], 
                 ["==", "AEXP"], 
                 ["!=", "AEXP"], 
                 [""]
             ],
             "AEXP": [
-                ["MEXP", "AEXP_TAIL"]
+                ["MEXP", "AEXP_1"]
             ],
-            "AEXP_TAIL": [
-                ["+", "MEXP", "AEXP_TAIL"], 
-                ["-", "MEXP", "AEXP_TAIL"], 
+            "AEXP_1": [
+                ["+", "MEXP", "AEXP_1"], 
+                ["-", "MEXP", "AEXP_1"], 
                 [""]
             ],
             "MEXP": [
-                ["SEXP", "MEXP_TAIL"]
+                ["SEXP", "MEXP_1"]
             ],
-            "MEXP_TAIL": [
-                ["*", "SEXP", "MEXP_TAIL"], 
+            "MEXP_1": [
+                ["*", "SEXP", "MEXP_1"], 
                 [""]
             ],
             "SEXP": [
@@ -187,26 +188,26 @@ class Parser:
                 ["NUMBER"],
                 ["null"],
                 ["new", "int", "[", "EXP", "]"],
-                ["PEXP", "SEXP_TAIL"]
+                ["PEXP", "SEXP_1"]
             ],
-            "SEXP_TAIL": [
+            "SEXP_1": [
                 [".", "length"],
                 ["[", "EXP", "]"],
                 [""]
             ],
             "PEXP": [
-                ["IDENTIFIER", "PEXP_TAIL"],
-                ["this", "PEXP_TAIL"],
-                ["new", "IDENTIFIER", "(", ")", "PEXP_TAIL"],
-                ["(", "EXP", ")", "PEXP_TAIL"]
+                ["IDENTIFIER", "PEXP_1"],
+                ["this", "PEXP_1"],
+                ["new", "IDENTIFIER", "(", ")", "PEXP_1"],
+                ["(", "EXP", ")", "PEXP_1"]
             ],
-            "PEXP_TAIL": [
-                [".", "IDENTIFIER", "PEXP_TAIL_TAIL"],
+            "PEXP_1": [
+                [".", "IDENTIFIER", "PEXP_2"],
                 [""]
             ],
-            "PEXP_TAIL_TAIL": [
-                ["(", "EXPS", ")", "PEXP_TAIL"],
-                ["PEXP_TAIL"],
+            "PEXP_2": [
+                ["(", "EXPS", ")", "PEXP_1"],
+                ["PEXP_1"],
             ],
             "EXPS": [
                 ["EXP", "EXPS_LIST"], 
@@ -245,7 +246,7 @@ class Parser:
         if (expected_value == 'IDENTIFIER' and token.kind != 'IDENTIFIER') or (expected_value == 'NUMBER' and token.kind != 'NUMBER'):
             raise ParserError(f"Expected {expected_value}, got {token.value}")
         
-        print(f"Consuming token with value: {token.value} with kind {token.kind}) (Expected: {expected_value}. Current token: {self.current})")
+        print(f"- Consuming token with value: {token.value} \n- with kind {token.kind}\n- Expected: '{expected_value}'\n- Current token: {self.current}")
 
         self.current += 1
         return token
@@ -256,22 +257,22 @@ class Parser:
         for rule in rules:
             state = self.current
             try:
-                node = Node(rule_name)
-                node.add_child(self.match_sequence(rule))
-                return node
+                # node = Node(rule_name)
+                # node.add_child(self.match_sequence(rule))
+                return self.match_sequence(rule, rule_name)
             except ParserError as e:
                 self.current = state
                 print(e)
                 print(f"Heading back to grammar rule: {rule_name}")
         raise ParserError(f"Failed to match rule: {rule_name}")
 
-    def match_sequence(self, sequence):
-        root = Node("sequence")
+    def match_sequence(self, sequence, rule_name):
+        root = Node(rule_name)
         for element in sequence:
             print(f"Element: {element}")
             if isinstance(element, list):
                 try:
-                    child_node = self.match_sequence(element)
+                    child_node = self.match_sequence(element, rule_name)
                     if child_node.children:  # Evita adicionar nós vazios
                         root.add_child(child_node)
                 except ParserError:
@@ -283,7 +284,7 @@ class Parser:
             else:  # Terminal
                 resp = self.consume(expected_value=element, rule=sequence)
                 if resp is not None:
-                    root.add_child(Node(resp.value))
+                    root.add_child(Node(resp.value, terminal=True))
         return root
 
     def parse(self):
@@ -303,7 +304,10 @@ def ast_to_graphviz(node, graph=None, parent=None):
         graph.attr('node', shape='box')
 
     node_id = str(id(node))
-    graph.node(node_id, label=str(node.value))
+    if node.terminal:  # Se o nó é terminal, pinte com fundo amarelo
+        graph.node(node_id, label=str(node.value), style='filled', fillcolor='yellow')
+    else:
+        graph.node(node_id, label=str(node.value))
 
     if parent is not None:
         graph.edge(parent, node_id)
@@ -327,10 +331,9 @@ if __name__ == "__main__":
     code = """
     class Factorial{ 
         public static void main(String[] a){ 
-            System.out.println(new Fac().ComputeFac(10)); 
+            System.out.println(new Fac().ComputeFac(10));
         } 
     }
-
     class Fac { 
         public int ComputeFac(int num){ 
             int num_aux; 
@@ -355,9 +358,7 @@ if __name__ == "__main__":
     try:
         parsed_code = parser.parse()
         print("Parse successful:", parsed_code)
+        graph = ast_to_graphviz(parsed_code)
+        graph.render('ast', format='png', view=True)
     except ParserError as e:
         print(e)
-
-    # Generate and visualize the AST using graphviz
-    graph = ast_to_graphviz(parsed_code)
-    graph.render('ast', format='png', view=True)
