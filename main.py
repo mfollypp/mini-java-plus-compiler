@@ -1,4 +1,16 @@
 import re
+from graphviz import Digraph
+
+class Node:
+    def __init__(self, value, children=None):
+        self.value = value
+        self.children = children if children is not None else []
+
+    def add_child(self, child):
+        self.children.append(child)
+
+    def __repr__(self):
+        return f"Node({self.value}, children={self.children})"
 
 
 # region Token
@@ -244,7 +256,9 @@ class Parser:
         for rule in rules:
             state = self.current
             try:
-                return self.match_sequence(rule)
+                node = Node(rule_name)
+                node.add_child(self.match_sequence(rule))
+                return node
             except ParserError as e:
                 self.current = state
                 print(e)
@@ -252,26 +266,52 @@ class Parser:
         raise ParserError(f"Failed to match rule: {rule_name}")
 
     def match_sequence(self, sequence):
-        children = []
-        # children.append(sequence)
+        root = Node("sequence")
         for element in sequence:
             print(f"Element: {element}")
             if isinstance(element, list):
                 try:
-                    children.append(self.match_sequence(element))
+                    child_node = self.match_sequence(element)
+                    if child_node.children:  # Evita adicionar nós vazios
+                        root.add_child(child_node)
                 except ParserError:
                     continue
             elif element in self.grammar:  # Não terminal
-                children.append(self.parse_rule(element))
+                child_node = self.parse_rule(element)
+                if child_node:
+                    root.add_child(child_node)
             else:  # Terminal
                 resp = self.consume(expected_value=element, rule=sequence)
-                if(resp is not None):
-                    children.append(resp.value)
-        return children
+                if resp is not None:
+                    root.add_child(Node(resp.value))
+        return root
 
     def parse(self):
         return self.parse_rule("PROG")
 # endregion Parser
+
+
+def print_ast(node, indent=0):
+    print(' ' * indent + str(node.value))
+    for child in node.children:
+        print_ast(child, indent + 2)
+
+
+def ast_to_graphviz(node, graph=None, parent=None):
+    if graph is None:
+        graph = Digraph()
+        graph.attr('node', shape='box')
+
+    node_id = str(id(node))
+    graph.node(node_id, label=str(node.value))
+
+    if parent is not None:
+        graph.edge(parent, node_id)
+
+    for child in node.children:
+        ast_to_graphviz(child, graph, node_id)
+
+    return graph
 
 # Example usage
 if __name__ == "__main__":
@@ -313,7 +353,11 @@ if __name__ == "__main__":
 
     parser = Parser(tokens)
     try:
-        print(parser.parse())
-        print("Parsing successful!")
-    except SyntaxError as e:
-        print(f"Syntax error: {e}")
+        parsed_code = parser.parse()
+        print("Parse successful:", parsed_code)
+    except ParserError as e:
+        print(e)
+
+    # Generate and visualize the AST using graphviz
+    graph = ast_to_graphviz(parsed_code)
+    graph.render('ast', format='png', view=True)
