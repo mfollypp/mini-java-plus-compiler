@@ -184,17 +184,17 @@ class Parser:
             ],
             "PEXP": [
                 ["IDENTIFIER", "PEXP_TAIL"],
-                ["this"],
-                ["new", "IDENTIFIER", "(", ")"],
-                ["(", "EXP", ")"]
+                ["this", "PEXP_TAIL"],
+                ["new", "IDENTIFIER", "(", ")", "PEXP_TAIL"],
+                ["(", "EXP", ")", "PEXP_TAIL"]
             ],
             "PEXP_TAIL": [
                 [".", "IDENTIFIER", "PEXP_TAIL_TAIL"],
                 [""]
             ],
             "PEXP_TAIL_TAIL": [
+                ["(", "EXPS", ")", "PEXP_TAIL"],
                 ["PEXP_TAIL"],
-                ["(", "EXPS", ")"]
             ],
             "EXPS": [
                 ["EXP", "EXPS_LIST"], 
@@ -212,26 +212,29 @@ class Parser:
         if self.current < len(self.tokens):
             return self.tokens[self.current]
 
-    def consume(self, expected_value=None):
+    def consume(self, expected_value=None, rule=None):
         token = self.current_token()
-
+                
+        if expected_value is "":
+            return None
+        
         if token is None:
             raise ParserError(f"Unexpected end of input, expected {expected_value}")
 
         if token.value is None:
             raise ParserError(f"Unexpected end of input, expected {expected_value}")
 
-        if expected_value and expected_value != 'IDENTIFIER' and token.value != expected_value:
-            raise ParserError(f"Expected {expected_value}, got {token.value}")
-        
-        if expected_value and expected_value == 'IDENTIFIER' and token.kind != 'IDENTIFIER':
-            raise ParserError(f"Expected {expected_value}, got {token.value}")
-        
-        # Check if the rule have empty string "" as expected value and the token is not a whitespace to raise an error
-        if expected_value == "":
-            raise ParserError(f"Expected {expected_value}, got {token.value}")
+        if not expected_value:
+            return None
 
-        print(f"-------------- (Consuming token with value: {token.value} with kind {token.kind}) (Expected: {expected_value}) (Current: {self.current})")
+        if expected_value not in ['IDENTIFIER', 'NUMBER'] and token.value != expected_value:
+            raise ParserError(f"Expected {expected_value}, got {token.value}")
+        
+        if (expected_value == 'IDENTIFIER' and token.kind != 'IDENTIFIER') or (expected_value == 'NUMBER' and token.kind != 'NUMBER'):
+            raise ParserError(f"Expected {expected_value}, got {token.value}")
+        
+        print(f"Consuming token with value: {token.value} with kind {token.kind}) (Expected: {expected_value}. Current token: {self.current})")
+
         self.current += 1
         return token
 
@@ -242,8 +245,9 @@ class Parser:
             state = self.current
             try:
                 return self.match_sequence(rule)
-            except ParserError:
+            except ParserError as e:
                 self.current = state
+                print(e)
                 print(f"Heading back to grammar rule: {rule_name}")
         raise ParserError(f"Failed to match rule: {rule_name}")
 
@@ -260,7 +264,9 @@ class Parser:
             elif element in self.grammar:  # Não terminal
                 children.append(self.parse_rule(element))
             else:  # Terminal
-                children.append(self.consume(expected_value=element).value)
+                resp = self.consume(expected_value=element, rule=sequence)
+                if(resp is not None):
+                    children.append(resp.value)
         return children
 
     def parse(self):
@@ -270,14 +276,31 @@ class Parser:
 # Example usage
 if __name__ == "__main__":
 
-    code = """
-class Factorial{
-    public static void main(String[] a){
-        System.out.println(new Fac().ComputeFac(10));
-    }
-}
-    """
+#     code = """
+# class Factorial{
+#     public static void main(String[] a){
+#         System.out.println(new Fac().ComputeFac(10));
+#     }
+# }
+#     """
 
+    code = """
+    class Factorial{ 
+    public static void main(String[] a){ 
+    System.out.println(new Fac().ComputeFac(10)); 
+    } 
+    } 
+    class Fac { 
+    public int ComputeFac(int num){ 
+    int num_aux; 
+    if (num < 1) 
+    num_aux = 1; 
+    else  
+    num_aux = num * (this.ComputeFac(num-1)); 
+    return num_aux ; 
+    } 
+    } 
+    """
     print(f"\nScanning code:\n{code}\n")
 
     scanner = Scanner()
@@ -289,7 +312,7 @@ class Factorial{
 
     parser = Parser(tokens)
     try:
-        parser.parse()
+        print(parser.parse())
         print("Parsing successful!")
     except SyntaxError as e:
         print(f"Syntax error: {e}")
