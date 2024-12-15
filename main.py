@@ -1,6 +1,6 @@
-import re
 from graphviz import Digraph
 from grammar import grammar
+import re
 
 
 class Node:
@@ -54,7 +54,7 @@ class Scanner:
                 continue
 
             elif kind == 'NUMBER':
-                value = int(value)  # Convert number to an integer
+                value = int(value)
 
             token = Token(kind, value, line, column)
             tokens.append(token)
@@ -63,43 +63,43 @@ class Scanner:
 
 
 class Parser:
-    def __init__(self, tokens):
+    def __init__(self, tokens, parser_steps):
         self.tokens = tokens
         self.grammar = grammar
         self.current = 0
+        self.parser_steps = parser_steps
 
     def current_token(self):
         if self.current < len(self.tokens):
             return self.tokens[self.current]
 
-    def consume(self, expected_value=None, rule=None):
+    def consume(self, expected_value=None, rule_name=None):
         token = self.current_token()
                 
-        if expected_value == "":
+        if expected_value == "": # epsilon
             return None
         
-        if token is None:
+        if token is None or token.value is None:
+            parser_steps.write(f"\nUnexpected end of input, expected `{expected_value}`")
             raise Exception(f"Unexpected end of input, expected {expected_value}")
-
-        if token.value is None:
-            raise Exception(f"Unexpected end of input, expected {expected_value}")
-
-        if not expected_value:
-            return None
 
         if expected_value not in ['IDENTIFIER', 'NUMBER'] and token.value != expected_value:
-            raise Exception(f"Expected {expected_value}, got {token.value}")
+            parser_steps.write(f"\nExpected production element:`{expected_value}`, but current token is:`{token.value}`")
+            raise Exception(f"Expected '{expected_value}', got '{token.value}'")
         
         if (expected_value == 'IDENTIFIER' and token.kind != 'IDENTIFIER') or (expected_value == 'NUMBER' and token.kind != 'NUMBER'):
-            raise Exception(f"Expected {expected_value}, got {token.value}")
+            parser_steps.write(f"\nExpected production element:`{expected_value}`, but current token is:`{token.value}`")
+            raise Exception(f"Expected '{expected_value}', got '{token.value}'")
         
-        print(f"- Consuming token with value: {token.value} \n- with kind {token.kind}\n- Expected: '{expected_value}'\n- Current token: {self.current}")
+        parser_steps.write(f"\n- Consuming token with value: `{token.value}` and kind: `{token.kind}` (consumed inside production: `{rule_name}`) \
+                           \n- Expected token with value: `{expected_value}` \
+                           \n- Current token index: {self.current}")
 
         self.current += 1
         return token
 
     def parse_rule(self, rule_name):
-        print(f"Rule: {rule_name}")
+        parser_steps.write(f"\n\nProduction: `{rule_name}` ")
         rules = self.grammar[rule_name]
         for rule in rules:
             state = self.current
@@ -108,21 +108,26 @@ class Parser:
             except Exception as e:
                 self.current = state
                 print(e)
-                print(f"Heading back to grammar rule: {rule_name}")
+                parser_steps.write(f"\n- Heading back to grammar production: `{rule_name}`")
         raise Exception(f"Failed to match rule: {rule_name}")
 
     def match_sequence(self, sequence, rule_name):
         root = Node(rule_name)
+        parser_steps.write(f' ->  `{sequence}`\n')
         for element in sequence:
-            print(f"Element: {element}")
+            if element == "":  # epsilon
+                parser_steps.write(f'\n\nAnalyzing Element: `""` of production\n')
+            else:
+                parser_steps.write(f"\n\nAnalyzing Element: `{element}` of production\n")
             if element in self.grammar:  # Não terminal
                 child_node = self.parse_rule(element)
                 if child_node:
                     root.children.append(child_node)
             else:  # Terminal
-                resp = self.consume(expected_value=element, rule=sequence)
+                resp = self.consume(element, rule_name)
                 if resp is not None:
                     root.children.append(Node(resp.value, terminal=True))
+        parser_steps.write(f"\n- Exiting grammar production: `{rule_name}`")
         return root
 
     def parse(self):
@@ -130,13 +135,6 @@ class Parser:
         if self.current < len(self.tokens):
             raise Exception(f"Did not finish parsing, still have {len(self.tokens) - self.current} tokens left")
         return response
-# endregion Parser
-
-
-def print_ast(node, indent=0):
-    print(' ' * indent + str(node.value))
-    for child in node.children:
-        print_ast(child, indent + 2)
 
 
 def ast_to_graphviz(node, graph=None, parent=None):
@@ -179,17 +177,20 @@ if __name__ == "__main__":
     } 
     """
     print(f"\nScanning code:\n{code}\n")
+    
+    parser_steps = open('parser_steps.md', 'w')
 
-    scanner = Scanner()
-    tokens = scanner.scan(code)
+    with open('scanned_tokens.md', 'w') as scanned_tokens:
+        scanner = Scanner()
+        tokens = scanner.scan(code)
 
-    for token in tokens:
-        print(f"{token.kind}: {token.value} at line {token.line}, column {token.column}")
-    print("\n")
+        for token in tokens:
+            scanned_tokens.write(f"\n`{token.kind}`: `{token.value}` at line {token.line}, column {token.column}\n")
 
-    parser = Parser(tokens)
     try:
-        parsed_code = parser.parse()
+        with open('parser_steps.md', 'w') as parser_steps:
+            parser = Parser(tokens, parser_steps)
+            parsed_code = parser.parse()
         print("\nParse successful!!\n")
         graph = ast_to_graphviz(parsed_code)
         graph.render('ast', format='png', view=True)
