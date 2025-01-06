@@ -4,10 +4,14 @@ import re
 
 
 class Node:
-    def __init__(self, value=None, children=None, terminal=False):
+    def __init__(self, value=None, children=None, terminal=False, kind=None, parent=None, line=None, column=None):
         self.value = value
         self.children = children if children is not None else []
         self.terminal = terminal
+        self.kind = kind
+        self.parent = parent
+        self.line = line
+        self.column = column
 
 
 class Token:
@@ -33,7 +37,7 @@ class Scanner:
         
     def scan(self, code):
         tokens = []
-        line = 1
+        line = 0
         line_start = 0
 
         for match in self.regex.finditer(code):
@@ -124,9 +128,18 @@ class Parser:
                 if child_node:
                     root.children.append(child_node)
             else:  # Terminal
-                resp = self.consume(element, rule_name)
-                if resp is not None:
-                    root.children.append(Node(resp.value, terminal=True))
+                token_resp = self.consume(element, rule_name)
+                if token_resp is not None:
+                    root.children.append(
+                        Node(
+                            value=token_resp.value, 
+                            terminal=True, 
+                            kind=token_resp.kind, 
+                            parent=root, 
+                            line=token_resp.line, 
+                            column=token_resp.column
+                        )
+                    )
         parser_steps.write(f"\n- Exiting grammar production: `{rule_name}`")
         return root
 
@@ -135,7 +148,38 @@ class Parser:
         if self.current < len(self.tokens):
             raise Exception(f"Did not finish parsing, still have {len(self.tokens) - self.current} tokens left")
         return response
+    
+class SemanticAnalyzer:
+    def __init__(self):
+        self.symbol_table = {}
 
+    def analyze(self, node):
+        print(f"Analyzing node: {node.value}, of kind: {node.kind} with parent: {node.parent.value if node.parent else None}")
+
+        if node.kind == "IDENTIFIER":
+            if node.parent.value == "CLASSE" or node.parent.value == "METODO" or node.parent.value == "MAIN":
+                var_name = node.value
+                self.symbol_table[var_name] = node.parent.kind
+
+        for child in node.children:
+            self.analyze(child)
+
+    def analyze2(self, node):
+        print(f"Analyzing node: {node.value}, of kind: {node.kind} with parent: {node.parent.value if node.parent else None}")
+
+        if node.kind == "IDENTIFIER":
+            if node.parent.value == "VAR" or node.parent.value == "PARAM":
+                var_name = node.value
+                self.symbol_table[var_name] = node.parent.kind
+            else:
+                var_name = node.value
+                if var_name not in self.symbol_table:
+                    raise Exception(f"[Error]: Variable '{var_name}' used before declaration in line {node.line} column {node.column}")
+                
+        print(f"Symbol Table: {self.symbol_table}\n")
+        
+        for child in node.children:
+            self.analyze2(child)
 
 def ast_to_graphviz(node, graph=None, parent=None):
     if graph is None:
@@ -143,7 +187,7 @@ def ast_to_graphviz(node, graph=None, parent=None):
         graph.attr('node', shape='box')
 
     node_id = str(id(node))
-    if node.terminal:  # Se o nó é terminal, pinte com fundo amarelo
+    if node.terminal:
         graph.node(node_id, label=str(node.value), style='filled', fillcolor='yellow')
     else:
         graph.node(node_id, label=str(node.value))
@@ -166,15 +210,15 @@ if __name__ == "__main__":
         } 
     }
     class Fac { 
-        public int ComputeFac(int num){ 
-            int num_aux; 
+        public int ComputeFac(int num){
+            int num_aux ;
             if (num < 1) 
                 num_aux = 1; 
             else  
                 num_aux = num * (this.ComputeFac(num-1)); 
             return num_aux ; 
         } 
-    } 
+    }
     """
     print(f"\nScanning code:\n{code}\n")
     
@@ -193,6 +237,12 @@ if __name__ == "__main__":
             parsed_code = parser.parse()
         print("\nParse successful!!\n")
         graph = ast_to_graphviz(parsed_code)
-        graph.render('ast', format='png', view=True)
+        graph.render('ast', format='png', view=False)
+
+        # Semantic Analysis
+        semantic_analyzer = SemanticAnalyzer()
+        semantic_analyzer.analyze(parsed_code) # Primeira passada
+        semantic_analyzer.analyze2(parsed_code) # Segunda passada
+        print("\nSemantic analysis successful!!\n")
     except Exception as e:
         print(e)
