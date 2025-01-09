@@ -152,6 +152,7 @@ class Parser:
 class SemanticAnalyzer:
     def __init__(self):
         self.symbol_table = {}
+        self.highlighted_nodes = set()
 
     def analyze(self, node):
         print(f"Analyzing node: {node.value}, of kind: {node.kind} with parent: {node.parent.value if node.parent else None}")
@@ -198,10 +199,12 @@ class SemanticAnalyzer:
                     result = eval(expression)
                     node.value = str(result)
                     node.children = []
+                    node.terminal = True
+                    self.highlighted_nodes.add(node)
                 except Exception as e:
                     print(f"Failed to evaluate expression: {expression}. Error: {e}")
         
-        return node
+        return node, self.highlighted_nodes
 
     def collect_terminals(self, node, terminals):
         print(f"Collecting terminals for node: {node.value} (Terminal: {node.terminal}) with children: {[child.value for child in node.children]}")
@@ -211,13 +214,16 @@ class SemanticAnalyzer:
             self.collect_terminals(child, terminals)
 
 
-def ast_to_graphviz(node, graph=None, parent=None):
+def ast_to_graphviz(node, graph=None, parent=None, highlighted_nodes=None):
     if graph is None:
         graph = Digraph()
         graph.attr('node', shape='box')
 
     node_id = str(id(node))
-    if node.terminal:
+    if highlighted_nodes and node in highlighted_nodes:
+        print(f"Highlighting node: {node.value} with color green")
+        graph.node(node_id, label=str(node.value), style='filled', fillcolor='green')
+    elif node.terminal:
         graph.node(node_id, label=str(node.value), style='filled', fillcolor='yellow')
     else:
         graph.node(node_id, label=str(node.value))
@@ -226,13 +232,14 @@ def ast_to_graphviz(node, graph=None, parent=None):
         graph.edge(parent, node_id)
 
     for child in node.children:
-        ast_to_graphviz(child, graph, node_id)
+        ast_to_graphviz(child, graph, node_id, highlighted_nodes)
 
     return graph
 
 
 if __name__ == "__main__":
 
+    # num_aux = (1 + 2) * 2; não funciona corretamente, da 3, mas se tirar os parênteses da 5, o eval não ta certinho
     code = """
     class Factorial{ 
         public static void main(String[] a){ 
@@ -275,10 +282,11 @@ if __name__ == "__main__":
         semantic_analyzer.analyze2(parsed_code) # Segunda passada
 
         # Substituição de expressões com constantes pelo seu valor numérico
-        parsed_code = semantic_analyzer.fold_constants(parsed_code)
+        parsed_code, highlighted_nodes = semantic_analyzer.fold_constants(parsed_code)
+        print("Highlighted nodes: ", highlighted_nodes)
 
-        graph_opt = ast_to_graphviz(parsed_code)
-        graph_opt.render('ast_semantic', format='png', view=False)
+        graph_semantic = ast_to_graphviz(parsed_code, highlighted_nodes=highlighted_nodes)
+        graph_semantic.render('ast_semantic', format='png', view=False)
         print("\nSemantic analysis successful!!\n")
     except Exception as e:
         print(e)
