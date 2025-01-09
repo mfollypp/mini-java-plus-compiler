@@ -215,3 +215,7 @@ So if you wanna check the scanned tokens or the parsers steps, you can do so on 
 Everytime you run the code it will save and open an `ast.png` image file like the following:
 
 ![ast.png](./ast.png)
+
+And the AST after the Semantic Analysis:
+
+![ast_semantic.png](./ast_semantic.png)

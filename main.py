@@ -181,6 +181,36 @@ class SemanticAnalyzer:
         for child in node.children:
             self.analyze2(child)
 
+    def fold_constants(self, node):
+        if node.terminal:
+            return node
+        
+        for child in node.children:
+            self.fold_constants(child)
+        
+        if node.value == "EXP":
+            terminals = []
+            self.collect_terminals(node, terminals)
+            if all(term.kind == "NUMBER" or term.kind == "OPERATOR" for term in terminals):
+                expression = " ".join(str(term.value) for term in terminals)
+                print(f"\nExpression: {expression}\n")
+                try:
+                    result = eval(expression)
+                    node.value = str(result)
+                    node.children = []
+                except Exception as e:
+                    print(f"Failed to evaluate expression: {expression}. Error: {e}")
+        
+        return node
+
+    def collect_terminals(self, node, terminals):
+        print(f"Collecting terminals for node: {node.value} (Terminal: {node.terminal}) with children: {[child.value for child in node.children]}")
+        if node.terminal:
+            terminals.append(node)
+        for child in node.children:
+            self.collect_terminals(child, terminals)
+
+
 def ast_to_graphviz(node, graph=None, parent=None):
     if graph is None:
         graph = Digraph()
@@ -213,7 +243,7 @@ if __name__ == "__main__":
         public int ComputeFac(int num){
             int num_aux ;
             if (num < 1) 
-                num_aux = 1; 
+                num_aux = 1 + 2; 
             else  
                 num_aux = num * (this.ComputeFac(num-1)); 
             return num_aux ; 
@@ -243,6 +273,12 @@ if __name__ == "__main__":
         semantic_analyzer = SemanticAnalyzer()
         semantic_analyzer.analyze(parsed_code) # Primeira passada
         semantic_analyzer.analyze2(parsed_code) # Segunda passada
+
+        # Substituição de expressões com constantes pelo seu valor numérico
+        parsed_code = semantic_analyzer.fold_constants(parsed_code)
+
+        graph_opt = ast_to_graphviz(parsed_code)
+        graph_opt.render('ast_semantic', format='png', view=False)
         print("\nSemantic analysis successful!!\n")
     except Exception as e:
         print(e)
