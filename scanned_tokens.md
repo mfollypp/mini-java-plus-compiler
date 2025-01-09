@@ -101,13 +101,21 @@
 
 `OPERATOR`: `=` at line 10, column 8
 
-`NUMBER`: `1` at line 10, column 10
+`OPERATOR`: `(` at line 10, column 10
 
-`OPERATOR`: `+` at line 10, column 12
+`NUMBER`: `1` at line 10, column 11
 
-`NUMBER`: `2` at line 10, column 14
+`OPERATOR`: `+` at line 10, column 13
 
-`OPERATOR`: `;` at line 10, column 15
+`NUMBER`: `2` at line 10, column 15
+
+`OPERATOR`: `)` at line 10, column 16
+
+`OPERATOR`: `*` at line 10, column 18
+
+`NUMBER`: `2` at line 10, column 20
+
+`OPERATOR`: `;` at line 10, column 21
 
 `RESERVED`: `else` at line 11, column 0
 

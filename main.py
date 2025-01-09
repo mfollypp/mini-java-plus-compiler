@@ -200,6 +200,7 @@ class SemanticAnalyzer:
                     node.value = str(result)
                     node.children = []
                     node.terminal = True
+                    node.kind = "NUMBER"
                     self.highlighted_nodes.add(node)
                 except Exception as e:
                     print(f"Failed to evaluate expression: {expression}. Error: {e}")
@@ -250,7 +251,7 @@ if __name__ == "__main__":
         public int ComputeFac(int num){
             int num_aux ;
             if (num < 1) 
-                num_aux = 1 + 2; 
+                num_aux = (1 + 2) * 2; 
             else  
                 num_aux = num * (this.ComputeFac(num-1)); 
             return num_aux ; 
