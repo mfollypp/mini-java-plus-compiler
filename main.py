@@ -215,6 +215,151 @@ class SemanticAnalyzer:
             self.collect_terminals(child, terminals)
 
 
+# class MIPSCodeGenerator:
+#     def __init__(self):
+#         self.code = []
+#         self.temp_count = 0
+#         self.variable_map = {}
+#         self.method_map = {}
+
+#     def generate_code(self, node):
+#         """Gera código MIPS a partir da AST."""
+#         if node.value == "PROG":
+#             # Programa: desce para o MAIN e as classes
+#             for child in node.children:
+#                 self.generate_code(child)
+
+#         elif node.value == "MAIN":
+#             # MAIN: Configura o ponto de entrada
+#             self.code.append(".text")
+#             self.code.append("main:")
+#             for child in node.children:
+#                 self.generate_code(child)
+#             self.code.append("li $v0, 10")
+#             self.code.append("syscall")
+
+#         elif node.value == "CLASSE_LIST":
+#             # Lista de classes
+#             for child in node.children:
+#                 self.generate_code(child)
+
+#         elif node.value == "CLASSE":
+#             # Classe: trata variáveis e métodos
+#             for child in node.children:
+#                 self.generate_code(child)
+
+#         elif node.value == "VAR_LIST":
+#             # Lista de variáveis
+#             for child in node.children:
+#                 self.generate_code(child)
+
+#         elif node.value == "VAR":
+#             # Declaração de variável
+#             var_name = node.children[1].value
+#             if var_name not in self.variable_map:
+#                 self.variable_map[var_name] = f"{var_name}: .word 0"
+#                 if ".data" not in self.code:
+#                     self.code.insert(0, ".data")
+#                 self.code.insert(1, self.variable_map[var_name])
+
+#         elif node.value == "METODO_LIST":
+#             # Lista de métodos
+#             for child in node.children:
+#                 self.generate_code(child)
+
+#         elif node.value == "METODO":
+#             # Método: gera um rótulo para o método
+#             method_name = node.children[2].value
+#             self.method_map[method_name] = method_name
+#             self.code.append(f"{method_name}:")
+#             for child in node.children:
+#                 self.generate_code(child)
+#             self.code.append("jr $ra")
+
+#         elif node.value == "CMD_LIST":
+#             # Lista de comandos
+#             for child in node.children:
+#                 self.generate_code(child)
+
+#         elif node.value == "CMD":
+#             # Comando: atribuição, impressão, etc.
+#             if len(node.children) == 3 and node.children[1].value == "=":
+#                 var_name = node.children[0].value
+#                 expr_reg = self.generate_code(node.children[2])
+#                 if var_name not in self.variable_map:
+#                     self.variable_map[var_name] = f"{var_name}: .word 0"
+#                     if ".data" not in self.code:
+#                         self.code.insert(0, ".data")
+#                     self.code.insert(1, self.variable_map[var_name])
+#                 self.code.append(f"sw {expr_reg}, {self.variable_map[var_name]}")
+
+#             elif len(node.children) == 3 and node.children[0].value == "System.out.println":
+#                 expr_reg = self.generate_code(node.children[2])
+#                 self.code.append(f"move $a0, {expr_reg}")
+#                 self.code.append("li $v0, 1")
+#                 self.code.append("syscall")
+
+#         elif node.value == "EXP":
+#             return self.generate_code(node.children[0])
+
+#         elif node.value == "REXP":
+#             return self.generate_code(node.children[0])
+
+#         elif node.value == "AEXP":
+#             left = self.generate_code(node.children[0])
+#             if len(node.children) > 2:
+#                 operator = node.children[1].value
+#                 right = self.generate_code(node.children[2])
+#                 reg = self.get_temp_register()
+#                 if operator == "+":
+#                     self.code.append(f"add {reg}, {left}, {right}")
+#                 elif operator == "-":
+#                     self.code.append(f"sub {reg}, {left}, {right}")
+#                 return reg
+#             return left
+
+#         elif node.value == "MEXP":
+#             left = self.generate_code(node.children[0])
+#             if len(node.children) > 2:
+#                 operator = node.children[1].value
+#                 right = self.generate_code(node.children[2])
+#                 reg = self.get_temp_register()
+#                 if operator == "*":
+#                     self.code.append(f"mul {reg}, {left}, {right}")
+#                 elif operator == "/":
+#                     self.code.append(f"div {reg}, {left}, {right}")
+#                 return reg
+#             return left
+
+#         elif node.value == "SEXP":
+#             if len(node.children) == 1 and node.children[0].terminal:
+#                 if node.children[0].kind == "NUMBER":
+#                     reg = self.get_temp_register()
+#                     self.code.append(f"li {reg}, {node.children[0].value}")
+#                     return reg
+#                 elif node.children[0].kind == "IDENTIFIER":
+#                     var_name = node.children[0].value
+#                     if var_name in self.variable_map:
+#                         reg = self.get_temp_register()
+#                         self.code.append(f"lw {reg}, {self.variable_map[var_name]}")
+#                         return reg
+
+#         # Caso o nó não produza código
+#         return None
+
+#     def get_temp_register(self):
+#         reg = f"$t{self.temp_count}"
+#         self.temp_count = (self.temp_count + 1) % 10
+#         return reg
+
+#     def write_code(self, filename):
+#         print(f"\nCode: {self.code}\n")
+#         if not self.code:
+#             self.code = [".data", ".text", "main:"]
+#         with open(filename, "w") as f:
+#             f.write("\n".join(self.code))
+
+
 def ast_to_graphviz(node, graph=None, parent=None, highlighted_nodes=None):
     if graph is None:
         graph = Digraph()
@@ -240,7 +385,6 @@ def ast_to_graphviz(node, graph=None, parent=None, highlighted_nodes=None):
 
 if __name__ == "__main__":
 
-    # num_aux = (1 + 2) * 2; não funciona corretamente, da 3, mas se tirar os parênteses da 5, o eval não ta certinho
     code = """
     class Factorial{ 
         public static void main(String[] a){ 
@@ -283,11 +427,17 @@ if __name__ == "__main__":
         semantic_analyzer.analyze2(parsed_code) # Segunda passada
 
         # Substituição de expressões com constantes pelo seu valor numérico
-        parsed_code, highlighted_nodes = semantic_analyzer.fold_constants(parsed_code)
+        parsed_code_semantic, highlighted_nodes = semantic_analyzer.fold_constants(parsed_code)
         print("Highlighted nodes: ", highlighted_nodes)
 
-        graph_semantic = ast_to_graphviz(parsed_code, highlighted_nodes=highlighted_nodes)
+        graph_semantic = ast_to_graphviz(parsed_code_semantic, highlighted_nodes=highlighted_nodes)
         graph_semantic.render('ast_semantic', format='png', view=False)
         print("\nSemantic analysis successful!!\n")
+
+        # Geração de Código MIPS
+        # code_generator = MIPSCodeGenerator()
+        # code_generator.generate_code(parsed_code_semantic)
+        # code_generator.write_code("output.asm")  # Salva o código MIPS no arquivo 'output.asm'
+        # print("\nMIPS code generation completed! Check 'output.asm'.\n")
     except Exception as e:
         print(e)
