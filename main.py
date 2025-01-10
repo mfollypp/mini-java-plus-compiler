@@ -197,11 +197,13 @@ class SemanticAnalyzer:
                 print(f"\nExpression: {expression}\n")
                 try:
                     result = eval(expression)
-                    node.value = str(result)
-                    node.children = []
-                    node.terminal = True
-                    node.kind = "NUMBER"
-                    self.highlighted_nodes.add(node)
+                    if(result == False):
+                        result = 0
+                    elif (result == True):
+                        result = 1
+                    result_child = Node(str(result), terminal=True, kind="NUMBER")
+                    node.children = [result_child]
+                    self.highlighted_nodes.add(result_child)
                 except Exception as e:
                     print(f"Failed to evaluate expression: {expression}. Error: {e}")
         
@@ -215,149 +217,221 @@ class SemanticAnalyzer:
             self.collect_terminals(child, terminals)
 
 
-# class MIPSCodeGenerator:
-#     def __init__(self):
-#         self.code = []
-#         self.temp_count = 0
-#         self.variable_map = {}
-#         self.method_map = {}
+class MIPSCodeGenerator:
+    def __init__(self):
+        self.code = []
+        self.temp_count = 0
+        self.variable_map = {}
+        self.method_map = {}
 
-#     def generate_code(self, node):
-#         """Gera código MIPS a partir da AST."""
-#         if node.value == "PROG":
-#             # Programa: desce para o MAIN e as classes
-#             for child in node.children:
-#                 self.generate_code(child)
+    def generate_code(self, node):
+        
+        print(node.value, node.terminal, node.kind, len(node.children))
+        
+        """Gera código MIPS a partir da AST."""
+        if node.value == "PROG":
+            # Programa: desce para o MAIN e as classes
+            for child in node.children:
+                self.generate_code(child)
 
-#         elif node.value == "MAIN":
-#             # MAIN: Configura o ponto de entrada
-#             self.code.append(".text")
-#             self.code.append("main:")
-#             for child in node.children:
-#                 self.generate_code(child)
-#             self.code.append("li $v0, 10")
-#             self.code.append("syscall")
+        elif node.value == "MAIN":
+            # MAIN: Configura o ponto de entrada
+            self.code.append(".text")
+            self.code.append("main:")
+            for child in node.children:
+                self.generate_code(child)
+            self.code.append("li $v0, 10")
+            self.code.append("syscall")
 
-#         elif node.value == "CLASSE_LIST":
-#             # Lista de classes
-#             for child in node.children:
-#                 self.generate_code(child)
+        elif node.value in ["CLASSE_LIST", "CLASSE", "VAR_LIST", "METODO_LIST"]:
+            for child in node.children:
+                self.generate_code(child)
 
-#         elif node.value == "CLASSE":
-#             # Classe: trata variáveis e métodos
-#             for child in node.children:
-#                 self.generate_code(child)
+        elif node.value == "VAR":
+            # Declaração de variável
+            var_name = node.children[1].value
+            if var_name not in self.variable_map:
+                self.variable_map[var_name] = f"{var_name}: .word 0"
+                if ".data" not in self.code:
+                    self.code.insert(0, ".data")
+                self.code.insert(1, self.variable_map[var_name])
 
-#         elif node.value == "VAR_LIST":
-#             # Lista de variáveis
-#             for child in node.children:
-#                 self.generate_code(child)
+        elif node.value == "METODO":
+            # Método: gera um rótulo para o método
+            method_name = node.children[2].value
+            self.method_map[method_name] = method_name
+            self.code.append(f"{method_name}:")
+            for child in node.children:
+                self.generate_code(child)
+            self.code.append("jr $ra")
 
-#         elif node.value == "VAR":
-#             # Declaração de variável
-#             var_name = node.children[1].value
-#             if var_name not in self.variable_map:
-#                 self.variable_map[var_name] = f"{var_name}: .word 0"
-#                 if ".data" not in self.code:
-#                     self.code.insert(0, ".data")
-#                 self.code.insert(1, self.variable_map[var_name])
+        elif node.value == "CMD_LIST":
+            # Lista de comandos
+            for child in node.children:
+                self.generate_code(child)
 
-#         elif node.value == "METODO_LIST":
-#             # Lista de métodos
-#             for child in node.children:
-#                 self.generate_code(child)
+        elif node.value == "CMD":
+            if len(node.children) == 3:
+                self.generate_code(node.children[1])
+                # expr_reg = self.generate_code(node.children[2])
+                # if var_name not in self.variable_map:
+                #     self.variable_map[var_name] = f"{var_name}: .word 0"
+                #     if ".data" not in self.code:
+                #         self.code.insert(0, ".data")
+                #     self.code.insert(1, self.variable_map[var_name])
+                # self.code.append(f"sw {expr_reg}, {self.variable_map[var_name]}")
 
-#         elif node.value == "METODO":
-#             # Método: gera um rótulo para o método
-#             method_name = node.children[2].value
-#             self.method_map[method_name] = method_name
-#             self.code.append(f"{method_name}:")
-#             for child in node.children:
-#                 self.generate_code(child)
-#             self.code.append("jr $ra")
+            elif len(node.children) == 6 and node.children[0].value == "if":
+                expr_reg = self.generate_code(node.children[2])
+                label_count = self.temp_count
+                label = f"else_{label_count}"
+                self.code.append(f"beq {expr_reg}, $zero, {label}")
+                self.generate_code(node.children[4])
+                self.code.append(f"j end_if_{label_count}")
+                self.code.append(f"{label}:")
+                self.generate_code(node.children[5])
+                self.code.append(f"end_if_{label_count}:")
+                self.temp_count += 1
+                
+            elif len(node.children) == 5 and node.children[0].value == "while":
+                label = f"while_{self.temp_count}"
+                self.code.append(f"{label}:")
+                expr_reg = self.generate_code(node.children[2])
+                end_label = f"end_while_{self.temp_count}"
+                self.code.append(f"beq {expr_reg}, $zero, {end_label}")
+                self.generate_code(node.children[4])
+                self.code.append(f"j {label}")
+                self.code.append(f"{end_label}:")
+                self.temp_count += 1
 
-#         elif node.value == "CMD_LIST":
-#             # Lista de comandos
-#             for child in node.children:
-#                 self.generate_code(child)
+            elif len(node.children) == 5 and node.children[0].value == "System.out.println":
+                expr_reg = self.generate_code(node.children[2])
+                self.code.append(f"move $a0, {expr_reg}")
+                self.code.append("li $v0, 1")
+                self.code.append("syscall")
+                
+            elif len(node.children) == 2:
+                # precisa revisao (identificador)
+                self.generate_code(node.children[1])
+                
+        elif node.value == "CMD_ELSE":
+            if len(node.children) == 2:
+                self.generate_code(node.children[1])
+        
+        elif node.value == "CMD_ID":
+            if len(node.children) == 3:
+                var_name = node.children[0].value
+                expr_reg = self.generate_code(node.children[2])
+                if var_name not in self.variable_map:
+                    self.variable_map[var_name] = f"{var_name}: .word 0"
+                    if ".data" not in self.code:
+                        self.code.insert(0, ".data")
+                    self.code.insert(1, self.variable_map[var_name])
+                self.code.append(f"sw {expr_reg}, {self.variable_map[var_name]}")
+            elif len(node.children) == 5:
+                var_name = node.children[0].value
+                index_reg = self.generate_code(node.children[2])
+                expr_reg = self.generate_code(node.children[4])
+                if var_name not in self.variable_map:
+                    self.variable_map[var_name] = f"{var_name}: .word 0"
+                    if ".data" not in self.code:
+                        self.code.insert(0, ".data")
+                    self.code.insert(1, self.variable_map[var_name])
+                self.code.append(f"sw {expr_reg}, {index_reg}({self.variable_map[var_name]})")
 
-#         elif node.value == "CMD":
-#             # Comando: atribuição, impressão, etc.
-#             if len(node.children) == 3 and node.children[1].value == "=":
-#                 var_name = node.children[0].value
-#                 expr_reg = self.generate_code(node.children[2])
-#                 if var_name not in self.variable_map:
-#                     self.variable_map[var_name] = f"{var_name}: .word 0"
-#                     if ".data" not in self.code:
-#                         self.code.insert(0, ".data")
-#                     self.code.insert(1, self.variable_map[var_name])
-#                 self.code.append(f"sw {expr_reg}, {self.variable_map[var_name]}")
+        elif node.value == "EXP":
+            if node.children[0].kind == "NUMBER":
+                reg = self.get_temp_register()
+                self.code.append(f"li {reg}, {node.children[0].value}")
+                return reg
+            return self.generate_code(node.children[0])
 
-#             elif len(node.children) == 3 and node.children[0].value == "System.out.println":
-#                 expr_reg = self.generate_code(node.children[2])
-#                 self.code.append(f"move $a0, {expr_reg}")
-#                 self.code.append("li $v0, 1")
-#                 self.code.append("syscall")
+        elif node.value == "REXP":
+            return self.generate_code(node.children[0])
 
-#         elif node.value == "EXP":
-#             return self.generate_code(node.children[0])
+        elif node.value == "AEXP":
+            left = self.generate_code(node.children[0])
+            if len(node.children) > 2:
+                operator = node.children[1].value
+                right = self.generate_code(node.children[2])
+                reg = self.get_temp_register()
+                if operator == "+":
+                    self.code.append(f"add {reg}, {left}, {right}")
+                elif operator == "-":
+                    self.code.append(f"sub {reg}, {left}, {right}")
+                return reg
+            return left
 
-#         elif node.value == "REXP":
-#             return self.generate_code(node.children[0])
+        elif node.value == "MEXP":
+            left = self.generate_code(node.children[0])
+            if len(node.children) > 2:
+                operator = node.children[1].value
+                right = self.generate_code(node.children[2])
+                reg = self.get_temp_register()
+                if operator == "*":
+                    self.code.append(f"mul {reg}, {left}, {right}")
+                elif operator == "/":
+                    self.code.append(f"div {reg}, {left}, {right}")
+                return reg
+            return left
 
-#         elif node.value == "AEXP":
-#             left = self.generate_code(node.children[0])
-#             if len(node.children) > 2:
-#                 operator = node.children[1].value
-#                 right = self.generate_code(node.children[2])
-#                 reg = self.get_temp_register()
-#                 if operator == "+":
-#                     self.code.append(f"add {reg}, {left}, {right}")
-#                 elif operator == "-":
-#                     self.code.append(f"sub {reg}, {left}, {right}")
-#                 return reg
-#             return left
+        elif node.value == "SEXP":
+            if len(node.children) == 1 and node.children[0].terminal:
+                if node.children[0].kind == "NUMBER":
+                    reg = self.get_temp_register()
+                    self.code.append(f"li {reg}, {node.children[0].value}")
+                    return reg
+                elif node.children[0].value == "true":
+                    reg = self.get_temp_register()
+                    self.code.append(f"li {reg}, 1")
+                    return reg
+                elif node.children[0].value == "false":
+                    reg = self.get_temp_register()
+                    self.code.append(f"li {reg}, 0")
+                    return reg
+                elif node.children[0].value == "null":
+                    reg = self.get_temp_register()
+                    self.code.append(f"li {reg}, 0")
+                    return reg
+            elif len(node.children) == 2:
+                if node.children[0].value == "!":
+                    reg = self.generate_code(node.children[1])
+                    self.code.append(f"not {reg}, {reg}")
+                    return reg
+                elif node.children[0].value == "-":
+                    reg = self.generate_code(node.children[1])
+                    self.code.append(f"neg {reg}, {reg}")
+                    return reg
+            elif len(node.children) == 5 and node.children[0].value == "new" and node.children[1].value == "int":
+                reg_size = self.generate_code(node.children[3])
+                reg = self.get_temp_register()
+                self.code.append(f"li {reg}, {reg_size}")
+                self.code.append(f"mul {reg}, {reg}, 4")  # Assuming int is 4 bytes
+                self.code.append(f"li $v0, 9")  # Syscall for sbrk
+                self.code.append(f"move $a0, {reg}")
+                self.code.append(f"syscall")
+                self.code.append(f"move {reg}, $v0")
+                return reg
+            elif len(node.children) == 2 and node.children[1].value == "SEXP_1":
+                reg = self.generate_code(node.children[0])
+                reg_sexp1 = self.generate_code(node.children[1])
+                self.code.append(f"add {reg}, {reg}, {reg_sexp1}")
+                return reg
 
-#         elif node.value == "MEXP":
-#             left = self.generate_code(node.children[0])
-#             if len(node.children) > 2:
-#                 operator = node.children[1].value
-#                 right = self.generate_code(node.children[2])
-#                 reg = self.get_temp_register()
-#                 if operator == "*":
-#                     self.code.append(f"mul {reg}, {left}, {right}")
-#                 elif operator == "/":
-#                     self.code.append(f"div {reg}, {left}, {right}")
-#                 return reg
-#             return left
+        # Caso o nó não produza código
+        return None
 
-#         elif node.value == "SEXP":
-#             if len(node.children) == 1 and node.children[0].terminal:
-#                 if node.children[0].kind == "NUMBER":
-#                     reg = self.get_temp_register()
-#                     self.code.append(f"li {reg}, {node.children[0].value}")
-#                     return reg
-#                 elif node.children[0].kind == "IDENTIFIER":
-#                     var_name = node.children[0].value
-#                     if var_name in self.variable_map:
-#                         reg = self.get_temp_register()
-#                         self.code.append(f"lw {reg}, {self.variable_map[var_name]}")
-#                         return reg
+    def get_temp_register(self):
+        reg = f"$t{self.temp_count}"
+        self.temp_count = (self.temp_count + 1) % 10
+        return reg
 
-#         # Caso o nó não produza código
-#         return None
-
-#     def get_temp_register(self):
-#         reg = f"$t{self.temp_count}"
-#         self.temp_count = (self.temp_count + 1) % 10
-#         return reg
-
-#     def write_code(self, filename):
-#         print(f"\nCode: {self.code}\n")
-#         if not self.code:
-#             self.code = [".data", ".text", "main:"]
-#         with open(filename, "w") as f:
-#             f.write("\n".join(self.code))
+    def write_code(self, filename):
+        print(f"\nCode: {self.code}\n")
+        if not self.code:
+            self.code = [".data", ".text", "main:"]
+        with open(filename, "w") as f:
+            f.write("\n".join(self.code))
 
 
 def ast_to_graphviz(node, graph=None, parent=None, highlighted_nodes=None):
@@ -394,14 +468,11 @@ if __name__ == "__main__":
     class Fac { 
         public int ComputeFac(int num){
             int num_aux ;
-            if (num < 1) 
-                num_aux = (1 + 2) * 2; 
-            else  
-                num_aux = num * (this.ComputeFac(num-1)); 
-            return num_aux ; 
+            return 10;
         } 
     }
     """
+    
     print(f"\nScanning code:\n{code}\n")
     
     parser_steps = open('parser_steps.md', 'w')
@@ -435,9 +506,9 @@ if __name__ == "__main__":
         print("\nSemantic analysis successful!!\n")
 
         # Geração de Código MIPS
-        # code_generator = MIPSCodeGenerator()
-        # code_generator.generate_code(parsed_code_semantic)
-        # code_generator.write_code("output.asm")  # Salva o código MIPS no arquivo 'output.asm'
-        # print("\nMIPS code generation completed! Check 'output.asm'.\n")
+        code_generator = MIPSCodeGenerator()
+        code_generator.generate_code(parsed_code_semantic)
+        code_generator.write_code("output.asm")  # Salva o código MIPS no arquivo 'output.asm'
+        print("\nMIPS code generation completed! Check 'output.asm'.\n")
     except Exception as e:
         print(e)

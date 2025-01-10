@@ -85,76 +85,12 @@
 
 `OPERATOR`: `;` at line 8, column 12
 
-`RESERVED`: `if` at line 9, column 0
+`RESERVED`: `return` at line 9, column 0
 
-`OPERATOR`: `(` at line 9, column 3
+`NUMBER`: `10` at line 9, column 7
 
-`IDENTIFIER`: `num` at line 9, column 4
+`OPERATOR`: `;` at line 9, column 9
 
-`OPERATOR`: `<` at line 9, column 8
+`OPERATOR`: `}` at line 10, column 0
 
-`NUMBER`: `1` at line 9, column 10
-
-`OPERATOR`: `)` at line 9, column 11
-
-`IDENTIFIER`: `num_aux` at line 10, column 0
-
-`OPERATOR`: `=` at line 10, column 8
-
-`OPERATOR`: `(` at line 10, column 10
-
-`NUMBER`: `1` at line 10, column 11
-
-`OPERATOR`: `+` at line 10, column 13
-
-`NUMBER`: `2` at line 10, column 15
-
-`OPERATOR`: `)` at line 10, column 16
-
-`OPERATOR`: `*` at line 10, column 18
-
-`NUMBER`: `2` at line 10, column 20
-
-`OPERATOR`: `;` at line 10, column 21
-
-`RESERVED`: `else` at line 11, column 0
-
-`IDENTIFIER`: `num_aux` at line 12, column 0
-
-`OPERATOR`: `=` at line 12, column 8
-
-`IDENTIFIER`: `num` at line 12, column 10
-
-`OPERATOR`: `*` at line 12, column 14
-
-`OPERATOR`: `(` at line 12, column 16
-
-`RESERVED`: `this` at line 12, column 17
-
-`OPERATOR`: `.` at line 12, column 21
-
-`IDENTIFIER`: `ComputeFac` at line 12, column 22
-
-`OPERATOR`: `(` at line 12, column 32
-
-`IDENTIFIER`: `num` at line 12, column 33
-
-`OPERATOR`: `-` at line 12, column 36
-
-`NUMBER`: `1` at line 12, column 37
-
-`OPERATOR`: `)` at line 12, column 38
-
-`OPERATOR`: `)` at line 12, column 39
-
-`OPERATOR`: `;` at line 12, column 40
-
-`RESERVED`: `return` at line 13, column 0
-
-`IDENTIFIER`: `num_aux` at line 13, column 7
-
-`OPERATOR`: `;` at line 13, column 15
-
-`OPERATOR`: `}` at line 14, column 0
-
-`OPERATOR`: `}` at line 15, column 0
+`OPERATOR`: `}` at line 11, column 0
