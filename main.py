@@ -1,7 +1,7 @@
 from graphviz import Digraph
 from grammar import grammar
 import re
-
+import copy
 
 class Node:
     def __init__(self, value=None, children=None, terminal=False, kind=None, parent=None, line=None, column=None):
@@ -126,6 +126,7 @@ class Parser:
             if element in self.grammar:  # Não terminal
                 child_node = self.parse_rule(element)
                 if child_node:
+                    child_node.parent = root
                     root.children.append(child_node)
             else:  # Terminal
                 token_resp = self.consume(element, rule_name)
@@ -153,6 +154,32 @@ class SemanticAnalyzer:
     def __init__(self):
         self.symbol_table = {}
         self.highlighted_nodes = set()
+        
+    def build_name(self, node):
+        method_name = ""
+        class_name = ""
+        node_aux = copy.copy(node)
+        
+        while node_aux and node_aux.value and node_aux.value != "METODO":
+            node_aux = node_aux.parent
+        
+        if(not node_aux):
+            return node.value
+        
+        method_name = node_aux.children[2].value  
+        
+        while node_aux and node_aux.value and node_aux.value != "CLASSE":
+            node_aux = node_aux.parent        
+            
+        if (not node_aux):
+            return node.value
+            
+        class_name = node_aux.children[1].value  
+        
+        if(class_name and method_name):
+            return f"{class_name}_{method_name}_{node.value}"
+        else:
+            return node.value
 
     def analyze(self, node):
         print(f"Analyzing node: {node.value}, of kind: {node.kind} with parent: {node.parent.value if node.parent else None}")
@@ -160,7 +187,7 @@ class SemanticAnalyzer:
         if node.kind == "IDENTIFIER":
             if node.parent.value == "CLASSE" or node.parent.value == "METODO" or node.parent.value == "MAIN":
                 var_name = node.value
-                self.symbol_table[var_name] = node.parent.kind
+                self.symbol_table[var_name] = "method_class"
 
         for child in node.children:
             self.analyze(child)
@@ -170,12 +197,20 @@ class SemanticAnalyzer:
 
         if node.kind == "IDENTIFIER":
             if node.parent.value == "VAR" or node.parent.value == "PARAM":
-                var_name = node.value
+                var_name = self.build_name(node)                
+                    
+                if var_name in self.symbol_table:
+                    raise Exception(f"Variable '{node.value}' already declared in scope.")
                 self.symbol_table[var_name] = node.parent.kind
-            else:
-                var_name = node.value
-                if var_name not in self.symbol_table:
-                    raise Exception(f"[Error]: Variable '{var_name}' used before declaration in line {node.line} column {node.column}")
+                node.value = var_name
+            elif node.parent.value != "MAIN":
+                if node.value in self.symbol_table and self.symbol_table[node.value] == "method_class":
+                    pass
+                else:
+                    var_name = self.build_name(node)
+                    if var_name not in self.symbol_table:
+                        raise Exception(f"Variable '{var_name}' not declared in symbol table")
+                    node.value = var_name
                 
         print(f"Symbol Table: {self.symbol_table}\n")
         
@@ -248,14 +283,14 @@ class MIPSCodeGenerator:
                 self.generate_code(child)
 
         elif node.value == "VAR":
-            # Declaração de variável
+            # Variável: gera um rótulo para a variável
             var_name = node.children[1].value
             if var_name not in self.variable_map:
                 self.variable_map[var_name] = f"{var_name}: .word 0"
                 if ".data" not in self.code:
                     self.code.insert(0, ".data")
                 self.code.insert(1, self.variable_map[var_name])
-
+                
         elif node.value == "METODO":
             # Método: gera um rótulo para o método
             method_name = node.children[2].value
@@ -311,7 +346,6 @@ class MIPSCodeGenerator:
                 self.code.append("syscall")
                 
             elif len(node.children) == 2:
-                # precisa revisao (identificador)
                 self.generate_code(node.children[1])
                 
         elif node.value == "CMD_ELSE":
@@ -330,14 +364,14 @@ class MIPSCodeGenerator:
                 self.code.append(f"sw {expr_reg}, {self.variable_map[var_name]}")
             elif len(node.children) == 5:
                 var_name = node.children[0].value
-                index_reg = self.generate_code(node.children[2])
                 expr_reg = self.generate_code(node.children[4])
+                index_reg = self.generate_code(node.children[2])
                 if var_name not in self.variable_map:
                     self.variable_map[var_name] = f"{var_name}: .word 0"
                     if ".data" not in self.code:
                         self.code.insert(0, ".data")
                     self.code.insert(1, self.variable_map[var_name])
-                self.code.append(f"sw {expr_reg}, {index_reg}({self.variable_map[var_name]})")
+                self.code.append(f"sw {expr_reg}, {self.variable_map[var_name]}({index_reg})")
 
         elif node.value == "EXP":
             if node.children[0].kind == "NUMBER":
@@ -361,6 +395,22 @@ class MIPSCodeGenerator:
                     self.code.append(f"sub {reg}, {left}, {right}")
                 return reg
             return left
+        
+        elif node.value == "PEXP":
+            if node.children[0].value == "IDENTIFIER":
+                var_name = node.children[0].value
+                if var_name not in self.variable_map:
+                    self.variable_map[var_name] = f"{var_name}: .word 0"
+                    if ".data" not in self.code:
+                        self.code.insert(0, ".data")
+                    self.code.insert(1, self.variable_map[var_name])
+                reg = self.get_temp_register()
+                self.code.append(f"lw {reg}, {self.variable_map[var_name]}")
+                return reg
+            elif node.children[0].value == "NUMBER":
+                reg = self.get_temp_register()
+                self.code.append(f"li {reg}, {node.children[0].value}")
+                return reg
 
         elif node.value == "MEXP":
             left = self.generate_code(node.children[0])
@@ -370,8 +420,6 @@ class MIPSCodeGenerator:
                 reg = self.get_temp_register()
                 if operator == "*":
                     self.code.append(f"mul {reg}, {left}, {right}")
-                elif operator == "/":
-                    self.code.append(f"div {reg}, {left}, {right}")
                 return reg
             return left
 
@@ -467,7 +515,6 @@ if __name__ == "__main__":
     }
     class Fac { 
         public int ComputeFac(int num){
-            int num_aux ;
             return 10;
         } 
     }

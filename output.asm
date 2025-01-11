@@ -1,5 +1,3 @@
-.data
-num_aux: .word 0
 .text
 main:
 move $a0, None

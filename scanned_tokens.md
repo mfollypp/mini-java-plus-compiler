@@ -79,18 +79,12 @@
 
 `OPERATOR`: `{` at line 7, column 30
 
-`RESERVED`: `int` at line 8, column 0
+`RESERVED`: `return` at line 8, column 0
 
-`IDENTIFIER`: `num_aux` at line 8, column 4
+`NUMBER`: `10` at line 8, column 7
 
-`OPERATOR`: `;` at line 8, column 12
+`OPERATOR`: `;` at line 8, column 9
 
-`RESERVED`: `return` at line 9, column 0
-
-`NUMBER`: `10` at line 9, column 7
-
-`OPERATOR`: `;` at line 9, column 9
+`OPERATOR`: `}` at line 9, column 0
 
 `OPERATOR`: `}` at line 10, column 0
-
-`OPERATOR`: `}` at line 11, column 0

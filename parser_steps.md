@@ -907,60 +907,6 @@ Production: `TIPO`  ->  `['int', 'TIPO_1']`
 
 Analyzing Element: `int` of production
 
-- Consuming token with value: `int` and kind: `RESERVED` (consumed inside production: `TIPO`)                            
-- Expected token with value: `int`                            
-- Current token index: 40
-
-Analyzing Element: `TIPO_1` of production
-
-
-Production: `TIPO_1`  ->  `['[', ']']`
-
-
-Analyzing Element: `[` of production
-
-Expected production element:`[`, but current token is:`num_aux`
-- Heading back to grammar production: `TIPO_1` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `TIPO_1`
-- Exiting grammar production: `TIPO`
-
-Analyzing Element: `IDENTIFIER` of production
-
-- Consuming token with value: `num_aux` and kind: `IDENTIFIER` (consumed inside production: `VAR`)                            
-- Expected token with value: `IDENTIFIER`                            
-- Current token index: 41
-
-Analyzing Element: `;` of production
-
-- Consuming token with value: `;` and kind: `OPERATOR` (consumed inside production: `VAR`)                            
-- Expected token with value: `;`                            
-- Current token index: 42
-- Exiting grammar production: `VAR`
-
-Analyzing Element: `VAR_LIST` of production
-
-
-Production: `VAR_LIST`  ->  `['VAR', 'VAR_LIST']`
-
-
-Analyzing Element: `VAR` of production
-
-
-Production: `VAR`  ->  `['TIPO', 'IDENTIFIER', ';']`
-
-
-Analyzing Element: `TIPO` of production
-
-
-Production: `TIPO`  ->  `['int', 'TIPO_1']`
-
-
-Analyzing Element: `int` of production
-
 Expected production element:`int`, but current token is:`return`
 - Heading back to grammar production: `TIPO` ->  `['boolean']`
 
@@ -981,7 +927,6 @@ Expected production element:`IDENTIFIER`, but current token is:`return`
 
 Analyzing Element: `""` of production
 
-- Exiting grammar production: `VAR_LIST`
 - Exiting grammar production: `VAR_LIST`
 
 Analyzing Element: `CMD_LIST` of production
@@ -1035,7 +980,7 @@ Analyzing Element: `return` of production
 
 - Consuming token with value: `return` and kind: `RESERVED` (consumed inside production: `METODO`)                            
 - Expected token with value: `return`                            
-- Current token index: 43
+- Current token index: 40
 
 Analyzing Element: `EXP` of production
 
@@ -1095,7 +1040,7 @@ Analyzing Element: `NUMBER` of production
 
 - Consuming token with value: `10` and kind: `NUMBER` (consumed inside production: `SEXP`)                            
 - Expected token with value: `NUMBER`                            
-- Current token index: 44
+- Current token index: 41
 - Exiting grammar production: `SEXP`
 
 Analyzing Element: `MEXP_1` of production
@@ -1188,13 +1133,13 @@ Analyzing Element: `;` of production
 
 - Consuming token with value: `;` and kind: `OPERATOR` (consumed inside production: `METODO`)                            
 - Expected token with value: `;`                            
-- Current token index: 45
+- Current token index: 42
 
 Analyzing Element: `}` of production
 
 - Consuming token with value: `}` and kind: `OPERATOR` (consumed inside production: `METODO`)                            
 - Expected token with value: `}`                            
-- Current token index: 46
+- Current token index: 43
 - Exiting grammar production: `METODO`
 
 Analyzing Element: `METODO_LIST` of production
@@ -1225,7 +1170,7 @@ Analyzing Element: `}` of production
 
 - Consuming token with value: `}` and kind: `OPERATOR` (consumed inside production: `CLASSE`)                            
 - Expected token with value: `}`                            
-- Current token index: 47
+- Current token index: 44
 - Exiting grammar production: `CLASSE`
 
 Analyzing Element: `CLASSE_LIST` of production
