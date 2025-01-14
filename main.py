@@ -163,30 +163,28 @@ class SemanticAnalyzer:
         while node_aux and node_aux.value and node_aux.value != "METODO":
             node_aux = node_aux.parent
         
-        if(not node_aux):
-            return node.value
-        
-        method_name = node_aux.children[2].value  
+        if(node_aux):
+            method_name = node_aux.children[2].value  
+        else:
+            node_aux = node
         
         while node_aux and node_aux.value and node_aux.value != "CLASSE":
             node_aux = node_aux.parent        
             
-        if (not node_aux):
-            return node.value
-            
-        class_name = node_aux.children[1].value  
+        if (node_aux):
+            class_name = node_aux.children[1].value  
         
-        if(class_name and method_name):
-            return f"{class_name}_{method_name}_{node.value}"
-        else:
-            return node.value
+        return f"_{class_name}_{method_name}_{node.value}"
 
     def analyze(self, node):
         print(f"Analyzing node: {node.value}, of kind: {node.kind} with parent: {node.parent.value if node.parent else None}")
 
         if node.kind == "IDENTIFIER":
             if node.parent.value == "CLASSE" or node.parent.value == "METODO" or node.parent.value == "MAIN":
-                var_name = node.value
+                if(node.parent.value == "MAIN"):
+                    var_name = f"_MAIN_{node.value}"
+                else: 
+                    var_name = node.value
                 self.symbol_table[var_name] = "method_class"
 
         for child in node.children:
@@ -257,8 +255,16 @@ class MIPSCodeGenerator:
         self.code = []
         self.temp_count = 0
         self.variable_map = {}
+        self.stack = []
+        self.num_elems = 0
+        self.elements_stacks = 0
         self.method_map = {}
-
+        
+    def push_stack(self, var_name):
+        self.stack.insert(0, var_name) 
+        self.code.append(f"sw 0 0($sp)")
+        self.code.append(f"addiu $sp, $sp, -4")
+    
     def generate_code(self, node):
         
         print(node.value, node.terminal, node.kind, len(node.children))
@@ -278,43 +284,41 @@ class MIPSCodeGenerator:
             self.code.append("li $v0, 10")
             self.code.append("syscall")
 
-        elif node.value in ["CLASSE_LIST", "CLASSE", "VAR_LIST", "METODO_LIST"]:
+        elif node.value in ["CLASSE_LIST", "VAR_LIST", "METODO_LIST", "PARAMS", "PARAM_LIST"]:
             for child in node.children:
                 self.generate_code(child)
+                                
+        elif node.value == "CLASSE":
+            class_name = node.children[1].value
+            self.code.append(f"{class_name}:")
+            self.generate_code(node.children[4])
+            self.code.append(f"jr $ra")
 
-        elif node.value == "VAR":
-            # Variável: gera um rótulo para a variável
+        elif node.value in ["VAR"]:
+            #todo: validacao de tipo
             var_name = node.children[1].value
-            if var_name not in self.variable_map:
-                self.variable_map[var_name] = f"{var_name}: .word 0"
-                if ".data" not in self.code:
-                    self.code.insert(0, ".data")
-                self.code.insert(1, self.variable_map[var_name])
-                
+            self.push_stack(var_name)
+                            
         elif node.value == "METODO":
             # Método: gera um rótulo para o método
             method_name = node.children[2].value
             self.method_map[method_name] = method_name
             self.code.append(f"{method_name}:")
+            self.code.append("move $fp $sp")
+            self.push_stack(None) # Marca movimento na stack para uso do código
+            self.code.append("sw $ra 0($sp)")
+            self.code.append("addiu $sp, $sp, -4")
             for child in node.children:
                 self.generate_code(child)
             self.code.append("jr $ra")
 
         elif node.value == "CMD_LIST":
-            # Lista de comandos
             for child in node.children:
                 self.generate_code(child)
 
         elif node.value == "CMD":
             if len(node.children) == 3:
                 self.generate_code(node.children[1])
-                # expr_reg = self.generate_code(node.children[2])
-                # if var_name not in self.variable_map:
-                #     self.variable_map[var_name] = f"{var_name}: .word 0"
-                #     if ".data" not in self.code:
-                #         self.code.insert(0, ".data")
-                #     self.code.insert(1, self.variable_map[var_name])
-                # self.code.append(f"sw {expr_reg}, {self.variable_map[var_name]}")
 
             elif len(node.children) == 6 and node.children[0].value == "if":
                 expr_reg = self.generate_code(node.children[2])
@@ -329,10 +333,11 @@ class MIPSCodeGenerator:
                 self.temp_count += 1
                 
             elif len(node.children) == 5 and node.children[0].value == "while":
-                label = f"while_{self.temp_count}"
+                temp_count = self.temp_count
+                label = f"while_{temp_count}"
                 self.code.append(f"{label}:")
                 expr_reg = self.generate_code(node.children[2])
-                end_label = f"end_while_{self.temp_count}"
+                end_label = f"end_while_{temp_count}"
                 self.code.append(f"beq {expr_reg}, $zero, {end_label}")
                 self.generate_code(node.children[4])
                 self.code.append(f"j {label}")
@@ -354,24 +359,18 @@ class MIPSCodeGenerator:
         
         elif node.value == "CMD_ID":
             if len(node.children) == 3:
-                var_name = node.children[0].value
-                expr_reg = self.generate_code(node.children[2])
-                if var_name not in self.variable_map:
-                    self.variable_map[var_name] = f"{var_name}: .word 0"
-                    if ".data" not in self.code:
-                        self.code.insert(0, ".data")
-                    self.code.insert(1, self.variable_map[var_name])
-                self.code.append(f"sw {expr_reg}, {self.variable_map[var_name]}")
+                var_name = node.parent.children[0].value
+                expr_reg = self.generate_code(node.children[1])
+                offset = (self.stack.index(var_name) + 1) * 4
+                self.code.append(f"sw {expr_reg}, {offset}($sp)")
+                    
             elif len(node.children) == 5:
-                var_name = node.children[0].value
                 expr_reg = self.generate_code(node.children[4])
-                index_reg = self.generate_code(node.children[2])
-                if var_name not in self.variable_map:
-                    self.variable_map[var_name] = f"{var_name}: .word 0"
-                    if ".data" not in self.code:
-                        self.code.insert(0, ".data")
-                    self.code.insert(1, self.variable_map[var_name])
-                self.code.append(f"sw {expr_reg}, {self.variable_map[var_name]}({index_reg})")
+                index_reg = self.generate_code(node.children[1])
+                var_name = f"_{node.parent.children[0].value}_{index_reg}"
+                self.push_stack(var_name)
+                offset = (self.stack.index(var_name) + 1) * 4
+                self.code.append(f"sw {expr_reg}, {offset}($sp)")
 
         elif node.value == "EXP":
             if node.children[0].kind == "NUMBER":
@@ -515,7 +514,12 @@ if __name__ == "__main__":
     }
     class Fac { 
         public int ComputeFac(int num){
-            return 10;
+            int num_aux;
+            if (num < 1)
+                num_aux = 1;
+            else
+                num_aux = num * (this.ComputeFac(num-1));
+            return num_aux ;
         } 
     }
     """
