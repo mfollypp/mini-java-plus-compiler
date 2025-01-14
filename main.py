@@ -525,6 +525,8 @@ class MIPSCodeGenerator:
                 self.code.append(f"addiu $sp, $sp, -4")
                 self.generate_code(node.children[2])
                 self.code.append(f"jal {method_name}")
+        elif node.value == "EXPS":
+            
 
     def write_code(self, filename):
         print(f"\nCode: {self.code}\n")
