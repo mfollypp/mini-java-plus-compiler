@@ -683,7 +683,7 @@ Analyzing Element: `class` of production
 
 Analyzing Element: `IDENTIFIER` of production
 
-- Consuming token with value: `Teste` and kind: `IDENTIFIER` (consumed inside production: `CLASSE`)                            
+- Consuming token with value: `Fac` and kind: `IDENTIFIER` (consumed inside production: `CLASSE`)                            
 - Expected token with value: `IDENTIFIER`                            
 - Current token index: 30
 
@@ -729,280 +729,6 @@ Production: `TIPO`  ->  `['int', 'TIPO_1']`
 
 Analyzing Element: `int` of production
 
-Expected production element:`int`, but current token is:`Fac`
-- Heading back to grammar production: `TIPO` ->  `['boolean']`
-
-
-Analyzing Element: `boolean` of production
-
-Expected production element:`boolean`, but current token is:`Fac`
-- Heading back to grammar production: `TIPO` ->  `['IDENTIFIER']`
-
-
-Analyzing Element: `IDENTIFIER` of production
-
-- Consuming token with value: `Fac` and kind: `IDENTIFIER` (consumed inside production: `TIPO`)                            
-- Expected token with value: `IDENTIFIER`                            
-- Current token index: 32
-- Exiting grammar production: `TIPO`
-
-Analyzing Element: `IDENTIFIER` of production
-
-- Consuming token with value: `a` and kind: `IDENTIFIER` (consumed inside production: `VAR`)                            
-- Expected token with value: `IDENTIFIER`                            
-- Current token index: 33
-
-Analyzing Element: `;` of production
-
-- Consuming token with value: `;` and kind: `OPERATOR` (consumed inside production: `VAR`)                            
-- Expected token with value: `;`                            
-- Current token index: 34
-- Exiting grammar production: `VAR`
-
-Analyzing Element: `VAR_LIST` of production
-
-
-Production: `VAR_LIST`  ->  `['VAR', 'VAR_LIST']`
-
-
-Analyzing Element: `VAR` of production
-
-
-Production: `VAR`  ->  `['TIPO', 'IDENTIFIER', ';']`
-
-
-Analyzing Element: `TIPO` of production
-
-
-Production: `TIPO`  ->  `['int', 'TIPO_1']`
-
-
-Analyzing Element: `int` of production
-
-Expected production element:`int`, but current token is:`Fac`
-- Heading back to grammar production: `TIPO` ->  `['boolean']`
-
-
-Analyzing Element: `boolean` of production
-
-Expected production element:`boolean`, but current token is:`Fac`
-- Heading back to grammar production: `TIPO` ->  `['IDENTIFIER']`
-
-
-Analyzing Element: `IDENTIFIER` of production
-
-- Consuming token with value: `Fac` and kind: `IDENTIFIER` (consumed inside production: `TIPO`)                            
-- Expected token with value: `IDENTIFIER`                            
-- Current token index: 35
-- Exiting grammar production: `TIPO`
-
-Analyzing Element: `IDENTIFIER` of production
-
-- Consuming token with value: `c` and kind: `IDENTIFIER` (consumed inside production: `VAR`)                            
-- Expected token with value: `IDENTIFIER`                            
-- Current token index: 36
-
-Analyzing Element: `;` of production
-
-- Consuming token with value: `;` and kind: `OPERATOR` (consumed inside production: `VAR`)                            
-- Expected token with value: `;`                            
-- Current token index: 37
-- Exiting grammar production: `VAR`
-
-Analyzing Element: `VAR_LIST` of production
-
-
-Production: `VAR_LIST`  ->  `['VAR', 'VAR_LIST']`
-
-
-Analyzing Element: `VAR` of production
-
-
-Production: `VAR`  ->  `['TIPO', 'IDENTIFIER', ';']`
-
-
-Analyzing Element: `TIPO` of production
-
-
-Production: `TIPO`  ->  `['int', 'TIPO_1']`
-
-
-Analyzing Element: `int` of production
-
-Expected production element:`int`, but current token is:`}`
-- Heading back to grammar production: `TIPO` ->  `['boolean']`
-
-
-Analyzing Element: `boolean` of production
-
-Expected production element:`boolean`, but current token is:`}`
-- Heading back to grammar production: `TIPO` ->  `['IDENTIFIER']`
-
-
-Analyzing Element: `IDENTIFIER` of production
-
-Expected production element:`IDENTIFIER`, but current token is:`}`
-- Heading back to grammar production: `TIPO`
-- Heading back to grammar production: `VAR`
-- Heading back to grammar production: `VAR_LIST` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `VAR_LIST`
-- Exiting grammar production: `VAR_LIST`
-- Exiting grammar production: `VAR_LIST`
-
-Analyzing Element: `METODO_LIST` of production
-
-
-Production: `METODO_LIST`  ->  `['METODO', 'METODO_LIST']`
-
-
-Analyzing Element: `METODO` of production
-
-
-Production: `METODO`  ->  `['public', 'TIPO', 'IDENTIFIER', '(', 'PARAMS', ')', '{', 'VAR_LIST', 'CMD_LIST', 'return', 'EXP', ';', '}']`
-
-
-Analyzing Element: `public` of production
-
-Expected production element:`public`, but current token is:`}`
-- Heading back to grammar production: `METODO`
-- Heading back to grammar production: `METODO_LIST` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `METODO_LIST`
-
-Analyzing Element: `}` of production
-
-- Consuming token with value: `}` and kind: `OPERATOR` (consumed inside production: `CLASSE`)                            
-- Expected token with value: `}`                            
-- Current token index: 38
-- Exiting grammar production: `CLASSE`
-
-Analyzing Element: `CLASSE_LIST` of production
-
-
-Production: `CLASSE_LIST`  ->  `['CLASSE', 'CLASSE_LIST']`
-
-
-Analyzing Element: `CLASSE` of production
-
-
-Production: `CLASSE`  ->  `['class', 'IDENTIFIER', 'CLASSE_EXT', '{', 'VAR_LIST', 'METODO_LIST', '}']`
-
-
-Analyzing Element: `class` of production
-
-- Consuming token with value: `class` and kind: `RESERVED` (consumed inside production: `CLASSE`)                            
-- Expected token with value: `class`                            
-- Current token index: 39
-
-Analyzing Element: `IDENTIFIER` of production
-
-- Consuming token with value: `Fac` and kind: `IDENTIFIER` (consumed inside production: `CLASSE`)                            
-- Expected token with value: `IDENTIFIER`                            
-- Current token index: 40
-
-Analyzing Element: `CLASSE_EXT` of production
-
-
-Production: `CLASSE_EXT`  ->  `['extends', 'IDENTIFIER']`
-
-
-Analyzing Element: `extends` of production
-
-Expected production element:`extends`, but current token is:`{`
-- Heading back to grammar production: `CLASSE_EXT` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `CLASSE_EXT`
-
-Analyzing Element: `{` of production
-
-- Consuming token with value: `{` and kind: `OPERATOR` (consumed inside production: `CLASSE`)                            
-- Expected token with value: `{`                            
-- Current token index: 41
-
-Analyzing Element: `VAR_LIST` of production
-
-
-Production: `VAR_LIST`  ->  `['VAR', 'VAR_LIST']`
-
-
-Analyzing Element: `VAR` of production
-
-
-Production: `VAR`  ->  `['TIPO', 'IDENTIFIER', ';']`
-
-
-Analyzing Element: `TIPO` of production
-
-
-Production: `TIPO`  ->  `['int', 'TIPO_1']`
-
-
-Analyzing Element: `int` of production
-
-- Consuming token with value: `int` and kind: `RESERVED` (consumed inside production: `TIPO`)                            
-- Expected token with value: `int`                            
-- Current token index: 42
-
-Analyzing Element: `TIPO_1` of production
-
-
-Production: `TIPO_1`  ->  `['[', ']']`
-
-
-Analyzing Element: `[` of production
-
-Expected production element:`[`, but current token is:`a`
-- Heading back to grammar production: `TIPO_1` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `TIPO_1`
-- Exiting grammar production: `TIPO`
-
-Analyzing Element: `IDENTIFIER` of production
-
-- Consuming token with value: `a` and kind: `IDENTIFIER` (consumed inside production: `VAR`)                            
-- Expected token with value: `IDENTIFIER`                            
-- Current token index: 43
-
-Analyzing Element: `;` of production
-
-- Consuming token with value: `;` and kind: `OPERATOR` (consumed inside production: `VAR`)                            
-- Expected token with value: `;`                            
-- Current token index: 44
-- Exiting grammar production: `VAR`
-
-Analyzing Element: `VAR_LIST` of production
-
-
-Production: `VAR_LIST`  ->  `['VAR', 'VAR_LIST']`
-
-
-Analyzing Element: `VAR` of production
-
-
-Production: `VAR`  ->  `['TIPO', 'IDENTIFIER', ';']`
-
-
-Analyzing Element: `TIPO` of production
-
-
-Production: `TIPO`  ->  `['int', 'TIPO_1']`
-
-
-Analyzing Element: `int` of production
-
 Expected production element:`int`, but current token is:`public`
 - Heading back to grammar production: `TIPO` ->  `['boolean']`
 
@@ -1024,7 +750,6 @@ Expected production element:`IDENTIFIER`, but current token is:`public`
 Analyzing Element: `""` of production
 
 - Exiting grammar production: `VAR_LIST`
-- Exiting grammar production: `VAR_LIST`
 
 Analyzing Element: `METODO_LIST` of production
 
@@ -1042,7 +767,7 @@ Analyzing Element: `public` of production
 
 - Consuming token with value: `public` and kind: `RESERVED` (consumed inside production: `METODO`)                            
 - Expected token with value: `public`                            
-- Current token index: 45
+- Current token index: 32
 
 Analyzing Element: `TIPO` of production
 
@@ -1054,7 +779,7 @@ Analyzing Element: `int` of production
 
 - Consuming token with value: `int` and kind: `RESERVED` (consumed inside production: `TIPO`)                            
 - Expected token with value: `int`                            
-- Current token index: 46
+- Current token index: 33
 
 Analyzing Element: `TIPO_1` of production
 
@@ -1077,13 +802,13 @@ Analyzing Element: `IDENTIFIER` of production
 
 - Consuming token with value: `ComputeFac` and kind: `IDENTIFIER` (consumed inside production: `METODO`)                            
 - Expected token with value: `IDENTIFIER`                            
-- Current token index: 47
+- Current token index: 34
 
 Analyzing Element: `(` of production
 
 - Consuming token with value: `(` and kind: `OPERATOR` (consumed inside production: `METODO`)                            
 - Expected token with value: `(`                            
-- Current token index: 48
+- Current token index: 35
 
 Analyzing Element: `PARAMS` of production
 
@@ -1107,7 +832,7 @@ Analyzing Element: `int` of production
 
 - Consuming token with value: `int` and kind: `RESERVED` (consumed inside production: `TIPO`)                            
 - Expected token with value: `int`                            
-- Current token index: 49
+- Current token index: 36
 
 Analyzing Element: `TIPO_1` of production
 
@@ -1130,7 +855,7 @@ Analyzing Element: `IDENTIFIER` of production
 
 - Consuming token with value: `num` and kind: `IDENTIFIER` (consumed inside production: `PARAM`)                            
 - Expected token with value: `IDENTIFIER`                            
-- Current token index: 50
+- Current token index: 37
 - Exiting grammar production: `PARAM`
 
 Analyzing Element: `PARAM_LIST` of production
@@ -1154,13 +879,13 @@ Analyzing Element: `)` of production
 
 - Consuming token with value: `)` and kind: `OPERATOR` (consumed inside production: `METODO`)                            
 - Expected token with value: `)`                            
-- Current token index: 51
+- Current token index: 38
 
 Analyzing Element: `{` of production
 
 - Consuming token with value: `{` and kind: `OPERATOR` (consumed inside production: `METODO`)                            
 - Expected token with value: `{`                            
-- Current token index: 52
+- Current token index: 39
 
 Analyzing Element: `VAR_LIST` of production
 
@@ -1184,7 +909,7 @@ Analyzing Element: `int` of production
 
 - Consuming token with value: `int` and kind: `RESERVED` (consumed inside production: `TIPO`)                            
 - Expected token with value: `int`                            
-- Current token index: 53
+- Current token index: 40
 
 Analyzing Element: `TIPO_1` of production
 
@@ -1207,13 +932,13 @@ Analyzing Element: `IDENTIFIER` of production
 
 - Consuming token with value: `num_aux` and kind: `IDENTIFIER` (consumed inside production: `VAR`)                            
 - Expected token with value: `IDENTIFIER`                            
-- Current token index: 54
+- Current token index: 41
 
 Analyzing Element: `;` of production
 
 - Consuming token with value: `;` and kind: `OPERATOR` (consumed inside production: `VAR`)                            
 - Expected token with value: `;`                            
-- Current token index: 55
+- Current token index: 42
 - Exiting grammar production: `VAR`
 
 Analyzing Element: `VAR_LIST` of production
@@ -1281,13 +1006,13 @@ Analyzing Element: `if` of production
 
 - Consuming token with value: `if` and kind: `RESERVED` (consumed inside production: `CMD`)                            
 - Expected token with value: `if`                            
-- Current token index: 56
+- Current token index: 43
 
 Analyzing Element: `(` of production
 
 - Consuming token with value: `(` and kind: `OPERATOR` (consumed inside production: `CMD`)                            
 - Expected token with value: `(`                            
-- Current token index: 57
+- Current token index: 44
 
 Analyzing Element: `EXP` of production
 
@@ -1371,7 +1096,7 @@ Analyzing Element: `IDENTIFIER` of production
 
 - Consuming token with value: `num` and kind: `IDENTIFIER` (consumed inside production: `PEXP`)                            
 - Expected token with value: `IDENTIFIER`                            
-- Current token index: 58
+- Current token index: 45
 
 Analyzing Element: `PEXP_1` of production
 
@@ -1463,7 +1188,7 @@ Analyzing Element: `<` of production
 
 - Consuming token with value: `<` and kind: `OPERATOR` (consumed inside production: `REXP_1`)                            
 - Expected token with value: `<`                            
-- Current token index: 59
+- Current token index: 46
 
 Analyzing Element: `AEXP` of production
 
@@ -1511,7 +1236,7 @@ Analyzing Element: `NUMBER` of production
 
 - Consuming token with value: `1` and kind: `NUMBER` (consumed inside production: `SEXP`)                            
 - Expected token with value: `NUMBER`                            
-- Current token index: 60
+- Current token index: 47
 - Exiting grammar production: `SEXP`
 
 Analyzing Element: `MEXP_1` of production
@@ -1577,7 +1302,7 @@ Analyzing Element: `)` of production
 
 - Consuming token with value: `)` and kind: `OPERATOR` (consumed inside production: `CMD`)                            
 - Expected token with value: `)`                            
-- Current token index: 61
+- Current token index: 48
 
 Analyzing Element: `CMD` of production
 
@@ -1613,7 +1338,7 @@ Analyzing Element: `IDENTIFIER` of production
 
 - Consuming token with value: `num_aux` and kind: `IDENTIFIER` (consumed inside production: `CMD`)                            
 - Expected token with value: `IDENTIFIER`                            
-- Current token index: 62
+- Current token index: 49
 
 Analyzing Element: `CMD_ID` of production
 
@@ -1625,7 +1350,7 @@ Analyzing Element: `=` of production
 
 - Consuming token with value: `=` and kind: `OPERATOR` (consumed inside production: `CMD_ID`)                            
 - Expected token with value: `=`                            
-- Current token index: 63
+- Current token index: 50
 
 Analyzing Element: `EXP` of production
 
@@ -1685,7 +1410,7 @@ Analyzing Element: `NUMBER` of production
 
 - Consuming token with value: `1` and kind: `NUMBER` (consumed inside production: `SEXP`)                            
 - Expected token with value: `NUMBER`                            
-- Current token index: 64
+- Current token index: 51
 - Exiting grammar production: `SEXP`
 
 Analyzing Element: `MEXP_1` of production
@@ -1778,7 +1503,7 @@ Analyzing Element: `;` of production
 
 - Consuming token with value: `;` and kind: `OPERATOR` (consumed inside production: `CMD_ID`)                            
 - Expected token with value: `;`                            
-- Current token index: 65
+- Current token index: 52
 - Exiting grammar production: `CMD_ID`
 - Exiting grammar production: `CMD`
 
@@ -1792,7 +1517,7 @@ Analyzing Element: `else` of production
 
 - Consuming token with value: `else` and kind: `RESERVED` (consumed inside production: `CMD_ELSE`)                            
 - Expected token with value: `else`                            
-- Current token index: 66
+- Current token index: 53
 
 Analyzing Element: `CMD` of production
 
@@ -1828,7 +1553,7 @@ Analyzing Element: `IDENTIFIER` of production
 
 - Consuming token with value: `num_aux` and kind: `IDENTIFIER` (consumed inside production: `CMD`)                            
 - Expected token with value: `IDENTIFIER`                            
-- Current token index: 67
+- Current token index: 54
 
 Analyzing Element: `CMD_ID` of production
 
@@ -1840,7 +1565,7 @@ Analyzing Element: `=` of production
 
 - Consuming token with value: `=` and kind: `OPERATOR` (consumed inside production: `CMD_ID`)                            
 - Expected token with value: `=`                            
-- Current token index: 68
+- Current token index: 55
 
 Analyzing Element: `EXP` of production
 
@@ -1924,7 +1649,7 @@ Analyzing Element: `IDENTIFIER` of production
 
 - Consuming token with value: `num` and kind: `IDENTIFIER` (consumed inside production: `PEXP`)                            
 - Expected token with value: `IDENTIFIER`                            
-- Current token index: 69
+- Current token index: 56
 
 Analyzing Element: `PEXP_1` of production
 
@@ -1976,7 +1701,7 @@ Analyzing Element: `*` of production
 
 - Consuming token with value: `*` and kind: `OPERATOR` (consumed inside production: `MEXP_1`)                            
 - Expected token with value: `*`                            
-- Current token index: 70
+- Current token index: 57
 
 Analyzing Element: `SEXP` of production
 
@@ -2054,7 +1779,7 @@ Analyzing Element: `(` of production
 
 - Consuming token with value: `(` and kind: `OPERATOR` (consumed inside production: `PEXP`)                            
 - Expected token with value: `(`                            
-- Current token index: 71
+- Current token index: 58
 
 Analyzing Element: `EXP` of production
 
@@ -2144,7 +1869,7 @@ Analyzing Element: `this` of production
 
 - Consuming token with value: `this` and kind: `RESERVED` (consumed inside production: `PEXP`)                            
 - Expected token with value: `this`                            
-- Current token index: 72
+- Current token index: 59
 
 Analyzing Element: `PEXP_1` of production
 
@@ -2156,13 +1881,13 @@ Analyzing Element: `.` of production
 
 - Consuming token with value: `.` and kind: `OPERATOR` (consumed inside production: `PEXP_1`)                            
 - Expected token with value: `.`                            
-- Current token index: 73
+- Current token index: 60
 
 Analyzing Element: `IDENTIFIER` of production
 
 - Consuming token with value: `ComputeFac` and kind: `IDENTIFIER` (consumed inside production: `PEXP_1`)                            
 - Expected token with value: `IDENTIFIER`                            
-- Current token index: 74
+- Current token index: 61
 
 Analyzing Element: `PEXP_2` of production
 
@@ -2174,7 +1899,7 @@ Analyzing Element: `(` of production
 
 - Consuming token with value: `(` and kind: `OPERATOR` (consumed inside production: `PEXP_2`)                            
 - Expected token with value: `(`                            
-- Current token index: 75
+- Current token index: 62
 
 Analyzing Element: `EXPS` of production
 
@@ -2264,7 +1989,7 @@ Analyzing Element: `IDENTIFIER` of production
 
 - Consuming token with value: `num` and kind: `IDENTIFIER` (consumed inside production: `PEXP`)                            
 - Expected token with value: `IDENTIFIER`                            
-- Current token index: 76
+- Current token index: 63
 
 Analyzing Element: `PEXP_1` of production
 
@@ -2339,7 +2064,7 @@ Analyzing Element: `-` of production
 
 - Consuming token with value: `-` and kind: `OPERATOR` (consumed inside production: `AEXP_1`)                            
 - Expected token with value: `-`                            
-- Current token index: 77
+- Current token index: 64
 
 Analyzing Element: `MEXP` of production
 
@@ -2381,7 +2106,7 @@ Analyzing Element: `NUMBER` of production
 
 - Consuming token with value: `1` and kind: `NUMBER` (consumed inside production: `SEXP`)                            
 - Expected token with value: `NUMBER`                            
-- Current token index: 78
+- Current token index: 65
 - Exiting grammar production: `SEXP`
 
 Analyzing Element: `MEXP_1` of production
@@ -2492,7 +2217,7 @@ Analyzing Element: `)` of production
 
 - Consuming token with value: `)` and kind: `OPERATOR` (consumed inside production: `PEXP_2`)                            
 - Expected token with value: `)`                            
-- Current token index: 79
+- Current token index: 66
 
 Analyzing Element: `PEXP_1` of production
 
@@ -2626,7 +2351,7 @@ Analyzing Element: `)` of production
 
 - Consuming token with value: `)` and kind: `OPERATOR` (consumed inside production: `PEXP`)                            
 - Expected token with value: `)`                            
-- Current token index: 80
+- Current token index: 67
 
 Analyzing Element: `PEXP_1` of production
 
@@ -2759,7 +2484,7 @@ Analyzing Element: `;` of production
 
 - Consuming token with value: `;` and kind: `OPERATOR` (consumed inside production: `CMD_ID`)                            
 - Expected token with value: `;`                            
-- Current token index: 81
+- Current token index: 68
 - Exiting grammar production: `CMD_ID`
 - Exiting grammar production: `CMD`
 - Exiting grammar production: `CMD_ELSE`
@@ -2817,7 +2542,7 @@ Analyzing Element: `return` of production
 
 - Consuming token with value: `return` and kind: `RESERVED` (consumed inside production: `METODO`)                            
 - Expected token with value: `return`                            
-- Current token index: 82
+- Current token index: 69
 
 Analyzing Element: `EXP` of production
 
@@ -2901,7 +2626,7 @@ Analyzing Element: `IDENTIFIER` of production
 
 - Consuming token with value: `num_aux` and kind: `IDENTIFIER` (consumed inside production: `PEXP`)                            
 - Expected token with value: `IDENTIFIER`                            
-- Current token index: 83
+- Current token index: 70
 
 Analyzing Element: `PEXP_1` of production
 
@@ -3033,13 +2758,13 @@ Analyzing Element: `;` of production
 
 - Consuming token with value: `;` and kind: `OPERATOR` (consumed inside production: `METODO`)                            
 - Expected token with value: `;`                            
-- Current token index: 84
+- Current token index: 71
 
 Analyzing Element: `}` of production
 
 - Consuming token with value: `}` and kind: `OPERATOR` (consumed inside production: `METODO`)                            
 - Expected token with value: `}`                            
-- Current token index: 85
+- Current token index: 72
 - Exiting grammar production: `METODO`
 
 Analyzing Element: `METODO_LIST` of production
@@ -3070,7 +2795,7 @@ Analyzing Element: `}` of production
 
 - Consuming token with value: `}` and kind: `OPERATOR` (consumed inside production: `CLASSE`)                            
 - Expected token with value: `}`                            
-- Current token index: 86
+- Current token index: 73
 - Exiting grammar production: `CLASSE`
 
 Analyzing Element: `CLASSE_LIST` of production
@@ -3094,7 +2819,6 @@ Unexpected end of input, expected `class`
 
 Analyzing Element: `""` of production
 
-- Exiting grammar production: `CLASSE_LIST`
 - Exiting grammar production: `CLASSE_LIST`
 - Exiting grammar production: `CLASSE_LIST`
 - Exiting grammar production: `PROG`

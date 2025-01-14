@@ -194,14 +194,15 @@ class SemanticAnalyzer:
         print(f"Analyzing node: {node.value}, of kind: {node.kind} with parent: {node.parent.value if node.parent else None}")
 
         if node.kind == "IDENTIFIER":
-            if node.parent.value == "VAR" or node.parent.value == "PARAM":
+            parent = node.parent.value
+            if parent in ["VAR", "PARAM", "METODO"]:
                 var_name = self.build_name(node)                
                     
                 if var_name in self.symbol_table:
                     raise Exception(f"Variable '{node.value}' already declared in scope.")
                 self.symbol_table[var_name] = node.parent.kind
                 node.value = var_name
-            elif node.parent.value != "MAIN":
+            elif parent != "MAIN":
                 if node.value in self.symbol_table and self.symbol_table[node.value] == "method_class":
                     pass
                 else:
@@ -264,6 +265,10 @@ class MIPSCodeGenerator:
         self.stack.insert(0, var_name) 
         self.code.append(f"sw 0 0($sp)")
         self.code.append(f"addiu $sp, $sp, -4")
+        
+    def pop_stack(self):
+        self.stack.pop(0)
+        self.code.append(f"addiu $sp, $sp, 4")
     
     def generate_code(self, node):
         
@@ -296,6 +301,10 @@ class MIPSCodeGenerator:
 
         elif node.value in ["VAR"]:
             #todo: validacao de tipo
+            var_name = node.children[1].value
+            self.push_stack(var_name)
+        
+        elif node.value == "PARAM":
             var_name = node.children[1].value
             self.push_stack(var_name)
                             
@@ -374,104 +383,148 @@ class MIPSCodeGenerator:
 
         elif node.value == "EXP":
             if node.children[0].kind == "NUMBER":
-                reg = self.get_temp_register()
+                reg = "$a0"
                 self.code.append(f"li {reg}, {node.children[0].value}")
-                return reg
-            return self.generate_code(node.children[0])
-
-        elif node.value == "REXP":
-            return self.generate_code(node.children[0])
-
-        elif node.value == "AEXP":
-            left = self.generate_code(node.children[0])
-            if len(node.children) > 2:
-                operator = node.children[1].value
-                right = self.generate_code(node.children[2])
-                reg = self.get_temp_register()
-                if operator == "+":
-                    self.code.append(f"add {reg}, {left}, {right}")
-                elif operator == "-":
-                    self.code.append(f"sub {reg}, {left}, {right}")
-                return reg
-            return left
+                return reg, node.children[0].value
+            else:
+                self.generate_code(node.children[0])
+                self.push_stack(None)
+                resp = self.generate_code(node.children[1])
+                if(not resp):
+                    self.code.append(f"lw $a0 4($sp)")
+                    self.pop_stack()
+                    return "$a0"
+                self.code.append(f"lw $t0 4($sp)")
+                self.code.append(f"and $a0, $t0, $a0")
+                return "$a0"
+            
+        elif node.value == "EXP_1":
+            if len(node.children) == 3:
+                self.generate_code(node.children[1])
+                self.push_stack(None)
+                resp = self.generate_code(node.children[2])
+                if(not resp):
+                    self.code.append(f"lw $t0 4($sp)")
+                    self.pop_stack()
+                    return "$t0"
+                self.code.append(f"lw $t0 4($sp)")
+                self.code.append(f"and $a0, $t0, $a0")
+                return "$a0"
         
-        elif node.value == "PEXP":
-            if node.children[0].value == "IDENTIFIER":
-                var_name = node.children[0].value
-                if var_name not in self.variable_map:
-                    self.variable_map[var_name] = f"{var_name}: .word 0"
-                    if ".data" not in self.code:
-                        self.code.insert(0, ".data")
-                    self.code.insert(1, self.variable_map[var_name])
-                reg = self.get_temp_register()
-                self.code.append(f"lw {reg}, {self.variable_map[var_name]}")
-                return reg
-            elif node.children[0].value == "NUMBER":
-                reg = self.get_temp_register()
-                self.code.append(f"li {reg}, {node.children[0].value}")
-                return reg
+        elif node.value == "REXP":
+            # AEXP
+            self.generate_code(node.children[0])
+            self.push_stack(None)
+            # REXP_1
+            resp = self.generate_code(node.children[1])
+            if resp:
+                operator = node.children[1].children[0].value
+                self.code.append(f"lw $t0 4($sp)")
+                self.pop_stack()
+                if operator == "<":
+                    self.code.append(f"slt $a0, $t0, $a0")
+                elif operator == "==":
+                    self.code.append(f"seq $a0, $t0, $a0")
+                elif operator == "!=":
+                    self.code.append(f"sne $a0, $t0, $a0")
+            else:
+                self.code.append(f"lw $a0 4($sp)")
+                self.pop_stack()
+        
+        elif node.value == "REXP_1":
+            if len(node.children) == 2:
+                self.generate_code(node.children[1])
 
-        elif node.value == "MEXP":
-            left = self.generate_code(node.children[0])
-            if len(node.children) > 2:
-                operator = node.children[1].value
-                right = self.generate_code(node.children[2])
-                reg = self.get_temp_register()
-                if operator == "*":
-                    self.code.append(f"mul {reg}, {left}, {right}")
-                return reg
-            return left
-
+        elif node.value in ["AEXP", "AEXP_1"]:
+            if len(node.children) == 0:
+                return
+            # MEXP
+            self.generate_code(node.children[0])
+            self.push_stack(None)
+            # AEXP_1
+            resp = self.generate_code(node.children[1])
+            if resp:
+                operator = node.children[1].children[0].value
+                self.code.append(f"lw $t0 4($sp)")
+                self.pop_stack()
+                if operator == "+":
+                    self.code.append(f"add $a0, $t0, $a0")
+                elif operator == "-":
+                    self.code.append(f"sub $a0, $t0, $a0")
+            else:
+                self.code.append(f"lw $a0 4($sp)")
+                self.pop_stack()
+                
+        elif node.value in ["MEXP", "MEXP_1"]:
+            if len(node.children) == 0:
+                return
+            # SEXP
+            self.generate_code(node.children[0])
+            self.push_stack(None)
+            # MEXP_1
+            resp = self.generate_code(node.children[1])
+            if resp:
+                self.code.append(f"lw $t0 4($sp)")
+                self.pop_stack()
+                self.code.append(f"mul $a0, $t0, $a0")
+            else:
+                self.code.append(f"lw $a0 4($sp)")
+                self.pop_stack()    
+                
         elif node.value == "SEXP":
-            if len(node.children) == 1 and node.children[0].terminal:
-                if node.children[0].kind == "NUMBER":
-                    reg = self.get_temp_register()
-                    self.code.append(f"li {reg}, {node.children[0].value}")
-                    return reg
-                elif node.children[0].value == "true":
-                    reg = self.get_temp_register()
-                    self.code.append(f"li {reg}, 1")
-                    return reg
-                elif node.children[0].value == "false":
-                    reg = self.get_temp_register()
-                    self.code.append(f"li {reg}, 0")
-                    return reg
-                elif node.children[0].value == "null":
-                    reg = self.get_temp_register()
-                    self.code.append(f"li {reg}, 0")
-                    return reg
-            elif len(node.children) == 2:
-                if node.children[0].value == "!":
-                    reg = self.generate_code(node.children[1])
-                    self.code.append(f"not {reg}, {reg}")
-                    return reg
-                elif node.children[0].value == "-":
-                    reg = self.generate_code(node.children[1])
-                    self.code.append(f"neg {reg}, {reg}")
-                    return reg
-            elif len(node.children) == 5 and node.children[0].value == "new" and node.children[1].value == "int":
-                reg_size = self.generate_code(node.children[3])
-                reg = self.get_temp_register()
-                self.code.append(f"li {reg}, {reg_size}")
-                self.code.append(f"mul {reg}, {reg}, 4")  # Assuming int is 4 bytes
-                self.code.append(f"li $v0, 9")  # Syscall for sbrk
-                self.code.append(f"move $a0, {reg}")
-                self.code.append(f"syscall")
-                self.code.append(f"move {reg}, $v0")
+            if node.children[0].kind == "NUMBER":
+                self.code.append(f"li $a0, {node.children[0].value}")
+            elif node.children[0].value == "!":
+                self.generate_code(node.children[1])
+                self.code.append("sltiu $a0, $a0 1")
+            elif node.children[0].value == "-":
+                self.generate_code(node.children[1])
+                self.code.append("sub $a0, $zero, $a0")
+            elif node.children[0].value == "true":
+                self.code.append(f"li $a0, 1")
+            elif node.children[0].value == "false":
+                self.code.append(f"li $a0, 0")
                 return reg
-            elif len(node.children) == 2 and node.children[1].value == "SEXP_1":
-                reg = self.generate_code(node.children[0])
-                reg_sexp1 = self.generate_code(node.children[1])
-                self.code.append(f"add {reg}, {reg}, {reg_sexp1}")
+            elif node.children[0].value == "null":
+                self.code.append(f"li $a0, 0")
                 return reg
-
-        # Caso o nó não produza código
-        return None
-
-    def get_temp_register(self):
-        reg = f"$t{self.temp_count}"
-        self.temp_count = (self.temp_count + 1) % 10
-        return reg
+            # elif node.children[0].value == "new":
+            #     node_parent = node.parent
+            #     while node_parent != "CMD":
+            #         node_parent = node.parent
+            #     var_name = node_parent.children[0].value
+            #     offset = (self.stack.index(var_name) + 1) * 4
+            #     # self.generate_code(node.children[3])
+            #     # self.code.append("mult $a0, 4")
+            #     # self.code.append("sub $sp, $sp, $a0")
+            # elif node.children[0].value == "PEXP":
+            #     self.generate_code(node.children[0])
+            #     self.push_stack(None)
+            #     self.generate_code(node.children[1])
+            #     self.code.append(f"lw $t0 4($sp)")
+            #     self.pop_stack()
+            #     self.code.append(f"add $a0, $a0, $t0")
+                                
+        elif node.value == "PEXP":
+            if len(node.children) == 2:
+                if node.children[0].value == "IDENTIFIER":
+                    resp = self.generate_code(node.children[1])
+                    if not resp:
+                        var_name = node.children[0].value
+                        offset = (self.stack.index(var_name) + 1) * 4
+                        self.code.append(f"lw $a0, {offset}($sp)")
+            elif len(node.children) == 4:
+                self.generate_code(node.children[1])
+                self.generate_code(node.children[3])
+                
+        elif node.value == "PEXP_1":
+            if len(node.children) == 3:
+                method_name = node.children[1].value
+                self.code.append(f"sw $fp 0($sp)")
+                self.push_stack(None)
+                self.code.append(f"addiu $sp, $sp, -4")
+                self.generate_code(node.children[2])
+                self.code.append(f"jal {method_name}")
 
     def write_code(self, filename):
         print(f"\nCode: {self.code}\n")
