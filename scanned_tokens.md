@@ -47,11 +47,15 @@
 
 `NUMBER`: `20` at line 3, column 40
 
-`OPERATOR`: `)` at line 3, column 42
+`OPERATOR`: `,` at line 3, column 42
 
-`OPERATOR`: `)` at line 3, column 43
+`NUMBER`: `10` at line 3, column 44
 
-`OPERATOR`: `;` at line 3, column 44
+`OPERATOR`: `)` at line 3, column 46
+
+`OPERATOR`: `)` at line 3, column 47
+
+`OPERATOR`: `;` at line 3, column 48
 
 `OPERATOR`: `}` at line 4, column 0
 
@@ -75,19 +79,9 @@
 
 `IDENTIFIER`: `num` at line 7, column 26
 
-`OPERATOR`: `,` at line 7, column 29
+`OPERATOR`: `)` at line 7, column 29
 
-`RESERVED`: `int` at line 7, column 31
-
-`OPERATOR`: `[` at line 7, column 34
-
-`OPERATOR`: `]` at line 7, column 35
-
-`IDENTIFIER`: `a` at line 7, column 37
-
-`OPERATOR`: `)` at line 7, column 38
-
-`OPERATOR`: `{` at line 7, column 39
+`OPERATOR`: `{` at line 7, column 30
 
 `RESERVED`: `int` at line 8, column 0
 
@@ -143,13 +137,13 @@
 
 `OPERATOR`: `,` at line 12, column 38
 
-`IDENTIFIER`: `num` at line 12, column 40
+`NUMBER`: `10` at line 12, column 40
+
+`OPERATOR`: `)` at line 12, column 42
 
 `OPERATOR`: `)` at line 12, column 43
 
-`OPERATOR`: `)` at line 12, column 44
-
-`OPERATOR`: `;` at line 12, column 45
+`OPERATOR`: `;` at line 12, column 44
 
 `RESERVED`: `return` at line 13, column 0
 

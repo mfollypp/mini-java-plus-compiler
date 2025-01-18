@@ -150,11 +150,13 @@ class Parser:
             raise Exception(f"Did not finish parsing, still have {len(self.tokens) - self.current} tokens left")
         return response
     
+    
 class SemanticAnalyzer:
     def __init__(self):
         self.symbol_table = {}
         self.highlighted_nodes = set()
         self.method_map = {}
+        self.main_identifier_count = 0
     
     def get_leaves(self, node):
         if not node.children and node.terminal:
@@ -169,22 +171,35 @@ class SemanticAnalyzer:
         class_name = ""
         node_aux = copy.copy(node)
         
-        # if(node.parent):
-        #     if len(node.parent.children) > 1:
-        #         before = node.parent.children[0].value
-        #         if before in ["new", "."]:
-        #             class_name = node.value
+        if node.parent.value == "MAIN":
+            value = node.value if self.main_identifier_count == 0 else f"_MAIN_{node.value}"
+            self.main_identifier_count += 1
+            return value
+                
+        if(node.parent.value == "PEXP"):
+            before = node.parent.children[0].value
+            if before in ["new", "."]:
+                return node.value
+
+        if(node.parent.value == "CLASSE"):
+            class_name = node.parent.children[1].value
+            return node.value
         
         if(node.parent.value == "PEXP_1"):
             if(not class_name):
-                class_name = node.parent.parent.children[1].value
+                if(node.parent.parent.children[0].value == "new"):
+                    class_name = node.parent.parent.children[1].value
+                else:
+                    while node_aux.value != "CLASSE":
+                        node_aux = node_aux.parent
+                    class_name = node_aux.children[1].value
             return f"_{class_name}_{node.value}_{node.value}"
         
         while node_aux and node_aux.value and node_aux.value != "METODO":
             node_aux = node_aux.parent
         
         if(node_aux):
-            method_name = node_aux.children[2].value  
+            method_name = node_aux.children[2].value.split("_")[-1]
         else:
             node_aux = node
         
@@ -192,7 +207,7 @@ class SemanticAnalyzer:
             node_aux = node_aux.parent        
             
         if (node_aux):
-            class_name = node_aux.children[1].value  
+            class_name = node_aux.children[1].value.split("_")[0]  
         
         return f"_{class_name}_{method_name}_{node.value}"
 
@@ -202,40 +217,48 @@ class SemanticAnalyzer:
         if node.kind == "IDENTIFIER":
             if node.parent.value == "CLASSE" or node.parent.value == "METODO" or node.parent.value == "MAIN":
                 if(node.parent.value == "MAIN"):
-                    var_name = f"_MAIN_{node.value}"
+                    var_name = self.build_name(node)
+                elif node.parent.value == "METODO":
+                    var_name = self.build_name(node)
+                    params_node = node.parent.children[4]
+                    terminals = self.get_leaves(params_node)
+                    params = "".join(str(element) for element in terminals)
+                    self.method_map[var_name] = len(params.split(","))
                 else: 
                     var_name = node.value
-                self.symbol_table[var_name] = "method_class"
-
+                if var_name in self.symbol_table:
+                    raise Exception(f"Variable '{self.symbol_table[var_name]}' already declared in scope.")
+                self.symbol_table[var_name] = node.value
+                node.value = var_name
+                
         for child in node.children:
             self.analyze(child)
 
     def analyze2(self, node):
+        print("Analyse 2")
         print(f"Analyzing node: {node.value}, of kind: {node.kind} with parent: {node.parent.value if node.parent else None}")
 
         if node.kind == "IDENTIFIER":
             parent = node.parent.value
-            if parent in ["VAR", "PARAM", "METODO"]:
+            if parent in ["VAR", "PARAM"]:
                 var_name = self.build_name(node)                
-                    
                 if var_name in self.symbol_table:
-                    raise Exception(f"Variable '{node.value}' already declared in scope.")
-                self.symbol_table[var_name] = node.parent.kind
+                    raise Exception(f"Variable '{self.symbol_table[var_name]}' already declared in scope.")
+                self.symbol_table[var_name] = node.value
                 node.value = var_name
-            elif parent != "MAIN":
-                if node.value in self.symbol_table and self.symbol_table[node.value] == "method_class":
-                    pass
-                else:
-                    var_name = self.build_name(node)
-                    if var_name not in self.symbol_table:
-                        raise Exception(f"Variable '{node.value}' not declared in symbol table")
-                    node.value = var_name
-        # elif node.value == "EXPS":
-        #     terminals = self.get_leaves(node)
-        #     params = "".join(str(element) for element in terminals)
-        #     number_of_params = len(params.split(","))
-        #     if(number_of_params != self.method_map["method_name"]):
-        #         raise Exception(f"Method '{self.method_map['method_name']}' expects {self.method_map['method_name']} parameters, but got {number_of_params}")
+            elif parent not in ["MAIN", "METODO", "CLASSE"]:
+                var_name = self.build_name(node)
+                if var_name not in self.symbol_table:
+                    raise Exception(f"Variable '{node.value}' not declared in symbol table")
+                node.value = var_name
+        elif node.value == "EXPS":
+            terminals = self.get_leaves(node)
+            params = "".join(str(element) for element in terminals)
+            number_of_params = len(params.split(","))
+            # nome do metodo vindo de PEXP_1
+            method_name = node.parent.parent.children[1].value
+            if(number_of_params != self.method_map[method_name]):
+                raise Exception(f"Method '{self.symbol_table[method_name]}' expects {self.method_map[method_name]} parameters, but got {number_of_params}")
                 
         print(f"Symbol Table: {self.symbol_table}\n")
         
@@ -595,16 +618,16 @@ if __name__ == "__main__":
     code = """
     class Factorial{ 
         public static void main(String[] a){ 
-            System.out.println(new Fac().ComputeFac(20));
+            System.out.println(new Fac().ComputeFac(20, 10));
         } 
     }
     class Fac { 
-        public int ComputeFac(int num, int[] a){
+        public int ComputeFac(int num){
             int num_aux;
             if (num < 1)
                 num_aux = 1;
             else
-                num_aux = num * (this.ComputeFac(num-1, num));
+                num_aux = num * (this.ComputeFac(num-1, 10));
             return num_aux ;
         } 
     }
