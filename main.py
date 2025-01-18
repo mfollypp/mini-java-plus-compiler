@@ -154,11 +154,31 @@ class SemanticAnalyzer:
     def __init__(self):
         self.symbol_table = {}
         self.highlighted_nodes = set()
-        
+        self.method_map = {}
+    
+    def get_leaves(self, node):
+        if not node.children and node.terminal:
+            return [node.value]
+        leaves = []
+        for child in node.children:
+            leaves.extend(self.get_leaves(child))
+        return leaves
+
     def build_name(self, node):
         method_name = ""
         class_name = ""
         node_aux = copy.copy(node)
+        
+        # if(node.parent):
+        #     if len(node.parent.children) > 1:
+        #         before = node.parent.children[0].value
+        #         if before in ["new", "."]:
+        #             class_name = node.value
+        
+        if(node.parent.value == "PEXP_1"):
+            if(not class_name):
+                class_name = node.parent.parent.children[1].value
+            return f"_{class_name}_{node.value}_{node.value}"
         
         while node_aux and node_aux.value and node_aux.value != "METODO":
             node_aux = node_aux.parent
@@ -208,8 +228,14 @@ class SemanticAnalyzer:
                 else:
                     var_name = self.build_name(node)
                     if var_name not in self.symbol_table:
-                        raise Exception(f"Variable '{var_name}' not declared in symbol table")
+                        raise Exception(f"Variable '{node.value}' not declared in symbol table")
                     node.value = var_name
+        # elif node.value == "EXPS":
+        #     terminals = self.get_leaves(node)
+        #     params = "".join(str(element) for element in terminals)
+        #     number_of_params = len(params.split(","))
+        #     if(number_of_params != self.method_map["method_name"]):
+        #         raise Exception(f"Method '{self.method_map['method_name']}' expects {self.method_map['method_name']} parameters, but got {number_of_params}")
                 
         print(f"Symbol Table: {self.symbol_table}\n")
         
@@ -489,21 +515,26 @@ class MIPSCodeGenerator:
                 self.code.append(f"li $a0, 0")
                 return reg
             # elif node.children[0].value == "new":
+            # ! TODO
             #     node_parent = node.parent
             #     while node_parent != "CMD":
             #         node_parent = node.parent
             #     var_name = node_parent.children[0].value
-            #     offset = (self.stack.index(var_name) + 1) * 4
-            #     # self.generate_code(node.children[3])
-            #     # self.code.append("mult $a0, 4")
-            #     # self.code.append("sub $sp, $sp, $a0")
-            # elif node.children[0].value == "PEXP":
-            #     self.generate_code(node.children[0])
-            #     self.push_stack(None)
-            #     self.generate_code(node.children[1])
-            #     self.code.append(f"lw $t0 4($sp)")
-            #     self.pop_stack()
-            #     self.code.append(f"add $a0, $a0, $t0")
+            #     exp_value = node.children[3].children[0].value
+            #     var_pos_stack = self.stack.index(var_name)
+            #     for _ in range(exp_value):
+            #         self.push_stack(var_name)
+            #     self.stack.insert(var_pos_stack, var_name)
+            #     self.generate_code(node.children[3])
+            #     self.code.append("mult $a0, 4")
+            #     self.code.append("sub $sp, $sp, $a0")
+            elif node.children[0].value == "PEXP":
+                self.generate_code(node.children[0])
+                self.push_stack(None)
+                self.generate_code(node.children[1])
+                self.code.append(f"lw $t0 4($sp)")
+                self.pop_stack()
+                self.code.append(f"add $a0, $a0, $t0")
                                 
         elif node.value == "PEXP":
             if len(node.children) == 2:
@@ -525,7 +556,7 @@ class MIPSCodeGenerator:
                 self.code.append(f"addiu $sp, $sp, -4")
                 self.generate_code(node.children[2])
                 self.code.append(f"jal {method_name}")
-        elif node.value == "EXPS":
+        # elif node.value == "EXPS":
             
 
     def write_code(self, filename):
@@ -564,16 +595,16 @@ if __name__ == "__main__":
     code = """
     class Factorial{ 
         public static void main(String[] a){ 
-            System.out.println(new Fac().ComputeFac(10));
+            System.out.println(new Fac().ComputeFac(20));
         } 
     }
     class Fac { 
-        public int ComputeFac(int num){
+        public int ComputeFac(int num, int[] a){
             int num_aux;
             if (num < 1)
                 num_aux = 1;
             else
-                num_aux = num * (this.ComputeFac(num-1));
+                num_aux = num * (this.ComputeFac(num-1, num));
             return num_aux ;
         } 
     }
