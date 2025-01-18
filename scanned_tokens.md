@@ -79,9 +79,15 @@
 
 `IDENTIFIER`: `num` at line 7, column 26
 
-`OPERATOR`: `)` at line 7, column 29
+`OPERATOR`: `,` at line 7, column 29
 
-`OPERATOR`: `{` at line 7, column 30
+`RESERVED`: `int` at line 7, column 31
+
+`IDENTIFIER`: `num2` at line 7, column 35
+
+`OPERATOR`: `)` at line 7, column 39
+
+`OPERATOR`: `{` at line 7, column 40
 
 `RESERVED`: `int` at line 8, column 0
 

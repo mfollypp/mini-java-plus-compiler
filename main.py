@@ -622,7 +622,7 @@ if __name__ == "__main__":
         } 
     }
     class Fac { 
-        public int ComputeFac(int num){
+        public int ComputeFac(int num, int num2){
             int num_aux;
             if (num < 1)
                 num_aux = 1;
