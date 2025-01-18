@@ -289,7 +289,7 @@ class MIPSCodeGenerator:
         
     def push_stack(self, var_name):
         self.stack.insert(0, var_name) 
-        self.code.append(f"sw 0 0($sp)")
+        self.code.append(f"sw $a0 0($sp)")
         self.code.append(f"addiu $sp, $sp, -4")
         
     def pop_stack(self):
@@ -333,6 +333,7 @@ class MIPSCodeGenerator:
         elif node.value == "PARAM":
             var_name = node.children[1].value
             self.push_stack(var_name)
+            # TODO - Colocar só no dicionario do metodo e não na stack - Kevin
                             
         elif node.value == "METODO":
             # Método: gera um rótulo para o método
@@ -381,7 +382,6 @@ class MIPSCodeGenerator:
 
             elif len(node.children) == 5 and node.children[0].value == "System.out.println":
                 expr_reg = self.generate_code(node.children[2])
-                self.code.append(f"move $a0, {expr_reg}")
                 self.code.append("li $v0, 1")
                 self.code.append("syscall")
                 
@@ -538,7 +538,7 @@ class MIPSCodeGenerator:
                                 
         elif node.value == "PEXP":
             if len(node.children) == 2:
-                if node.children[0].value == "IDENTIFIER":
+                if node.children[0].value in ["IDENTIFIER", "this"]:
                     resp = self.generate_code(node.children[1])
                     if not resp:
                         var_name = node.children[0].value
@@ -547,6 +547,8 @@ class MIPSCodeGenerator:
             elif len(node.children) == 4:
                 self.generate_code(node.children[1])
                 self.generate_code(node.children[3])
+            elif len(node.children) == 5:
+                self.generate_code(node.children[4])
                 
         elif node.value == "PEXP_1":
             if len(node.children) == 3:
@@ -556,7 +558,25 @@ class MIPSCodeGenerator:
                 self.code.append(f"addiu $sp, $sp, -4")
                 self.generate_code(node.children[2])
                 self.code.append(f"jal {method_name}")
-        # elif node.value == "EXPS":
+
+        elif node.value == "PEXP_2":
+            if len(node.children) == 4:
+                self.generate_code(node.children[1])
+                self.generate_code(node.children[3])
+            elif len(node.children) == 2:
+                self.generate_code(node.children[0])
+
+        elif node.value == "EXPS":
+            for child in node.children:
+                self.generate_code(child)
+
+        elif node.value == "EXPS_LIST":
+            self.code.append("sw $a0 0($sp)")
+            self.code.append("addiu $sp, $sp, -4")
+            self.push_stack(None)
+            if len(node.children) == 3:
+                self.generate_code(node.children[1])
+                self.generate_code(node.children[2])
             
 
     def write_code(self, filename):
@@ -592,20 +612,28 @@ def ast_to_graphviz(node, graph=None, parent=None, highlighted_nodes=None):
 
 if __name__ == "__main__":
 
+    # code = """
+    # class Factorial{ 
+    #     public static void main(String[] a){ 
+    #         System.out.println(new Fac().ComputeFac(20));
+    #     } 
+    # }
+    # class Fac { 
+    #     public int ComputeFac(int num, int[] a){
+    #         int num_aux;
+    #         if (num < 1)
+    #             num_aux = 1;
+    #         else
+    #             num_aux = num * (this.ComputeFac(num-1, num));
+    #         return num_aux ;
+    #     } 
+    # }
+    # """
+
     code = """
     class Factorial{ 
         public static void main(String[] a){ 
-            System.out.println(new Fac().ComputeFac(20));
-        } 
-    }
-    class Fac { 
-        public int ComputeFac(int num, int[] a){
-            int num_aux;
-            if (num < 1)
-                num_aux = 1;
-            else
-                num_aux = num * (this.ComputeFac(num-1, num));
-            return num_aux ;
+            System.out.println(3 * 4 + 3 - (3 + 2));
         } 
     }
     """
