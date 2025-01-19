@@ -31,32 +31,78 @@
 
 `OPERATOR`: `(` at line 3, column 18
 
-`NUMBER`: `3` at line 3, column 19
+`RESERVED`: `new` at line 3, column 19
 
-`OPERATOR`: `*` at line 3, column 21
+`IDENTIFIER`: `Fac` at line 3, column 23
 
-`NUMBER`: `4` at line 3, column 23
+`OPERATOR`: `(` at line 3, column 26
 
-`OPERATOR`: `+` at line 3, column 25
+`OPERATOR`: `)` at line 3, column 27
 
-`NUMBER`: `3` at line 3, column 27
+`OPERATOR`: `.` at line 3, column 28
 
-`OPERATOR`: `-` at line 3, column 29
+`IDENTIFIER`: `ComputeFac` at line 3, column 29
 
-`OPERATOR`: `(` at line 3, column 31
+`OPERATOR`: `(` at line 3, column 39
 
-`NUMBER`: `3` at line 3, column 32
+`NUMBER`: `10` at line 3, column 40
 
-`OPERATOR`: `+` at line 3, column 34
+`OPERATOR`: `)` at line 3, column 42
 
-`NUMBER`: `2` at line 3, column 36
+`OPERATOR`: `)` at line 3, column 43
 
-`OPERATOR`: `)` at line 3, column 37
-
-`OPERATOR`: `)` at line 3, column 38
-
-`OPERATOR`: `;` at line 3, column 39
+`OPERATOR`: `;` at line 3, column 44
 
 `OPERATOR`: `}` at line 4, column 0
 
 `OPERATOR`: `}` at line 5, column 0
+
+`RESERVED`: `class` at line 6, column 0
+
+`IDENTIFIER`: `Fac` at line 6, column 6
+
+`OPERATOR`: `{` at line 6, column 10
+
+`RESERVED`: `public` at line 7, column 0
+
+`RESERVED`: `int` at line 7, column 7
+
+`IDENTIFIER`: `ComputeFac` at line 7, column 11
+
+`OPERATOR`: `(` at line 7, column 21
+
+`RESERVED`: `int` at line 7, column 22
+
+`IDENTIFIER`: `num` at line 7, column 26
+
+`OPERATOR`: `)` at line 7, column 29
+
+`OPERATOR`: `{` at line 7, column 30
+
+`RESERVED`: `int` at line 8, column 0
+
+`IDENTIFIER`: `num_aux` at line 8, column 4
+
+`OPERATOR`: `;` at line 8, column 11
+
+`IDENTIFIER`: `num_aux` at line 9, column 0
+
+`OPERATOR`: `=` at line 9, column 8
+
+`IDENTIFIER`: `num` at line 9, column 10
+
+`OPERATOR`: `*` at line 9, column 14
+
+`NUMBER`: `3` at line 9, column 16
+
+`OPERATOR`: `;` at line 9, column 17
+
+`RESERVED`: `return` at line 10, column 0
+
+`IDENTIFIER`: `num_aux` at line 10, column 7
+
+`OPERATOR`: `;` at line 10, column 15
+
+`OPERATOR`: `}` at line 11, column 0
+
+`OPERATOR`: `}` at line 12, column 0

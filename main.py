@@ -309,6 +309,14 @@ class MIPSCodeGenerator:
         self.num_elems = 0
         self.elements_stacks = 0
         self.method_map = {}
+
+    def get_leaves(self, node):
+        if not node.children and node.terminal:
+            return [node.value]
+        leaves = []
+        for child in node.children:
+            leaves.extend(self.get_leaves(child))
+        return leaves
         
     def push_stack(self, var_name):
         self.stack.insert(0, var_name) 
@@ -347,6 +355,7 @@ class MIPSCodeGenerator:
             self.code.append(f"{class_name}:")
             self.generate_code(node.children[4])
             self.code.append(f"jr $ra")
+            self.generate_code(node.children[5])
 
         elif node.value in ["VAR"]:
             #todo: validacao de tipo
@@ -355,16 +364,20 @@ class MIPSCodeGenerator:
         
         elif node.value == "PARAM":
             var_name = node.children[1].value
-            self.push_stack(var_name)
+            # self.push_stack(var_name)
             # TODO - Colocar só no dicionario do metodo e não na stack - Kevin
-                            
+                    
         elif node.value == "METODO":
             # Método: gera um rótulo para o método
             method_name = node.children[2].value
-            self.method_map[method_name] = method_name
+            params_node = node.children[4]
+            terminals = self.get_leaves(params_node)
+            if "," in terminals:
+                terminals.remove(",")
+            self.method_map[method_name] = terminals[1::2]
             self.code.append(f"{method_name}:")
             self.code.append("move $fp $sp")
-            self.push_stack(None) # Marca movimento na stack para uso do código
+            # self.push_stack(None) # Marca movimento na stack para uso do código
             self.code.append("sw $ra 0($sp)")
             self.code.append("addiu $sp, $sp, -4")
             for child in node.children:
@@ -410,6 +423,17 @@ class MIPSCodeGenerator:
                 
             elif len(node.children) == 2:
                 self.generate_code(node.children[1])
+                node_aux = node
+                while node_aux.value != "METODO":
+                    node_aux = node_aux.parent
+                method_name = node_aux.children[2].value
+                var_name = node.children[0].value
+                if var_name in self.method_map[method_name]:
+                    offset = (self.method_map[method_name].index(var_name) + 1) * 4
+                    self.code.append(f"sw $a0, {offset}($fp)")
+                else:
+                    offset = (self.stack.index(var_name) + 1) * 4
+                    self.code.append(f"sw $a0, {offset}($sp)")
                 
         elif node.value == "CMD_ELSE":
             if len(node.children) == 2:
@@ -434,7 +458,7 @@ class MIPSCodeGenerator:
             if node.children[0].kind == "NUMBER":
                 reg = "$a0"
                 self.code.append(f"li {reg}, {node.children[0].value}")
-                return reg, node.children[0].value
+                return reg
             else:
                 self.generate_code(node.children[0])
                 self.push_stack(None)
@@ -503,7 +527,8 @@ class MIPSCodeGenerator:
             else:
                 self.code.append(f"lw $a0 4($sp)")
                 self.pop_stack()
-                
+        
+        # TODO : ajeitar mult do num_aux = num * 3
         elif node.value in ["MEXP", "MEXP_1"]:
             if len(node.children) == 0:
                 return
@@ -555,18 +580,26 @@ class MIPSCodeGenerator:
                 self.generate_code(node.children[0])
                 self.push_stack(None)
                 self.generate_code(node.children[1])
-                self.code.append(f"lw $t0 4($sp)")
-                self.pop_stack()
-                self.code.append(f"add $a0, $a0, $t0")
+                # self.code.append(f"lw $t0 4($sp)")
+                # self.pop_stack()
+                # self.code.append(f"add $a0, $a0, $t0")
                                 
         elif node.value == "PEXP":
             if len(node.children) == 2:
-                if node.children[0].value in ["IDENTIFIER", "this"]:
+                if node.children[0].kind == "IDENTIFIER":
                     resp = self.generate_code(node.children[1])
                     if not resp:
+                        node_aux = node
+                        while node_aux.value != "METODO":
+                            node_aux = node_aux.parent
+                        method_name = node_aux.children[2].value
                         var_name = node.children[0].value
-                        offset = (self.stack.index(var_name) + 1) * 4
-                        self.code.append(f"lw $a0, {offset}($sp)")
+                        if var_name in self.method_map[method_name]:
+                            offset = (self.method_map[method_name].index(var_name) + 1) * 4
+                            self.code.append(f"lw $a0, {offset}($fp)")
+                        else:
+                            offset = (self.stack.index(var_name) + 1) * 4
+                            self.code.append(f"lw $a0, {offset}($sp)")
             elif len(node.children) == 4:
                 self.generate_code(node.children[1])
                 self.generate_code(node.children[3])
@@ -653,19 +686,34 @@ if __name__ == "__main__":
     # }
     # """
 
+    # code = """
+    # class Factorial{ 
+    #     public static void main(String[] a){ 
+    #         System.out.println(new Fac().ComputeFac(20, 10));
+    #     } 
+    # }
+    # class Fac { 
+    #     public int ComputeFac(int num, int num2){
+    #         int num_aux;
+    #         if (num < 1)
+    #             num_aux = 1;
+    #         else
+    #             num_aux = num * (5 + 5);
+    #         return num_aux ;
+    #     } 
+    # }
+    # """
+
     code = """
     class Factorial{ 
         public static void main(String[] a){ 
-            System.out.println(new Fac().ComputeFac(20, 10));
+            System.out.println(new Fac().ComputeFac(10));
         } 
     }
     class Fac { 
-        public int ComputeFac(int num, int num2){
+        public int ComputeFac(int num){
             int num_aux;
-            if (num < 1)
-                num_aux = 1;
-            else
-                num_aux = num * (this.ComputeFac(num-1, 10));
+            num_aux = num * 3;
             return num_aux ;
         } 
     }
