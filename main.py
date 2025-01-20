@@ -367,7 +367,7 @@ class MIPSCodeGenerator:
             # self.push_stack(var_name)
             # TODO - Colocar só no dicionario do metodo e não na stack - Kevin
                     
-        elif node.value == "METODO":
+         elif node.value == "METODO":
             # Método: gera um rótulo para o método
             method_name = node.children[2].value
             params_node = node.children[4]
@@ -382,6 +382,9 @@ class MIPSCodeGenerator:
             self.code.append("addiu $sp, $sp, -4")
             for child in node.children:
                 self.generate_code(child)
+            self.code.append("lw $ra 4($sp)")
+            # colocar popstack para limpar argumentos do método
+            self.code.append("lw $fp 0($sp)")
             self.code.append("jr $ra")
 
         elif node.value == "CMD_LIST":
