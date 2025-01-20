@@ -367,7 +367,7 @@ class MIPSCodeGenerator:
             # self.push_stack(var_name)
             # TODO - Colocar só no dicionario do metodo e não na stack - Kevin
                     
-         elif node.value == "METODO":
+        elif node.value == "METODO":
             # Método: gera um rótulo para o método
             method_name = node.children[2].value
             params_node = node.children[4]
@@ -497,7 +497,7 @@ class MIPSCodeGenerator:
                     self.code.append(f"seq $a0, $t0, $a0")
                 elif operator == "!=":
                     self.code.append(f"sne $a0, $t0, $a0")
-            else
+            else:
                 return
             
         elif node.value == "REXP_1":
@@ -529,7 +529,7 @@ class MIPSCodeGenerator:
             #MEXP
             self.generate_code(node.children[1])
             #AEXP_1
-            resp = self.generate_code(node.children[2]
+            resp = self.generate_code(node.children[2])
             if resp:
                 operator = node.children[2].children[0].value
                 self.code.append(f"lw $t0 4($sp)")
