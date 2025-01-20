@@ -718,12 +718,7 @@ if __name__ == "__main__":
         } 
     }
     class Fac { 
-<<<<<<< Updated upstream
         public int ComputeFac(int num){
-=======
-        public int ComputeFac(int num, int num2){
-            int ComputeFac;
->>>>>>> Stashed changes
             int num_aux;
             num_aux = num * 3;
             return num_aux ;
