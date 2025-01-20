@@ -176,7 +176,7 @@ class SemanticAnalyzer:
         node_aux = copy.copy(node)
         
         if node.parent.value == "MAIN":
-            value = node.value if self.main_identifier_count == 0 else f"|{next(iter(self.symbol_table))}|{node.value}"
+            value = node.value if self.main_identifier_count == 0 else f"_{next(iter(self.symbol_table))}_{node.value}"
             self.main_identifier_count += 1
             return value
                 
@@ -197,13 +197,13 @@ class SemanticAnalyzer:
                     while node_aux.value != "CLASSE":
                         node_aux = node_aux.parent
                     class_name = node_aux.children[1].value
-            return f"|{class_name}|{node.value}"
+            return f"_{class_name}_{node.value}"
         
         while node_aux and node_aux.value and node_aux.value != "METODO":
             node_aux = node_aux.parent
         
         if(node_aux):
-            method_name = node_aux.children[2].value.split("|")[-1]
+            method_name = node_aux.children[2].value.split("_")[-1]
         else:
             node_aux = node
         
@@ -211,12 +211,12 @@ class SemanticAnalyzer:
             node_aux = node_aux.parent        
             
         if (node_aux):
-            class_name = node_aux.children[1].value.split("|")[0]  
+            class_name = node_aux.children[1].value.split("_")[0]  
                     
         if(node.parent.value in "METODO"):
-            return f"|{class_name}|{method_name}"
+            return f"_{class_name}_{method_name}"
             
-        return f"|{class_name}|{method_name}|{node.value}"
+        return f"_{class_name}_{method_name}_{node.value}"
 
     def analyze(self, node):
         print(f"Analyzing node: {node.value}, of kind: {node.kind} with parent: {node.parent.value if node.parent else None}")
@@ -328,11 +328,11 @@ class MIPSCodeGenerator:
     def push_stack(self, var_name):
         self.stack.insert(0, var_name) 
         self.code.append(f"sw $a0 0($sp)")
-        self.code.append(f"addiu $sp, $sp, -4")
+        self.code.append(f"addiu $sp $sp -4")
         
     def pop_stack(self):
         self.stack.pop(0)
-        self.code.append(f"addiu $sp, $sp, 4")
+        self.code.append(f"addiu $sp $sp 4")
     
     def generate_code(self, node):
         
@@ -350,7 +350,7 @@ class MIPSCodeGenerator:
             self.code.append("main:")
             for child in node.children:
                 self.generate_code(child)
-            self.code.append("li $v0, 10")
+            self.code.append("li $v0 10")
             self.code.append("syscall")
 
         elif node.value in ["CLASSE_LIST", "VAR_LIST", "METODO_LIST", "PARAMS", "PARAM_LIST"]:
@@ -371,7 +371,6 @@ class MIPSCodeGenerator:
         
         elif node.value == "PARAM":
             var_name = node.children[1].value
-            # self.push_stack(var_name)
             # TODO - Colocar só no dicionario do metodo e não na stack - Kevin
                     
         elif node.value == "METODO":
@@ -384,13 +383,22 @@ class MIPSCodeGenerator:
             self.method_map[method_name] = terminals[1::2]
             self.code.append(f"{method_name}:")
             self.code.append("move $fp $sp")
-            # self.push_stack(None) # Marca movimento na stack para uso do código
+            self.stack.insert(0, None)
             self.code.append("sw $ra 0($sp)")
-            self.code.append("addiu $sp, $sp, -4")
+            self.code.append("addiu $sp $sp -4")
             for child in node.children:
                 self.generate_code(child)
             # self.code.append("lw $ra 4($sp)")
             # colocar popstack para limpar argumentos do método
+            for var_name in self.stack:
+                if var_name:
+                    if var_name.startswith(method_name):
+                        self.pop_stack()
+                    else:
+                        break
+            self.code.append("lw $ra 4($sp)")
+            offset = (len(self.method_map[method_name]) + 2) * 4
+            self.code.append(f"addiu $sp $sp {offset}")
             self.code.append("lw $fp 0($sp)")
             self.code.append("jr $ra")
 
@@ -428,7 +436,7 @@ class MIPSCodeGenerator:
 
             elif len(node.children) == 5 and node.children[0].value == "System.out.println":
                 expr_reg = self.generate_code(node.children[2])
-                self.code.append("li $v0, 1")
+                self.code.append("li $v0 1")
                 self.code.append("syscall")
                 
             elif len(node.children) == 2:
@@ -440,10 +448,10 @@ class MIPSCodeGenerator:
                 var_name = node.children[0].value
                 if var_name in self.method_map[method_name]:
                     offset = (self.method_map[method_name].index(var_name) + 1) * 4
-                    self.code.append(f"sw $a0, {offset}($fp)")
+                    self.code.append(f"sw $a0 {offset}($fp)")
                 else:
                     offset = (self.stack.index(var_name) + 1) * 4
-                    self.code.append(f"sw $a0, {offset}($sp)")
+                    self.code.append(f"sw $a0 {offset}($sp)")
                 
         elif node.value == "CMD_ELSE":
             if len(node.children) == 2:
@@ -454,7 +462,7 @@ class MIPSCodeGenerator:
                 var_name = node.parent.children[0].value
                 expr_reg = self.generate_code(node.children[1])
                 offset = (self.stack.index(var_name) + 1) * 4
-                self.code.append(f"sw {expr_reg}, {offset}($sp)")
+                self.code.append(f"sw {expr_reg} {offset}($sp)")
                     
             elif len(node.children) == 5:
                 expr_reg = self.generate_code(node.children[4])
@@ -462,12 +470,12 @@ class MIPSCodeGenerator:
                 var_name = f"_{node.parent.children[0].value}_{index_reg}"
                 self.push_stack(var_name)
                 offset = (self.stack.index(var_name) + 1) * 4
-                self.code.append(f"sw {expr_reg}, {offset}($sp)")
+                self.code.append(f"sw {expr_reg} {offset}($sp)")
 
         elif node.value == "EXP":
             if node.children[0].kind == "NUMBER":
                 reg = "$a0"
-                self.code.append(f"li {reg}, {node.children[0].value}")
+                self.code.append(f"li {reg} {node.children[0].value}")
                 return reg
             else:
                 self.generate_code(node.children[0])
@@ -475,7 +483,7 @@ class MIPSCodeGenerator:
                 if(not resp):
                     return "$a0"
                 self.code.append(f"lw $t0 4($sp)")
-                self.code.append(f"and $a0, $t0, $a0")
+                self.code.append(f"and $a0 $t0, $a0")
                 return "$a0"
             
         elif node.value == "EXP_1":
@@ -486,7 +494,7 @@ class MIPSCodeGenerator:
                 if(not resp):
                     return "$a0"
                 self.code.append(f"lw $t0 4($sp)")
-                self.code.append(f"and $a0, $t0, $a0")
+                self.code.append(f"and $a0 $t0, $a0")
                 return "$a0"
         
         elif node.value == "REXP":
@@ -499,11 +507,11 @@ class MIPSCodeGenerator:
                 self.code.append(f"lw $t0 4($sp)")
                 self.pop_stack()
                 if operator == "<":
-                    self.code.append(f"slt $a0, $t0, $a0")
+                    self.code.append(f"slt $a0 $t0, $a0")
                 elif operator == "==":
-                    self.code.append(f"seq $a0, $t0, $a0")
+                    self.code.append(f"seq $a0 $t0, $a0")
                 elif operator == "!=":
-                    self.code.append(f"sne $a0, $t0, $a0")
+                    self.code.append(f"sne $a0 $t0, $a0")
             else:
                 return True
             
@@ -523,9 +531,9 @@ class MIPSCodeGenerator:
                 self.code.append(f"lw $t0 4($sp)")
                 self.pop_stack()
                 if operator == "+":
-                    self.code.append(f"add $a0, $t0, $a0")
+                    self.code.append(f"add $a0 $t0, $a0")
                 elif operator == "-":
-                    self.code.append(f"sub $a0, $t0, $a0")
+                    self.code.append(f"sub $a0 $t0, $a0")
             else:
                 return True
 
@@ -542,9 +550,9 @@ class MIPSCodeGenerator:
                 self.code.append(f"lw $t0 4($sp)")
                 self.pop_stack()
                 if operator == "+":
-                    self.code.append(f"add $a0, $t0, $a0")
+                    self.code.append(f"add $a0 $t0, $a0")
                 elif operator == "-":
-                    self.code.append(f"sub $a0, $t0, $a0")
+                    self.code.append(f"sub $a0 $t0, $a0")
             else:
                 return True
                     
@@ -558,7 +566,7 @@ class MIPSCodeGenerator:
             if resp:
                 self.code.append(f"lw $t0 4($sp)")
                 self.pop_stack()
-                self.code.append(f"mul $a0, $t0, $a0")
+                self.code.append(f"mul $a0 $t0 $a0")
             else:
                 return
 
@@ -573,26 +581,27 @@ class MIPSCodeGenerator:
             if resp:
                 self.code.append(f"lw $t0 4($sp)")
                 self.pop_stack()
-                self.code.append(f"mul $a0, $t0, $a0")
+                self.code.append(f"mul $a0 $t0 $a0")
+                return True
             else:
                 return True
                 
         elif node.value == "SEXP":
             if node.children[0].kind == "NUMBER":
-                self.code.append(f"li $a0, {node.children[0].value}")
+                self.code.append(f"li $a0 {node.children[0].value}")
             elif node.children[0].value == "!":
                 self.generate_code(node.children[1])
-                self.code.append("sltiu $a0, $a0 1")
+                self.code.append("sltiu $a0 $a0 1")
             elif node.children[0].value == "-":
                 self.generate_code(node.children[1])
-                self.code.append("sub $a0, $zero, $a0")
+                self.code.append("sub $a0 $zero, $a0")
             elif node.children[0].value == "true":
-                self.code.append(f"li $a0, 1")
+                self.code.append(f"li $a0 1")
             elif node.children[0].value == "false":
-                self.code.append(f"li $a0, 0")
+                self.code.append(f"li $a0 0")
                 return reg
             elif node.children[0].value == "null":
-                self.code.append(f"li $a0, 0")
+                self.code.append(f"li $a0 0")
                 return reg
             # elif node.children[0].value == "new":
             # ! TODO
@@ -606,15 +615,14 @@ class MIPSCodeGenerator:
             #         self.push_stack(var_name)
             #     self.stack.insert(var_pos_stack, var_name)
             #     self.generate_code(node.children[3])
-            #     self.code.append("mult $a0, 4")
-            #     self.code.append("sub $sp, $sp, $a0")
+            #     self.code.append("mult $a0 4")
+            #     self.code.append("sub $sp $sp $a0")
             elif node.children[0].value == "PEXP":
                 self.generate_code(node.children[0])
-                self.push_stack(None)
+                # self.push_stack(None)
                 self.generate_code(node.children[1])
                 # self.code.append(f"lw $t0 4($sp)")
-                # self.pop_stack()
-                # self.code.append(f"add $a0, $a0, $t0")
+                # self.code.append(f"add $a0 $a0 $t0")
                                 
         elif node.value == "PEXP":
             if len(node.children) == 2:
@@ -627,11 +635,13 @@ class MIPSCodeGenerator:
                         method_name = node_aux.children[2].value
                         var_name = node.children[0].value
                         if var_name in self.method_map[method_name]:
-                            offset = (self.method_map[method_name].index(var_name) + 1) * 4
-                            self.code.append(f"lw $a0, {offset}($fp)")
+                            offset = (len(self.method_map[method_name]) - self.method_map[method_name].index(var_name)) * 4
+                            self.code.append(f"lw $a0 {offset}($fp)")
                         else:
                             offset = (self.stack.index(var_name) + 1) * 4
-                            self.code.append(f"lw $a0, {offset}($sp)")
+                            self.code.append(f"lw $a0 {offset}($sp)")
+                else:
+                    self.generate_code(node.children[1])
             elif len(node.children) == 4:
                 self.generate_code(node.children[1])
                 self.generate_code(node.children[3])
@@ -642,8 +652,9 @@ class MIPSCodeGenerator:
             if len(node.children) == 3:
                 method_name = node.children[1].value
                 self.code.append(f"sw $fp 0($sp)")
-                self.push_stack(None)
-                self.code.append(f"addiu $sp, $sp, -4")
+                # self.push_stack(None)
+                # self.stack.insert(0, None)
+                self.code.append(f"addiu $sp $sp -4")
                 self.generate_code(node.children[2])
                 self.code.append(f"jal {method_name}")
 
@@ -659,9 +670,9 @@ class MIPSCodeGenerator:
                 self.generate_code(child)
 
         elif node.value == "EXPS_LIST":
+            # self.push_stack(None)
             self.code.append("sw $a0 0($sp)")
-            self.code.append("addiu $sp, $sp, -4")
-            self.push_stack(None)
+            self.code.append("addiu $sp $sp -4")
             if len(node.children) == 3:
                 self.generate_code(node.children[1])
                 self.generate_code(node.children[2])
@@ -700,23 +711,23 @@ def ast_to_graphviz(node, graph=None, parent=None, highlighted_nodes=None):
 
 if __name__ == "__main__":
 
-    # code = """
-    # class Factorial{ 
-    #     public static void main(String[] a){ 
-    #         System.out.println(new Fac().ComputeFac(20));
-    #     } 
-    # }
-    # class Fac { 
-    #     public int ComputeFac(int num, int[] a){
-    #         int num_aux;
-    #         if (num < 1)
-    #             num_aux = 1;
-    #         else
-    #             num_aux = num * (this.ComputeFac(num-1, num));
-    #         return num_aux ;
-    #     } 
-    # }
-    # """
+    code = """
+    class Factorial{ 
+        public static void main(String[] a){ 
+            System.out.println(new Fac().ComputeFac(3));
+        } 
+    }
+    class Fac { 
+        public int ComputeFac(int num){
+            int num_aux;
+            if (num < 1)
+                num_aux = 1;
+            else
+                num_aux = num * (this.ComputeFac(num-1));
+            return num_aux ;
+        } 
+    }
+    """
 
     # code = """
     # class Factorial{ 
@@ -736,20 +747,20 @@ if __name__ == "__main__":
     # }
     # """
 
-    code = """
-    class Factorial{ 
-        public static void main(String[] a){ 
-            System.out.println(new Fac().ComputeFac(10));
-        } 
-    }
-    class Fac { 
-        public int ComputeFac(int num){
-            int num_aux;
-            num_aux = num * 3;
-            return num_aux ;
-        } 
-    }
-    """
+    # code = """
+    # class Factorial{ 
+    #     public static void main(String[] a){ 
+    #         System.out.println(new Fac().ComputeFac(10, 20));
+    #     } 
+    # }
+    # class Fac { 
+    #     public int ComputeFac(int num, int num2){
+    #         int num_aux;
+    #         num_aux = num * (num2 + 5);
+    #         return num_aux ;
+    #     } 
+    # }
+    # """
     
     print(f"\nScanning code:\n{code}\n")
     

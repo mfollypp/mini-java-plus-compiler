@@ -323,51 +323,31 @@ Production: `SEXP`  ->  `['!', 'SEXP']`
 
 Analyzing Element: `!` of production
 
-<<<<<<< Updated upstream
 Expected production element:`!`, but current token is:`10`
-=======
-Expected production element:`!`, but current token is:`20`
->>>>>>> Stashed changes
 - Heading back to grammar production: `SEXP` ->  `['-', 'SEXP']`
 
 
 Analyzing Element: `-` of production
 
-<<<<<<< Updated upstream
 Expected production element:`-`, but current token is:`10`
-=======
-Expected production element:`-`, but current token is:`20`
->>>>>>> Stashed changes
 - Heading back to grammar production: `SEXP` ->  `['true']`
 
 
 Analyzing Element: `true` of production
 
-<<<<<<< Updated upstream
 Expected production element:`true`, but current token is:`10`
-=======
-Expected production element:`true`, but current token is:`20`
->>>>>>> Stashed changes
 - Heading back to grammar production: `SEXP` ->  `['false']`
 
 
 Analyzing Element: `false` of production
 
-<<<<<<< Updated upstream
 Expected production element:`false`, but current token is:`10`
-=======
-Expected production element:`false`, but current token is:`20`
->>>>>>> Stashed changes
 - Heading back to grammar production: `SEXP` ->  `['NUMBER']`
 
 
 Analyzing Element: `NUMBER` of production
 
-<<<<<<< Updated upstream
 - Consuming token with value: `10` and kind: `NUMBER` (consumed inside production: `SEXP`)                            
-=======
-- Consuming token with value: `20` and kind: `NUMBER` (consumed inside production: `SEXP`)                            
->>>>>>> Stashed changes
 - Expected token with value: `NUMBER`                            
 - Current token index: 23
 - Exiting grammar production: `SEXP`
@@ -380,8 +360,6 @@ Production: `MEXP_1`  ->  `['*', 'SEXP', 'MEXP_1']`
 
 Analyzing Element: `*` of production
 
-<<<<<<< Updated upstream
-=======
 Expected production element:`*`, but current token is:`,`
 - Heading back to grammar production: `MEXP_1` ->  `['']`
 
@@ -504,31 +482,31 @@ Production: `SEXP`  ->  `['!', 'SEXP']`
 
 Analyzing Element: `!` of production
 
-Expected production element:`!`, but current token is:`10`
+Expected production element:`!`, but current token is:`20`
 - Heading back to grammar production: `SEXP` ->  `['-', 'SEXP']`
 
 
 Analyzing Element: `-` of production
 
-Expected production element:`-`, but current token is:`10`
+Expected production element:`-`, but current token is:`20`
 - Heading back to grammar production: `SEXP` ->  `['true']`
 
 
 Analyzing Element: `true` of production
 
-Expected production element:`true`, but current token is:`10`
+Expected production element:`true`, but current token is:`20`
 - Heading back to grammar production: `SEXP` ->  `['false']`
 
 
 Analyzing Element: `false` of production
 
-Expected production element:`false`, but current token is:`10`
+Expected production element:`false`, but current token is:`20`
 - Heading back to grammar production: `SEXP` ->  `['NUMBER']`
 
 
 Analyzing Element: `NUMBER` of production
 
-- Consuming token with value: `10` and kind: `NUMBER` (consumed inside production: `SEXP`)                            
+- Consuming token with value: `20` and kind: `NUMBER` (consumed inside production: `SEXP`)                            
 - Expected token with value: `NUMBER`                            
 - Current token index: 25
 - Exiting grammar production: `SEXP`
@@ -541,7 +519,6 @@ Production: `MEXP_1`  ->  `['*', 'SEXP', 'MEXP_1']`
 
 Analyzing Element: `*` of production
 
->>>>>>> Stashed changes
 Expected production element:`*`, but current token is:`)`
 - Heading back to grammar production: `MEXP_1` ->  `['']`
 
@@ -635,17 +612,14 @@ Expected production element:`,`, but current token is:`)`
 Analyzing Element: `""` of production
 
 - Exiting grammar production: `EXPS_LIST`
-<<<<<<< Updated upstream
-=======
 - Exiting grammar production: `EXPS_LIST`
->>>>>>> Stashed changes
 - Exiting grammar production: `EXPS`
 
 Analyzing Element: `)` of production
 
 - Consuming token with value: `)` and kind: `OPERATOR` (consumed inside production: `PEXP_2`)                            
 - Expected token with value: `)`                            
-- Current token index: 24
+- Current token index: 26
 
 Analyzing Element: `PEXP_1` of production
 
@@ -779,13 +753,13 @@ Analyzing Element: `)` of production
 
 - Consuming token with value: `)` and kind: `OPERATOR` (consumed inside production: `CMD`)                            
 - Expected token with value: `)`                            
-- Current token index: 25
+- Current token index: 27
 
 Analyzing Element: `;` of production
 
 - Consuming token with value: `;` and kind: `OPERATOR` (consumed inside production: `CMD`)                            
 - Expected token with value: `;`                            
-- Current token index: 26
+- Current token index: 28
 - Exiting grammar production: `CMD`
 
 Analyzing Element: `CMD_LIST` of production
@@ -840,13 +814,13 @@ Analyzing Element: `}` of production
 
 - Consuming token with value: `}` and kind: `OPERATOR` (consumed inside production: `MAIN`)                            
 - Expected token with value: `}`                            
-- Current token index: 27
+- Current token index: 29
 
 Analyzing Element: `}` of production
 
 - Consuming token with value: `}` and kind: `OPERATOR` (consumed inside production: `MAIN`)                            
 - Expected token with value: `}`                            
-- Current token index: 28
+- Current token index: 30
 - Exiting grammar production: `MAIN`
 
 Analyzing Element: `CLASSE_LIST` of production
@@ -865,21 +839,13 @@ Analyzing Element: `class` of production
 
 - Consuming token with value: `class` and kind: `RESERVED` (consumed inside production: `CLASSE`)                            
 - Expected token with value: `class`                            
-<<<<<<< Updated upstream
-- Current token index: 29
-=======
 - Current token index: 31
->>>>>>> Stashed changes
 
 Analyzing Element: `IDENTIFIER` of production
 
 - Consuming token with value: `Fac` and kind: `IDENTIFIER` (consumed inside production: `CLASSE`)                            
 - Expected token with value: `IDENTIFIER`                            
-<<<<<<< Updated upstream
-- Current token index: 30
-=======
 - Current token index: 32
->>>>>>> Stashed changes
 
 Analyzing Element: `CLASSE_EXT` of production
 
@@ -901,11 +867,7 @@ Analyzing Element: `{` of production
 
 - Consuming token with value: `{` and kind: `OPERATOR` (consumed inside production: `CLASSE`)                            
 - Expected token with value: `{`                            
-<<<<<<< Updated upstream
-- Current token index: 31
-=======
 - Current token index: 33
->>>>>>> Stashed changes
 
 Analyzing Element: `VAR_LIST` of production
 
@@ -965,11 +927,7 @@ Analyzing Element: `public` of production
 
 - Consuming token with value: `public` and kind: `RESERVED` (consumed inside production: `METODO`)                            
 - Expected token with value: `public`                            
-<<<<<<< Updated upstream
-- Current token index: 32
-=======
 - Current token index: 34
->>>>>>> Stashed changes
 
 Analyzing Element: `TIPO` of production
 
@@ -981,11 +939,7 @@ Analyzing Element: `int` of production
 
 - Consuming token with value: `int` and kind: `RESERVED` (consumed inside production: `TIPO`)                            
 - Expected token with value: `int`                            
-<<<<<<< Updated upstream
-- Current token index: 33
-=======
 - Current token index: 35
->>>>>>> Stashed changes
 
 Analyzing Element: `TIPO_1` of production
 
@@ -1008,21 +962,13 @@ Analyzing Element: `IDENTIFIER` of production
 
 - Consuming token with value: `ComputeFac` and kind: `IDENTIFIER` (consumed inside production: `METODO`)                            
 - Expected token with value: `IDENTIFIER`                            
-<<<<<<< Updated upstream
-- Current token index: 34
-=======
 - Current token index: 36
->>>>>>> Stashed changes
 
 Analyzing Element: `(` of production
 
 - Consuming token with value: `(` and kind: `OPERATOR` (consumed inside production: `METODO`)                            
 - Expected token with value: `(`                            
-<<<<<<< Updated upstream
-- Current token index: 35
-=======
 - Current token index: 37
->>>>>>> Stashed changes
 
 Analyzing Element: `PARAMS` of production
 
@@ -1046,11 +992,7 @@ Analyzing Element: `int` of production
 
 - Consuming token with value: `int` and kind: `RESERVED` (consumed inside production: `TIPO`)                            
 - Expected token with value: `int`                            
-<<<<<<< Updated upstream
-- Current token index: 36
-=======
 - Current token index: 38
->>>>>>> Stashed changes
 
 Analyzing Element: `TIPO_1` of production
 
@@ -1073,11 +1015,61 @@ Analyzing Element: `IDENTIFIER` of production
 
 - Consuming token with value: `num` and kind: `IDENTIFIER` (consumed inside production: `PARAM`)                            
 - Expected token with value: `IDENTIFIER`                            
-<<<<<<< Updated upstream
-- Current token index: 37
-=======
 - Current token index: 39
->>>>>>> Stashed changes
+- Exiting grammar production: `PARAM`
+
+Analyzing Element: `PARAM_LIST` of production
+
+
+Production: `PARAM_LIST`  ->  `[',', 'PARAM', 'PARAM_LIST']`
+
+
+Analyzing Element: `,` of production
+
+- Consuming token with value: `,` and kind: `OPERATOR` (consumed inside production: `PARAM_LIST`)                            
+- Expected token with value: `,`                            
+- Current token index: 40
+
+Analyzing Element: `PARAM` of production
+
+
+Production: `PARAM`  ->  `['TIPO', 'IDENTIFIER']`
+
+
+Analyzing Element: `TIPO` of production
+
+
+Production: `TIPO`  ->  `['int', 'TIPO_1']`
+
+
+Analyzing Element: `int` of production
+
+- Consuming token with value: `int` and kind: `RESERVED` (consumed inside production: `TIPO`)                            
+- Expected token with value: `int`                            
+- Current token index: 41
+
+Analyzing Element: `TIPO_1` of production
+
+
+Production: `TIPO_1`  ->  `['[', ']']`
+
+
+Analyzing Element: `[` of production
+
+Expected production element:`[`, but current token is:`num2`
+- Heading back to grammar production: `TIPO_1` ->  `['']`
+
+
+Analyzing Element: `""` of production
+
+- Exiting grammar production: `TIPO_1`
+- Exiting grammar production: `TIPO`
+
+Analyzing Element: `IDENTIFIER` of production
+
+- Consuming token with value: `num2` and kind: `IDENTIFIER` (consumed inside production: `PARAM`)                            
+- Expected token with value: `IDENTIFIER`                            
+- Current token index: 42
 - Exiting grammar production: `PARAM`
 
 Analyzing Element: `PARAM_LIST` of production
@@ -1095,99 +1087,20 @@ Expected production element:`,`, but current token is:`)`
 Analyzing Element: `""` of production
 
 - Exiting grammar production: `PARAM_LIST`
+- Exiting grammar production: `PARAM_LIST`
 - Exiting grammar production: `PARAMS`
 
 Analyzing Element: `)` of production
 
 - Consuming token with value: `)` and kind: `OPERATOR` (consumed inside production: `METODO`)                            
 - Expected token with value: `)`                            
-<<<<<<< Updated upstream
-- Current token index: 38
-=======
-- Current token index: 40
->>>>>>> Stashed changes
+- Current token index: 43
 
 Analyzing Element: `{` of production
 
 - Consuming token with value: `{` and kind: `OPERATOR` (consumed inside production: `METODO`)                            
 - Expected token with value: `{`                            
-<<<<<<< Updated upstream
-- Current token index: 39
-=======
-- Current token index: 41
->>>>>>> Stashed changes
-
-Analyzing Element: `VAR_LIST` of production
-
-
-Production: `VAR_LIST`  ->  `['VAR', 'VAR_LIST']`
-
-
-Analyzing Element: `VAR` of production
-
-
-Production: `VAR`  ->  `['TIPO', 'IDENTIFIER', ';']`
-
-
-Analyzing Element: `TIPO` of production
-
-
-Production: `TIPO`  ->  `['int', 'TIPO_1']`
-
-
-Analyzing Element: `int` of production
-
-- Consuming token with value: `int` and kind: `RESERVED` (consumed inside production: `TIPO`)                            
-- Expected token with value: `int`                            
-<<<<<<< Updated upstream
-- Current token index: 40
-=======
-- Current token index: 42
->>>>>>> Stashed changes
-
-Analyzing Element: `TIPO_1` of production
-
-
-Production: `TIPO_1`  ->  `['[', ']']`
-
-
-Analyzing Element: `[` of production
-
-<<<<<<< Updated upstream
-Expected production element:`[`, but current token is:`num_aux`
-=======
-Expected production element:`[`, but current token is:`ComputeFac`
->>>>>>> Stashed changes
-- Heading back to grammar production: `TIPO_1` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `TIPO_1`
-- Exiting grammar production: `TIPO`
-
-Analyzing Element: `IDENTIFIER` of production
-
-<<<<<<< Updated upstream
-- Consuming token with value: `num_aux` and kind: `IDENTIFIER` (consumed inside production: `VAR`)                            
-- Expected token with value: `IDENTIFIER`                            
-- Current token index: 41
-=======
-- Consuming token with value: `ComputeFac` and kind: `IDENTIFIER` (consumed inside production: `VAR`)                            
-- Expected token with value: `IDENTIFIER`                            
-- Current token index: 43
->>>>>>> Stashed changes
-
-Analyzing Element: `;` of production
-
-- Consuming token with value: `;` and kind: `OPERATOR` (consumed inside production: `VAR`)                            
-- Expected token with value: `;`                            
-<<<<<<< Updated upstream
-- Current token index: 42
-=======
 - Current token index: 44
->>>>>>> Stashed changes
-- Exiting grammar production: `VAR`
 
 Analyzing Element: `VAR_LIST` of production
 
@@ -1209,9 +1122,6 @@ Production: `TIPO`  ->  `['int', 'TIPO_1']`
 
 Analyzing Element: `int` of production
 
-<<<<<<< Updated upstream
-Expected production element:`int`, but current token is:`num_aux`
-=======
 - Consuming token with value: `int` and kind: `RESERVED` (consumed inside production: `TIPO`)                            
 - Expected token with value: `int`                            
 - Current token index: 45
@@ -1266,36 +1176,26 @@ Production: `TIPO`  ->  `['int', 'TIPO_1']`
 
 Analyzing Element: `int` of production
 
-Expected production element:`int`, but current token is:`if`
->>>>>>> Stashed changes
+Expected production element:`int`, but current token is:`num_aux`
 - Heading back to grammar production: `TIPO` ->  `['boolean']`
 
 
 Analyzing Element: `boolean` of production
 
-<<<<<<< Updated upstream
 Expected production element:`boolean`, but current token is:`num_aux`
-=======
-Expected production element:`boolean`, but current token is:`if`
->>>>>>> Stashed changes
 - Heading back to grammar production: `TIPO` ->  `['IDENTIFIER']`
 
 
 Analyzing Element: `IDENTIFIER` of production
 
-<<<<<<< Updated upstream
 - Consuming token with value: `num_aux` and kind: `IDENTIFIER` (consumed inside production: `TIPO`)                            
 - Expected token with value: `IDENTIFIER`                            
-- Current token index: 43
+- Current token index: 48
 - Exiting grammar production: `TIPO`
 
 Analyzing Element: `IDENTIFIER` of production
 
 Expected production element:`IDENTIFIER`, but current token is:`=`
-=======
-Expected production element:`IDENTIFIER`, but current token is:`if`
-- Heading back to grammar production: `TIPO`
->>>>>>> Stashed changes
 - Heading back to grammar production: `VAR`
 - Heading back to grammar production: `VAR_LIST` ->  `['']`
 
@@ -1304,10 +1204,6 @@ Analyzing Element: `""` of production
 
 - Exiting grammar production: `VAR_LIST`
 - Exiting grammar production: `VAR_LIST`
-<<<<<<< Updated upstream
-=======
-- Exiting grammar production: `VAR_LIST`
->>>>>>> Stashed changes
 
 Analyzing Element: `CMD_LIST` of production
 
@@ -1323,17 +1219,12 @@ Production: `CMD`  ->  `['{', 'CMD_LIST', '}']`
 
 Analyzing Element: `{` of production
 
-<<<<<<< Updated upstream
 Expected production element:`{`, but current token is:`num_aux`
-=======
-Expected production element:`{`, but current token is:`if`
->>>>>>> Stashed changes
 - Heading back to grammar production: `CMD` ->  `['if', '(', 'EXP', ')', 'CMD', 'CMD_ELSE']`
 
 
 Analyzing Element: `if` of production
 
-<<<<<<< Updated upstream
 Expected production element:`if`, but current token is:`num_aux`
 - Heading back to grammar production: `CMD` ->  `['while', '(', 'EXP', ')', 'CMD']`
 
@@ -1354,7 +1245,7 @@ Analyzing Element: `IDENTIFIER` of production
 
 - Consuming token with value: `num_aux` and kind: `IDENTIFIER` (consumed inside production: `CMD`)                            
 - Expected token with value: `IDENTIFIER`                            
-- Current token index: 43
+- Current token index: 48
 
 Analyzing Element: `CMD_ID` of production
 
@@ -1366,18 +1257,7 @@ Analyzing Element: `=` of production
 
 - Consuming token with value: `=` and kind: `OPERATOR` (consumed inside production: `CMD_ID`)                            
 - Expected token with value: `=`                            
-- Current token index: 44
-=======
-- Consuming token with value: `if` and kind: `RESERVED` (consumed inside production: `CMD`)                            
-- Expected token with value: `if`                            
-- Current token index: 48
-
-Analyzing Element: `(` of production
-
-- Consuming token with value: `(` and kind: `OPERATOR` (consumed inside production: `CMD`)                            
-- Expected token with value: `(`                            
 - Current token index: 49
->>>>>>> Stashed changes
 
 Analyzing Element: `EXP` of production
 
@@ -1461,9 +1341,6 @@ Analyzing Element: `IDENTIFIER` of production
 
 - Consuming token with value: `num` and kind: `IDENTIFIER` (consumed inside production: `PEXP`)                            
 - Expected token with value: `IDENTIFIER`                            
-<<<<<<< Updated upstream
-- Current token index: 45
-=======
 - Current token index: 50
 
 Analyzing Element: `PEXP_1` of production
@@ -1474,7 +1351,7 @@ Production: `PEXP_1`  ->  `['.', 'IDENTIFIER', 'PEXP_2']`
 
 Analyzing Element: `.` of production
 
-Expected production element:`.`, but current token is:`<`
+Expected production element:`.`, but current token is:`*`
 - Heading back to grammar production: `PEXP_1` ->  `['']`
 
 
@@ -1491,13 +1368,13 @@ Production: `SEXP_1`  ->  `['.', 'length']`
 
 Analyzing Element: `.` of production
 
-Expected production element:`.`, but current token is:`<`
+Expected production element:`.`, but current token is:`*`
 - Heading back to grammar production: `SEXP_1` ->  `['[', 'EXP', ']']`
 
 
 Analyzing Element: `[` of production
 
-Expected production element:`[`, but current token is:`<`
+Expected production element:`[`, but current token is:`*`
 - Heading back to grammar production: `SEXP_1` ->  `['']`
 
 
@@ -1514,49 +1391,99 @@ Production: `MEXP_1`  ->  `['*', 'SEXP', 'MEXP_1']`
 
 Analyzing Element: `*` of production
 
-Expected production element:`*`, but current token is:`<`
-- Heading back to grammar production: `MEXP_1` ->  `['']`
+- Consuming token with value: `*` and kind: `OPERATOR` (consumed inside production: `MEXP_1`)                            
+- Expected token with value: `*`                            
+- Current token index: 51
+
+Analyzing Element: `SEXP` of production
 
 
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `MEXP_1`
-- Exiting grammar production: `MEXP`
-
-Analyzing Element: `AEXP_1` of production
+Production: `SEXP`  ->  `['!', 'SEXP']`
 
 
-Production: `AEXP_1`  ->  `['+', 'MEXP', 'AEXP_1']`
+Analyzing Element: `!` of production
 
-
-Analyzing Element: `+` of production
-
-Expected production element:`+`, but current token is:`<`
-- Heading back to grammar production: `AEXP_1` ->  `['-', 'MEXP', 'AEXP_1']`
+Expected production element:`!`, but current token is:`(`
+- Heading back to grammar production: `SEXP` ->  `['-', 'SEXP']`
 
 
 Analyzing Element: `-` of production
 
-Expected production element:`-`, but current token is:`<`
-- Heading back to grammar production: `AEXP_1` ->  `['']`
+Expected production element:`-`, but current token is:`(`
+- Heading back to grammar production: `SEXP` ->  `['true']`
 
 
-Analyzing Element: `""` of production
+Analyzing Element: `true` of production
 
-- Exiting grammar production: `AEXP_1`
-- Exiting grammar production: `AEXP`
-
-Analyzing Element: `REXP_1` of production
+Expected production element:`true`, but current token is:`(`
+- Heading back to grammar production: `SEXP` ->  `['false']`
 
 
-Production: `REXP_1`  ->  `['<', 'AEXP']`
+Analyzing Element: `false` of production
+
+Expected production element:`false`, but current token is:`(`
+- Heading back to grammar production: `SEXP` ->  `['NUMBER']`
 
 
-Analyzing Element: `<` of production
+Analyzing Element: `NUMBER` of production
 
-- Consuming token with value: `<` and kind: `OPERATOR` (consumed inside production: `REXP_1`)                            
-- Expected token with value: `<`                            
-- Current token index: 51
+Expected production element:`NUMBER`, but current token is:`(`
+- Heading back to grammar production: `SEXP` ->  `['null']`
+
+
+Analyzing Element: `null` of production
+
+Expected production element:`null`, but current token is:`(`
+- Heading back to grammar production: `SEXP` ->  `['new', 'int', '[', 'EXP', ']']`
+
+
+Analyzing Element: `new` of production
+
+Expected production element:`new`, but current token is:`(`
+- Heading back to grammar production: `SEXP` ->  `['PEXP', 'SEXP_1']`
+
+
+Analyzing Element: `PEXP` of production
+
+
+Production: `PEXP`  ->  `['IDENTIFIER', 'PEXP_1']`
+
+
+Analyzing Element: `IDENTIFIER` of production
+
+Expected production element:`IDENTIFIER`, but current token is:`(`
+- Heading back to grammar production: `PEXP` ->  `['this', 'PEXP_1']`
+
+
+Analyzing Element: `this` of production
+
+Expected production element:`this`, but current token is:`(`
+- Heading back to grammar production: `PEXP` ->  `['new', 'IDENTIFIER', '(', ')', 'PEXP_1']`
+
+
+Analyzing Element: `new` of production
+
+Expected production element:`new`, but current token is:`(`
+- Heading back to grammar production: `PEXP` ->  `['(', 'EXP', ')', 'PEXP_1']`
+
+
+Analyzing Element: `(` of production
+
+- Consuming token with value: `(` and kind: `OPERATOR` (consumed inside production: `PEXP`)                            
+- Expected token with value: `(`                            
+- Current token index: 52
+
+Analyzing Element: `EXP` of production
+
+
+Production: `EXP`  ->  `['REXP', 'EXP_1']`
+
+
+Analyzing Element: `REXP` of production
+
+
+Production: `REXP`  ->  `['AEXP', 'REXP_1']`
+
 
 Analyzing Element: `AEXP` of production
 
@@ -1578,33 +1505,168 @@ Production: `SEXP`  ->  `['!', 'SEXP']`
 
 Analyzing Element: `!` of production
 
-Expected production element:`!`, but current token is:`1`
+Expected production element:`!`, but current token is:`num2`
 - Heading back to grammar production: `SEXP` ->  `['-', 'SEXP']`
 
 
 Analyzing Element: `-` of production
 
-Expected production element:`-`, but current token is:`1`
+Expected production element:`-`, but current token is:`num2`
 - Heading back to grammar production: `SEXP` ->  `['true']`
 
 
 Analyzing Element: `true` of production
 
-Expected production element:`true`, but current token is:`1`
+Expected production element:`true`, but current token is:`num2`
 - Heading back to grammar production: `SEXP` ->  `['false']`
 
 
 Analyzing Element: `false` of production
 
-Expected production element:`false`, but current token is:`1`
+Expected production element:`false`, but current token is:`num2`
 - Heading back to grammar production: `SEXP` ->  `['NUMBER']`
 
 
 Analyzing Element: `NUMBER` of production
 
-- Consuming token with value: `1` and kind: `NUMBER` (consumed inside production: `SEXP`)                            
+Expected production element:`NUMBER`, but current token is:`num2`
+- Heading back to grammar production: `SEXP` ->  `['null']`
+
+
+Analyzing Element: `null` of production
+
+Expected production element:`null`, but current token is:`num2`
+- Heading back to grammar production: `SEXP` ->  `['new', 'int', '[', 'EXP', ']']`
+
+
+Analyzing Element: `new` of production
+
+Expected production element:`new`, but current token is:`num2`
+- Heading back to grammar production: `SEXP` ->  `['PEXP', 'SEXP_1']`
+
+
+Analyzing Element: `PEXP` of production
+
+
+Production: `PEXP`  ->  `['IDENTIFIER', 'PEXP_1']`
+
+
+Analyzing Element: `IDENTIFIER` of production
+
+- Consuming token with value: `num2` and kind: `IDENTIFIER` (consumed inside production: `PEXP`)                            
+- Expected token with value: `IDENTIFIER`                            
+- Current token index: 53
+
+Analyzing Element: `PEXP_1` of production
+
+
+Production: `PEXP_1`  ->  `['.', 'IDENTIFIER', 'PEXP_2']`
+
+
+Analyzing Element: `.` of production
+
+Expected production element:`.`, but current token is:`+`
+- Heading back to grammar production: `PEXP_1` ->  `['']`
+
+
+Analyzing Element: `""` of production
+
+- Exiting grammar production: `PEXP_1`
+- Exiting grammar production: `PEXP`
+
+Analyzing Element: `SEXP_1` of production
+
+
+Production: `SEXP_1`  ->  `['.', 'length']`
+
+
+Analyzing Element: `.` of production
+
+Expected production element:`.`, but current token is:`+`
+- Heading back to grammar production: `SEXP_1` ->  `['[', 'EXP', ']']`
+
+
+Analyzing Element: `[` of production
+
+Expected production element:`[`, but current token is:`+`
+- Heading back to grammar production: `SEXP_1` ->  `['']`
+
+
+Analyzing Element: `""` of production
+
+- Exiting grammar production: `SEXP_1`
+- Exiting grammar production: `SEXP`
+
+Analyzing Element: `MEXP_1` of production
+
+
+Production: `MEXP_1`  ->  `['*', 'SEXP', 'MEXP_1']`
+
+
+Analyzing Element: `*` of production
+
+Expected production element:`*`, but current token is:`+`
+- Heading back to grammar production: `MEXP_1` ->  `['']`
+
+
+Analyzing Element: `""` of production
+
+- Exiting grammar production: `MEXP_1`
+- Exiting grammar production: `MEXP`
+
+Analyzing Element: `AEXP_1` of production
+
+
+Production: `AEXP_1`  ->  `['+', 'MEXP', 'AEXP_1']`
+
+
+Analyzing Element: `+` of production
+
+- Consuming token with value: `+` and kind: `OPERATOR` (consumed inside production: `AEXP_1`)                            
+- Expected token with value: `+`                            
+- Current token index: 54
+
+Analyzing Element: `MEXP` of production
+
+
+Production: `MEXP`  ->  `['SEXP', 'MEXP_1']`
+
+
+Analyzing Element: `SEXP` of production
+
+
+Production: `SEXP`  ->  `['!', 'SEXP']`
+
+
+Analyzing Element: `!` of production
+
+Expected production element:`!`, but current token is:`5`
+- Heading back to grammar production: `SEXP` ->  `['-', 'SEXP']`
+
+
+Analyzing Element: `-` of production
+
+Expected production element:`-`, but current token is:`5`
+- Heading back to grammar production: `SEXP` ->  `['true']`
+
+
+Analyzing Element: `true` of production
+
+Expected production element:`true`, but current token is:`5`
+- Heading back to grammar production: `SEXP` ->  `['false']`
+
+
+Analyzing Element: `false` of production
+
+Expected production element:`false`, but current token is:`5`
+- Heading back to grammar production: `SEXP` ->  `['NUMBER']`
+
+
+Analyzing Element: `NUMBER` of production
+
+- Consuming token with value: `5` and kind: `NUMBER` (consumed inside production: `SEXP`)                            
 - Expected token with value: `NUMBER`                            
-- Current token index: 52
+- Current token index: 55
 - Exiting grammar production: `SEXP`
 
 Analyzing Element: `MEXP_1` of production
@@ -1645,7 +1707,35 @@ Expected production element:`-`, but current token is:`)`
 Analyzing Element: `""` of production
 
 - Exiting grammar production: `AEXP_1`
+- Exiting grammar production: `AEXP_1`
 - Exiting grammar production: `AEXP`
+
+Analyzing Element: `REXP_1` of production
+
+
+Production: `REXP_1`  ->  `['<', 'AEXP']`
+
+
+Analyzing Element: `<` of production
+
+Expected production element:`<`, but current token is:`)`
+- Heading back to grammar production: `REXP_1` ->  `['==', 'AEXP']`
+
+
+Analyzing Element: `==` of production
+
+Expected production element:`==`, but current token is:`)`
+- Heading back to grammar production: `REXP_1` ->  `['!=', 'AEXP']`
+
+
+Analyzing Element: `!=` of production
+
+Expected production element:`!=`, but current token is:`)`
+- Heading back to grammar production: `REXP_1` ->  `['']`
+
+
+Analyzing Element: `""` of production
+
 - Exiting grammar production: `REXP_1`
 - Exiting grammar production: `REXP`
 
@@ -1668,117 +1758,48 @@ Analyzing Element: `""` of production
 
 Analyzing Element: `)` of production
 
-- Consuming token with value: `)` and kind: `OPERATOR` (consumed inside production: `CMD`)                            
+- Consuming token with value: `)` and kind: `OPERATOR` (consumed inside production: `PEXP`)                            
 - Expected token with value: `)`                            
-- Current token index: 53
-
-Analyzing Element: `CMD` of production
-
-
-Production: `CMD`  ->  `['{', 'CMD_LIST', '}']`
-
-
-Analyzing Element: `{` of production
-
-Expected production element:`{`, but current token is:`num_aux`
-- Heading back to grammar production: `CMD` ->  `['if', '(', 'EXP', ')', 'CMD', 'CMD_ELSE']`
-
-
-Analyzing Element: `if` of production
-
-Expected production element:`if`, but current token is:`num_aux`
-- Heading back to grammar production: `CMD` ->  `['while', '(', 'EXP', ')', 'CMD']`
-
-
-Analyzing Element: `while` of production
-
-Expected production element:`while`, but current token is:`num_aux`
-- Heading back to grammar production: `CMD` ->  `['System.out.println', '(', 'EXP', ')', ';']`
-
-
-Analyzing Element: `System.out.println` of production
-
-Expected production element:`System.out.println`, but current token is:`num_aux`
-- Heading back to grammar production: `CMD` ->  `['IDENTIFIER', 'CMD_ID']`
-
-
-Analyzing Element: `IDENTIFIER` of production
-
-- Consuming token with value: `num_aux` and kind: `IDENTIFIER` (consumed inside production: `CMD`)                            
-- Expected token with value: `IDENTIFIER`                            
-- Current token index: 54
-
-Analyzing Element: `CMD_ID` of production
-
-
-Production: `CMD_ID`  ->  `['=', 'EXP', ';']`
-
-
-Analyzing Element: `=` of production
-
-- Consuming token with value: `=` and kind: `OPERATOR` (consumed inside production: `CMD_ID`)                            
-- Expected token with value: `=`                            
-- Current token index: 55
-
-Analyzing Element: `EXP` of production
-
-
-Production: `EXP`  ->  `['REXP', 'EXP_1']`
-
-
-Analyzing Element: `REXP` of production
-
-
-Production: `REXP`  ->  `['AEXP', 'REXP_1']`
-
-
-Analyzing Element: `AEXP` of production
-
-
-Production: `AEXP`  ->  `['MEXP', 'AEXP_1']`
-
-
-Analyzing Element: `MEXP` of production
-
-
-Production: `MEXP`  ->  `['SEXP', 'MEXP_1']`
-
-
-Analyzing Element: `SEXP` of production
-
-
-Production: `SEXP`  ->  `['!', 'SEXP']`
-
-
-Analyzing Element: `!` of production
-
-Expected production element:`!`, but current token is:`1`
-- Heading back to grammar production: `SEXP` ->  `['-', 'SEXP']`
-
-
-Analyzing Element: `-` of production
-
-Expected production element:`-`, but current token is:`1`
-- Heading back to grammar production: `SEXP` ->  `['true']`
-
-
-Analyzing Element: `true` of production
-
-Expected production element:`true`, but current token is:`1`
-- Heading back to grammar production: `SEXP` ->  `['false']`
-
-
-Analyzing Element: `false` of production
-
-Expected production element:`false`, but current token is:`1`
-- Heading back to grammar production: `SEXP` ->  `['NUMBER']`
-
-
-Analyzing Element: `NUMBER` of production
-
-- Consuming token with value: `1` and kind: `NUMBER` (consumed inside production: `SEXP`)                            
-- Expected token with value: `NUMBER`                            
 - Current token index: 56
+
+Analyzing Element: `PEXP_1` of production
+
+
+Production: `PEXP_1`  ->  `['.', 'IDENTIFIER', 'PEXP_2']`
+
+
+Analyzing Element: `.` of production
+
+Expected production element:`.`, but current token is:`;`
+- Heading back to grammar production: `PEXP_1` ->  `['']`
+
+
+Analyzing Element: `""` of production
+
+- Exiting grammar production: `PEXP_1`
+- Exiting grammar production: `PEXP`
+
+Analyzing Element: `SEXP_1` of production
+
+
+Production: `SEXP_1`  ->  `['.', 'length']`
+
+
+Analyzing Element: `.` of production
+
+Expected production element:`.`, but current token is:`;`
+- Heading back to grammar production: `SEXP_1` ->  `['[', 'EXP', ']']`
+
+
+Analyzing Element: `[` of production
+
+Expected production element:`[`, but current token is:`;`
+- Heading back to grammar production: `SEXP_1` ->  `['']`
+
+
+Analyzing Element: `""` of production
+
+- Exiting grammar production: `SEXP_1`
 - Exiting grammar production: `SEXP`
 
 Analyzing Element: `MEXP_1` of production
@@ -1795,6 +1816,7 @@ Expected production element:`*`, but current token is:`;`
 
 Analyzing Element: `""` of production
 
+- Exiting grammar production: `MEXP_1`
 - Exiting grammar production: `MEXP_1`
 - Exiting grammar production: `MEXP`
 
@@ -1875,1182 +1897,6 @@ Analyzing Element: `;` of production
 - Exiting grammar production: `CMD_ID`
 - Exiting grammar production: `CMD`
 
-Analyzing Element: `CMD_ELSE` of production
-
-
-Production: `CMD_ELSE`  ->  `['else', 'CMD']`
-
-
-Analyzing Element: `else` of production
-
-- Consuming token with value: `else` and kind: `RESERVED` (consumed inside production: `CMD_ELSE`)                            
-- Expected token with value: `else`                            
-- Current token index: 58
-
-Analyzing Element: `CMD` of production
-
-
-Production: `CMD`  ->  `['{', 'CMD_LIST', '}']`
-
-
-Analyzing Element: `{` of production
-
-Expected production element:`{`, but current token is:`num_aux`
-- Heading back to grammar production: `CMD` ->  `['if', '(', 'EXP', ')', 'CMD', 'CMD_ELSE']`
-
-
-Analyzing Element: `if` of production
-
-Expected production element:`if`, but current token is:`num_aux`
-- Heading back to grammar production: `CMD` ->  `['while', '(', 'EXP', ')', 'CMD']`
-
-
-Analyzing Element: `while` of production
-
-Expected production element:`while`, but current token is:`num_aux`
-- Heading back to grammar production: `CMD` ->  `['System.out.println', '(', 'EXP', ')', ';']`
-
-
-Analyzing Element: `System.out.println` of production
-
-Expected production element:`System.out.println`, but current token is:`num_aux`
-- Heading back to grammar production: `CMD` ->  `['IDENTIFIER', 'CMD_ID']`
-
-
-Analyzing Element: `IDENTIFIER` of production
-
-- Consuming token with value: `num_aux` and kind: `IDENTIFIER` (consumed inside production: `CMD`)                            
-- Expected token with value: `IDENTIFIER`                            
-- Current token index: 59
-
-Analyzing Element: `CMD_ID` of production
-
-
-Production: `CMD_ID`  ->  `['=', 'EXP', ';']`
-
-
-Analyzing Element: `=` of production
-
-- Consuming token with value: `=` and kind: `OPERATOR` (consumed inside production: `CMD_ID`)                            
-- Expected token with value: `=`                            
-- Current token index: 60
-
-Analyzing Element: `EXP` of production
-
-
-Production: `EXP`  ->  `['REXP', 'EXP_1']`
-
-
-Analyzing Element: `REXP` of production
-
-
-Production: `REXP`  ->  `['AEXP', 'REXP_1']`
-
-
-Analyzing Element: `AEXP` of production
-
-
-Production: `AEXP`  ->  `['MEXP', 'AEXP_1']`
-
-
-Analyzing Element: `MEXP` of production
-
-
-Production: `MEXP`  ->  `['SEXP', 'MEXP_1']`
-
-
-Analyzing Element: `SEXP` of production
-
-
-Production: `SEXP`  ->  `['!', 'SEXP']`
-
-
-Analyzing Element: `!` of production
-
-Expected production element:`!`, but current token is:`num`
-- Heading back to grammar production: `SEXP` ->  `['-', 'SEXP']`
-
-
-Analyzing Element: `-` of production
-
-Expected production element:`-`, but current token is:`num`
-- Heading back to grammar production: `SEXP` ->  `['true']`
-
-
-Analyzing Element: `true` of production
-
-Expected production element:`true`, but current token is:`num`
-- Heading back to grammar production: `SEXP` ->  `['false']`
-
-
-Analyzing Element: `false` of production
-
-Expected production element:`false`, but current token is:`num`
-- Heading back to grammar production: `SEXP` ->  `['NUMBER']`
-
-
-Analyzing Element: `NUMBER` of production
-
-Expected production element:`NUMBER`, but current token is:`num`
-- Heading back to grammar production: `SEXP` ->  `['null']`
-
-
-Analyzing Element: `null` of production
-
-Expected production element:`null`, but current token is:`num`
-- Heading back to grammar production: `SEXP` ->  `['new', 'int', '[', 'EXP', ']']`
-
-
-Analyzing Element: `new` of production
-
-Expected production element:`new`, but current token is:`num`
-- Heading back to grammar production: `SEXP` ->  `['PEXP', 'SEXP_1']`
-
-
-Analyzing Element: `PEXP` of production
-
-
-Production: `PEXP`  ->  `['IDENTIFIER', 'PEXP_1']`
-
-
-Analyzing Element: `IDENTIFIER` of production
-
-- Consuming token with value: `num` and kind: `IDENTIFIER` (consumed inside production: `PEXP`)                            
-- Expected token with value: `IDENTIFIER`                            
-- Current token index: 61
->>>>>>> Stashed changes
-
-Analyzing Element: `PEXP_1` of production
-
-
-Production: `PEXP_1`  ->  `['.', 'IDENTIFIER', 'PEXP_2']`
-
-
-Analyzing Element: `.` of production
-
-Expected production element:`.`, but current token is:`*`
-- Heading back to grammar production: `PEXP_1` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `PEXP_1`
-- Exiting grammar production: `PEXP`
-
-Analyzing Element: `SEXP_1` of production
-
-
-Production: `SEXP_1`  ->  `['.', 'length']`
-
-
-Analyzing Element: `.` of production
-
-Expected production element:`.`, but current token is:`*`
-- Heading back to grammar production: `SEXP_1` ->  `['[', 'EXP', ']']`
-
-
-Analyzing Element: `[` of production
-
-Expected production element:`[`, but current token is:`*`
-- Heading back to grammar production: `SEXP_1` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `SEXP_1`
-- Exiting grammar production: `SEXP`
-
-Analyzing Element: `MEXP_1` of production
-
-
-Production: `MEXP_1`  ->  `['*', 'SEXP', 'MEXP_1']`
-
-
-Analyzing Element: `*` of production
-
-- Consuming token with value: `*` and kind: `OPERATOR` (consumed inside production: `MEXP_1`)                            
-- Expected token with value: `*`                            
-<<<<<<< Updated upstream
-- Current token index: 46
-=======
-- Current token index: 62
->>>>>>> Stashed changes
-
-Analyzing Element: `SEXP` of production
-
-
-Production: `SEXP`  ->  `['!', 'SEXP']`
-
-
-Analyzing Element: `!` of production
-
-<<<<<<< Updated upstream
-Expected production element:`!`, but current token is:`3`
-=======
-Expected production element:`!`, but current token is:`(`
->>>>>>> Stashed changes
-- Heading back to grammar production: `SEXP` ->  `['-', 'SEXP']`
-
-
-Analyzing Element: `-` of production
-
-<<<<<<< Updated upstream
-Expected production element:`-`, but current token is:`3`
-=======
-Expected production element:`-`, but current token is:`(`
->>>>>>> Stashed changes
-- Heading back to grammar production: `SEXP` ->  `['true']`
-
-
-Analyzing Element: `true` of production
-
-<<<<<<< Updated upstream
-Expected production element:`true`, but current token is:`3`
-=======
-Expected production element:`true`, but current token is:`(`
->>>>>>> Stashed changes
-- Heading back to grammar production: `SEXP` ->  `['false']`
-
-
-Analyzing Element: `false` of production
-
-<<<<<<< Updated upstream
-Expected production element:`false`, but current token is:`3`
-=======
-Expected production element:`false`, but current token is:`(`
->>>>>>> Stashed changes
-- Heading back to grammar production: `SEXP` ->  `['NUMBER']`
-
-
-Analyzing Element: `NUMBER` of production
-
-<<<<<<< Updated upstream
-- Consuming token with value: `3` and kind: `NUMBER` (consumed inside production: `SEXP`)                            
-- Expected token with value: `NUMBER`                            
-- Current token index: 47
-=======
-Expected production element:`NUMBER`, but current token is:`(`
-- Heading back to grammar production: `SEXP` ->  `['null']`
-
-
-Analyzing Element: `null` of production
-
-Expected production element:`null`, but current token is:`(`
-- Heading back to grammar production: `SEXP` ->  `['new', 'int', '[', 'EXP', ']']`
-
-
-Analyzing Element: `new` of production
-
-Expected production element:`new`, but current token is:`(`
-- Heading back to grammar production: `SEXP` ->  `['PEXP', 'SEXP_1']`
-
-
-Analyzing Element: `PEXP` of production
-
-
-Production: `PEXP`  ->  `['IDENTIFIER', 'PEXP_1']`
-
-
-Analyzing Element: `IDENTIFIER` of production
-
-Expected production element:`IDENTIFIER`, but current token is:`(`
-- Heading back to grammar production: `PEXP` ->  `['this', 'PEXP_1']`
-
-
-Analyzing Element: `this` of production
-
-Expected production element:`this`, but current token is:`(`
-- Heading back to grammar production: `PEXP` ->  `['new', 'IDENTIFIER', '(', ')', 'PEXP_1']`
-
-
-Analyzing Element: `new` of production
-
-Expected production element:`new`, but current token is:`(`
-- Heading back to grammar production: `PEXP` ->  `['(', 'EXP', ')', 'PEXP_1']`
-
-
-Analyzing Element: `(` of production
-
-- Consuming token with value: `(` and kind: `OPERATOR` (consumed inside production: `PEXP`)                            
-- Expected token with value: `(`                            
-- Current token index: 63
-
-Analyzing Element: `EXP` of production
-
-
-Production: `EXP`  ->  `['REXP', 'EXP_1']`
-
-
-Analyzing Element: `REXP` of production
-
-
-Production: `REXP`  ->  `['AEXP', 'REXP_1']`
-
-
-Analyzing Element: `AEXP` of production
-
-
-Production: `AEXP`  ->  `['MEXP', 'AEXP_1']`
-
-
-Analyzing Element: `MEXP` of production
-
-
-Production: `MEXP`  ->  `['SEXP', 'MEXP_1']`
-
-
-Analyzing Element: `SEXP` of production
-
-
-Production: `SEXP`  ->  `['!', 'SEXP']`
-
-
-Analyzing Element: `!` of production
-
-Expected production element:`!`, but current token is:`this`
-- Heading back to grammar production: `SEXP` ->  `['-', 'SEXP']`
-
-
-Analyzing Element: `-` of production
-
-Expected production element:`-`, but current token is:`this`
-- Heading back to grammar production: `SEXP` ->  `['true']`
-
-
-Analyzing Element: `true` of production
-
-Expected production element:`true`, but current token is:`this`
-- Heading back to grammar production: `SEXP` ->  `['false']`
-
-
-Analyzing Element: `false` of production
-
-Expected production element:`false`, but current token is:`this`
-- Heading back to grammar production: `SEXP` ->  `['NUMBER']`
-
-
-Analyzing Element: `NUMBER` of production
-
-Expected production element:`NUMBER`, but current token is:`this`
-- Heading back to grammar production: `SEXP` ->  `['null']`
-
-
-Analyzing Element: `null` of production
-
-Expected production element:`null`, but current token is:`this`
-- Heading back to grammar production: `SEXP` ->  `['new', 'int', '[', 'EXP', ']']`
-
-
-Analyzing Element: `new` of production
-
-Expected production element:`new`, but current token is:`this`
-- Heading back to grammar production: `SEXP` ->  `['PEXP', 'SEXP_1']`
-
-
-Analyzing Element: `PEXP` of production
-
-
-Production: `PEXP`  ->  `['IDENTIFIER', 'PEXP_1']`
-
-
-Analyzing Element: `IDENTIFIER` of production
-
-Expected production element:`IDENTIFIER`, but current token is:`this`
-- Heading back to grammar production: `PEXP` ->  `['this', 'PEXP_1']`
-
-
-Analyzing Element: `this` of production
-
-- Consuming token with value: `this` and kind: `RESERVED` (consumed inside production: `PEXP`)                            
-- Expected token with value: `this`                            
-- Current token index: 64
-
-Analyzing Element: `PEXP_1` of production
-
-
-Production: `PEXP_1`  ->  `['.', 'IDENTIFIER', 'PEXP_2']`
-
-
-Analyzing Element: `.` of production
-
-- Consuming token with value: `.` and kind: `OPERATOR` (consumed inside production: `PEXP_1`)                            
-- Expected token with value: `.`                            
-- Current token index: 65
-
-Analyzing Element: `IDENTIFIER` of production
-
-- Consuming token with value: `ComputeFac` and kind: `IDENTIFIER` (consumed inside production: `PEXP_1`)                            
-- Expected token with value: `IDENTIFIER`                            
-- Current token index: 66
-
-Analyzing Element: `PEXP_2` of production
-
-
-Production: `PEXP_2`  ->  `['(', 'EXPS', ')', 'PEXP_1']`
-
-
-Analyzing Element: `(` of production
-
-- Consuming token with value: `(` and kind: `OPERATOR` (consumed inside production: `PEXP_2`)                            
-- Expected token with value: `(`                            
-- Current token index: 67
-
-Analyzing Element: `EXPS` of production
-
-
-Production: `EXPS`  ->  `['EXP', 'EXPS_LIST']`
-
-
-Analyzing Element: `EXP` of production
-
-
-Production: `EXP`  ->  `['REXP', 'EXP_1']`
-
-
-Analyzing Element: `REXP` of production
-
-
-Production: `REXP`  ->  `['AEXP', 'REXP_1']`
-
-
-Analyzing Element: `AEXP` of production
-
-
-Production: `AEXP`  ->  `['MEXP', 'AEXP_1']`
-
-
-Analyzing Element: `MEXP` of production
-
-
-Production: `MEXP`  ->  `['SEXP', 'MEXP_1']`
-
-
-Analyzing Element: `SEXP` of production
-
-
-Production: `SEXP`  ->  `['!', 'SEXP']`
-
-
-Analyzing Element: `!` of production
-
-Expected production element:`!`, but current token is:`num`
-- Heading back to grammar production: `SEXP` ->  `['-', 'SEXP']`
-
-
-Analyzing Element: `-` of production
-
-Expected production element:`-`, but current token is:`num`
-- Heading back to grammar production: `SEXP` ->  `['true']`
-
-
-Analyzing Element: `true` of production
-
-Expected production element:`true`, but current token is:`num`
-- Heading back to grammar production: `SEXP` ->  `['false']`
-
-
-Analyzing Element: `false` of production
-
-Expected production element:`false`, but current token is:`num`
-- Heading back to grammar production: `SEXP` ->  `['NUMBER']`
-
-
-Analyzing Element: `NUMBER` of production
-
-Expected production element:`NUMBER`, but current token is:`num`
-- Heading back to grammar production: `SEXP` ->  `['null']`
-
-
-Analyzing Element: `null` of production
-
-Expected production element:`null`, but current token is:`num`
-- Heading back to grammar production: `SEXP` ->  `['new', 'int', '[', 'EXP', ']']`
-
-
-Analyzing Element: `new` of production
-
-Expected production element:`new`, but current token is:`num`
-- Heading back to grammar production: `SEXP` ->  `['PEXP', 'SEXP_1']`
-
-
-Analyzing Element: `PEXP` of production
-
-
-Production: `PEXP`  ->  `['IDENTIFIER', 'PEXP_1']`
-
-
-Analyzing Element: `IDENTIFIER` of production
-
-- Consuming token with value: `num` and kind: `IDENTIFIER` (consumed inside production: `PEXP`)                            
-- Expected token with value: `IDENTIFIER`                            
-- Current token index: 68
-
-Analyzing Element: `PEXP_1` of production
-
-
-Production: `PEXP_1`  ->  `['.', 'IDENTIFIER', 'PEXP_2']`
-
-
-Analyzing Element: `.` of production
-
-Expected production element:`.`, but current token is:`-`
-- Heading back to grammar production: `PEXP_1` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `PEXP_1`
-- Exiting grammar production: `PEXP`
-
-Analyzing Element: `SEXP_1` of production
-
-
-Production: `SEXP_1`  ->  `['.', 'length']`
-
-
-Analyzing Element: `.` of production
-
-Expected production element:`.`, but current token is:`-`
-- Heading back to grammar production: `SEXP_1` ->  `['[', 'EXP', ']']`
-
-
-Analyzing Element: `[` of production
-
-Expected production element:`[`, but current token is:`-`
-- Heading back to grammar production: `SEXP_1` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `SEXP_1`
-- Exiting grammar production: `SEXP`
-
-Analyzing Element: `MEXP_1` of production
-
-
-Production: `MEXP_1`  ->  `['*', 'SEXP', 'MEXP_1']`
-
-
-Analyzing Element: `*` of production
-
-Expected production element:`*`, but current token is:`-`
-- Heading back to grammar production: `MEXP_1` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `MEXP_1`
-- Exiting grammar production: `MEXP`
-
-Analyzing Element: `AEXP_1` of production
-
-
-Production: `AEXP_1`  ->  `['+', 'MEXP', 'AEXP_1']`
-
-
-Analyzing Element: `+` of production
-
-Expected production element:`+`, but current token is:`-`
-- Heading back to grammar production: `AEXP_1` ->  `['-', 'MEXP', 'AEXP_1']`
-
-
-Analyzing Element: `-` of production
-
-- Consuming token with value: `-` and kind: `OPERATOR` (consumed inside production: `AEXP_1`)                            
-- Expected token with value: `-`                            
-- Current token index: 69
-
-Analyzing Element: `MEXP` of production
-
-
-Production: `MEXP`  ->  `['SEXP', 'MEXP_1']`
-
-
-Analyzing Element: `SEXP` of production
-
-
-Production: `SEXP`  ->  `['!', 'SEXP']`
-
-
-Analyzing Element: `!` of production
-
-Expected production element:`!`, but current token is:`1`
-- Heading back to grammar production: `SEXP` ->  `['-', 'SEXP']`
-
-
-Analyzing Element: `-` of production
-
-Expected production element:`-`, but current token is:`1`
-- Heading back to grammar production: `SEXP` ->  `['true']`
-
-
-Analyzing Element: `true` of production
-
-Expected production element:`true`, but current token is:`1`
-- Heading back to grammar production: `SEXP` ->  `['false']`
-
-
-Analyzing Element: `false` of production
-
-Expected production element:`false`, but current token is:`1`
-- Heading back to grammar production: `SEXP` ->  `['NUMBER']`
-
-
-Analyzing Element: `NUMBER` of production
-
-- Consuming token with value: `1` and kind: `NUMBER` (consumed inside production: `SEXP`)                            
-- Expected token with value: `NUMBER`                            
-- Current token index: 70
-- Exiting grammar production: `SEXP`
-
-Analyzing Element: `MEXP_1` of production
-
-
-Production: `MEXP_1`  ->  `['*', 'SEXP', 'MEXP_1']`
-
-
-Analyzing Element: `*` of production
-
-Expected production element:`*`, but current token is:`,`
-- Heading back to grammar production: `MEXP_1` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `MEXP_1`
-- Exiting grammar production: `MEXP`
-
-Analyzing Element: `AEXP_1` of production
-
-
-Production: `AEXP_1`  ->  `['+', 'MEXP', 'AEXP_1']`
-
-
-Analyzing Element: `+` of production
-
-Expected production element:`+`, but current token is:`,`
-- Heading back to grammar production: `AEXP_1` ->  `['-', 'MEXP', 'AEXP_1']`
-
-
-Analyzing Element: `-` of production
-
-Expected production element:`-`, but current token is:`,`
-- Heading back to grammar production: `AEXP_1` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `AEXP_1`
-- Exiting grammar production: `AEXP_1`
-- Exiting grammar production: `AEXP`
-
-Analyzing Element: `REXP_1` of production
-
-
-Production: `REXP_1`  ->  `['<', 'AEXP']`
-
-
-Analyzing Element: `<` of production
-
-Expected production element:`<`, but current token is:`,`
-- Heading back to grammar production: `REXP_1` ->  `['==', 'AEXP']`
-
-
-Analyzing Element: `==` of production
-
-Expected production element:`==`, but current token is:`,`
-- Heading back to grammar production: `REXP_1` ->  `['!=', 'AEXP']`
-
-
-Analyzing Element: `!=` of production
-
-Expected production element:`!=`, but current token is:`,`
-- Heading back to grammar production: `REXP_1` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `REXP_1`
-- Exiting grammar production: `REXP`
-
-Analyzing Element: `EXP_1` of production
-
-
-Production: `EXP_1`  ->  `['&&', 'REXP', 'EXP_1']`
-
-
-Analyzing Element: `&&` of production
-
-Expected production element:`&&`, but current token is:`,`
-- Heading back to grammar production: `EXP_1` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `EXP_1`
-- Exiting grammar production: `EXP`
-
-Analyzing Element: `EXPS_LIST` of production
-
-
-Production: `EXPS_LIST`  ->  `[',', 'EXP', 'EXPS_LIST']`
-
-
-Analyzing Element: `,` of production
-
-- Consuming token with value: `,` and kind: `OPERATOR` (consumed inside production: `EXPS_LIST`)                            
-- Expected token with value: `,`                            
-- Current token index: 71
-
-Analyzing Element: `EXP` of production
-
-
-Production: `EXP`  ->  `['REXP', 'EXP_1']`
-
-
-Analyzing Element: `REXP` of production
-
-
-Production: `REXP`  ->  `['AEXP', 'REXP_1']`
-
-
-Analyzing Element: `AEXP` of production
-
-
-Production: `AEXP`  ->  `['MEXP', 'AEXP_1']`
-
-
-Analyzing Element: `MEXP` of production
-
-
-Production: `MEXP`  ->  `['SEXP', 'MEXP_1']`
-
-
-Analyzing Element: `SEXP` of production
-
-
-Production: `SEXP`  ->  `['!', 'SEXP']`
-
-
-Analyzing Element: `!` of production
-
-Expected production element:`!`, but current token is:`10`
-- Heading back to grammar production: `SEXP` ->  `['-', 'SEXP']`
-
-
-Analyzing Element: `-` of production
-
-Expected production element:`-`, but current token is:`10`
-- Heading back to grammar production: `SEXP` ->  `['true']`
-
-
-Analyzing Element: `true` of production
-
-Expected production element:`true`, but current token is:`10`
-- Heading back to grammar production: `SEXP` ->  `['false']`
-
-
-Analyzing Element: `false` of production
-
-Expected production element:`false`, but current token is:`10`
-- Heading back to grammar production: `SEXP` ->  `['NUMBER']`
-
-
-Analyzing Element: `NUMBER` of production
-
-- Consuming token with value: `10` and kind: `NUMBER` (consumed inside production: `SEXP`)                            
-- Expected token with value: `NUMBER`                            
-- Current token index: 72
-- Exiting grammar production: `SEXP`
-
-Analyzing Element: `MEXP_1` of production
-
-
-Production: `MEXP_1`  ->  `['*', 'SEXP', 'MEXP_1']`
-
-
-Analyzing Element: `*` of production
-
-Expected production element:`*`, but current token is:`)`
-- Heading back to grammar production: `MEXP_1` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `MEXP_1`
-- Exiting grammar production: `MEXP`
-
-Analyzing Element: `AEXP_1` of production
-
-
-Production: `AEXP_1`  ->  `['+', 'MEXP', 'AEXP_1']`
-
-
-Analyzing Element: `+` of production
-
-Expected production element:`+`, but current token is:`)`
-- Heading back to grammar production: `AEXP_1` ->  `['-', 'MEXP', 'AEXP_1']`
-
-
-Analyzing Element: `-` of production
-
-Expected production element:`-`, but current token is:`)`
-- Heading back to grammar production: `AEXP_1` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `AEXP_1`
-- Exiting grammar production: `AEXP`
-
-Analyzing Element: `REXP_1` of production
-
-
-Production: `REXP_1`  ->  `['<', 'AEXP']`
-
-
-Analyzing Element: `<` of production
-
-Expected production element:`<`, but current token is:`)`
-- Heading back to grammar production: `REXP_1` ->  `['==', 'AEXP']`
-
-
-Analyzing Element: `==` of production
-
-Expected production element:`==`, but current token is:`)`
-- Heading back to grammar production: `REXP_1` ->  `['!=', 'AEXP']`
-
-
-Analyzing Element: `!=` of production
-
-Expected production element:`!=`, but current token is:`)`
-- Heading back to grammar production: `REXP_1` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `REXP_1`
-- Exiting grammar production: `REXP`
-
-Analyzing Element: `EXP_1` of production
-
-
-Production: `EXP_1`  ->  `['&&', 'REXP', 'EXP_1']`
-
-
-Analyzing Element: `&&` of production
-
-Expected production element:`&&`, but current token is:`)`
-- Heading back to grammar production: `EXP_1` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `EXP_1`
-- Exiting grammar production: `EXP`
-
-Analyzing Element: `EXPS_LIST` of production
-
-
-Production: `EXPS_LIST`  ->  `[',', 'EXP', 'EXPS_LIST']`
-
-
-Analyzing Element: `,` of production
-
-Expected production element:`,`, but current token is:`)`
-- Heading back to grammar production: `EXPS_LIST` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `EXPS_LIST`
-- Exiting grammar production: `EXPS_LIST`
-- Exiting grammar production: `EXPS`
-
-Analyzing Element: `)` of production
-
-- Consuming token with value: `)` and kind: `OPERATOR` (consumed inside production: `PEXP_2`)                            
-- Expected token with value: `)`                            
-- Current token index: 73
-
-Analyzing Element: `PEXP_1` of production
-
-
-Production: `PEXP_1`  ->  `['.', 'IDENTIFIER', 'PEXP_2']`
-
-
-Analyzing Element: `.` of production
-
-Expected production element:`.`, but current token is:`)`
-- Heading back to grammar production: `PEXP_1` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `PEXP_1`
-- Exiting grammar production: `PEXP_2`
-- Exiting grammar production: `PEXP_1`
-- Exiting grammar production: `PEXP`
-
-Analyzing Element: `SEXP_1` of production
-
-
-Production: `SEXP_1`  ->  `['.', 'length']`
-
-
-Analyzing Element: `.` of production
-
-Expected production element:`.`, but current token is:`)`
-- Heading back to grammar production: `SEXP_1` ->  `['[', 'EXP', ']']`
-
-
-Analyzing Element: `[` of production
-
-Expected production element:`[`, but current token is:`)`
-- Heading back to grammar production: `SEXP_1` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `SEXP_1`
-- Exiting grammar production: `SEXP`
-
-Analyzing Element: `MEXP_1` of production
-
-
-Production: `MEXP_1`  ->  `['*', 'SEXP', 'MEXP_1']`
-
-
-Analyzing Element: `*` of production
-
-Expected production element:`*`, but current token is:`)`
-- Heading back to grammar production: `MEXP_1` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `MEXP_1`
-- Exiting grammar production: `MEXP`
-
-Analyzing Element: `AEXP_1` of production
-
-
-Production: `AEXP_1`  ->  `['+', 'MEXP', 'AEXP_1']`
-
-
-Analyzing Element: `+` of production
-
-Expected production element:`+`, but current token is:`)`
-- Heading back to grammar production: `AEXP_1` ->  `['-', 'MEXP', 'AEXP_1']`
-
-
-Analyzing Element: `-` of production
-
-Expected production element:`-`, but current token is:`)`
-- Heading back to grammar production: `AEXP_1` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `AEXP_1`
-- Exiting grammar production: `AEXP`
-
-Analyzing Element: `REXP_1` of production
-
-
-Production: `REXP_1`  ->  `['<', 'AEXP']`
-
-
-Analyzing Element: `<` of production
-
-Expected production element:`<`, but current token is:`)`
-- Heading back to grammar production: `REXP_1` ->  `['==', 'AEXP']`
-
-
-Analyzing Element: `==` of production
-
-Expected production element:`==`, but current token is:`)`
-- Heading back to grammar production: `REXP_1` ->  `['!=', 'AEXP']`
-
-
-Analyzing Element: `!=` of production
-
-Expected production element:`!=`, but current token is:`)`
-- Heading back to grammar production: `REXP_1` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `REXP_1`
-- Exiting grammar production: `REXP`
-
-Analyzing Element: `EXP_1` of production
-
-
-Production: `EXP_1`  ->  `['&&', 'REXP', 'EXP_1']`
-
-
-Analyzing Element: `&&` of production
-
-Expected production element:`&&`, but current token is:`)`
-- Heading back to grammar production: `EXP_1` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `EXP_1`
-- Exiting grammar production: `EXP`
-
-Analyzing Element: `)` of production
-
-- Consuming token with value: `)` and kind: `OPERATOR` (consumed inside production: `PEXP`)                            
-- Expected token with value: `)`                            
-- Current token index: 74
-
-Analyzing Element: `PEXP_1` of production
-
-
-Production: `PEXP_1`  ->  `['.', 'IDENTIFIER', 'PEXP_2']`
-
-
-Analyzing Element: `.` of production
-
-Expected production element:`.`, but current token is:`;`
-- Heading back to grammar production: `PEXP_1` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `PEXP_1`
-- Exiting grammar production: `PEXP`
-
-Analyzing Element: `SEXP_1` of production
-
-
-Production: `SEXP_1`  ->  `['.', 'length']`
-
-
-Analyzing Element: `.` of production
-
-Expected production element:`.`, but current token is:`;`
-- Heading back to grammar production: `SEXP_1` ->  `['[', 'EXP', ']']`
-
-
-Analyzing Element: `[` of production
-
-Expected production element:`[`, but current token is:`;`
-- Heading back to grammar production: `SEXP_1` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `SEXP_1`
->>>>>>> Stashed changes
-- Exiting grammar production: `SEXP`
-
-Analyzing Element: `MEXP_1` of production
-
-
-Production: `MEXP_1`  ->  `['*', 'SEXP', 'MEXP_1']`
-
-
-Analyzing Element: `*` of production
-
-Expected production element:`*`, but current token is:`;`
-- Heading back to grammar production: `MEXP_1` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `MEXP_1`
-- Exiting grammar production: `MEXP_1`
-- Exiting grammar production: `MEXP`
-
-Analyzing Element: `AEXP_1` of production
-
-
-Production: `AEXP_1`  ->  `['+', 'MEXP', 'AEXP_1']`
-
-
-Analyzing Element: `+` of production
-
-Expected production element:`+`, but current token is:`;`
-- Heading back to grammar production: `AEXP_1` ->  `['-', 'MEXP', 'AEXP_1']`
-
-
-Analyzing Element: `-` of production
-
-Expected production element:`-`, but current token is:`;`
-- Heading back to grammar production: `AEXP_1` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `AEXP_1`
-- Exiting grammar production: `AEXP`
-
-Analyzing Element: `REXP_1` of production
-
-
-Production: `REXP_1`  ->  `['<', 'AEXP']`
-
-
-Analyzing Element: `<` of production
-
-Expected production element:`<`, but current token is:`;`
-- Heading back to grammar production: `REXP_1` ->  `['==', 'AEXP']`
-
-
-Analyzing Element: `==` of production
-
-Expected production element:`==`, but current token is:`;`
-- Heading back to grammar production: `REXP_1` ->  `['!=', 'AEXP']`
-
-
-Analyzing Element: `!=` of production
-
-Expected production element:`!=`, but current token is:`;`
-- Heading back to grammar production: `REXP_1` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `REXP_1`
-- Exiting grammar production: `REXP`
-
-Analyzing Element: `EXP_1` of production
-
-
-Production: `EXP_1`  ->  `['&&', 'REXP', 'EXP_1']`
-
-
-Analyzing Element: `&&` of production
-
-Expected production element:`&&`, but current token is:`;`
-- Heading back to grammar production: `EXP_1` ->  `['']`
-
-
-Analyzing Element: `""` of production
-
-- Exiting grammar production: `EXP_1`
-- Exiting grammar production: `EXP`
-
-Analyzing Element: `;` of production
-
-- Consuming token with value: `;` and kind: `OPERATOR` (consumed inside production: `CMD_ID`)                            
-- Expected token with value: `;`                            
-<<<<<<< Updated upstream
-- Current token index: 48
-- Exiting grammar production: `CMD_ID`
-- Exiting grammar production: `CMD`
-=======
-- Current token index: 75
-- Exiting grammar production: `CMD_ID`
-- Exiting grammar production: `CMD`
-- Exiting grammar production: `CMD_ELSE`
-- Exiting grammar production: `CMD`
->>>>>>> Stashed changes
-
 Analyzing Element: `CMD_LIST` of production
 
 
@@ -3103,11 +1949,7 @@ Analyzing Element: `return` of production
 
 - Consuming token with value: `return` and kind: `RESERVED` (consumed inside production: `METODO`)                            
 - Expected token with value: `return`                            
-<<<<<<< Updated upstream
-- Current token index: 49
-=======
-- Current token index: 76
->>>>>>> Stashed changes
+- Current token index: 58
 
 Analyzing Element: `EXP` of production
 
@@ -3191,11 +2033,7 @@ Analyzing Element: `IDENTIFIER` of production
 
 - Consuming token with value: `num_aux` and kind: `IDENTIFIER` (consumed inside production: `PEXP`)                            
 - Expected token with value: `IDENTIFIER`                            
-<<<<<<< Updated upstream
-- Current token index: 50
-=======
-- Current token index: 77
->>>>>>> Stashed changes
+- Current token index: 59
 
 Analyzing Element: `PEXP_1` of production
 
@@ -3327,21 +2165,13 @@ Analyzing Element: `;` of production
 
 - Consuming token with value: `;` and kind: `OPERATOR` (consumed inside production: `METODO`)                            
 - Expected token with value: `;`                            
-<<<<<<< Updated upstream
-- Current token index: 51
-=======
-- Current token index: 78
->>>>>>> Stashed changes
+- Current token index: 60
 
 Analyzing Element: `}` of production
 
 - Consuming token with value: `}` and kind: `OPERATOR` (consumed inside production: `METODO`)                            
 - Expected token with value: `}`                            
-<<<<<<< Updated upstream
-- Current token index: 52
-=======
-- Current token index: 79
->>>>>>> Stashed changes
+- Current token index: 61
 - Exiting grammar production: `METODO`
 
 Analyzing Element: `METODO_LIST` of production
@@ -3372,11 +2202,7 @@ Analyzing Element: `}` of production
 
 - Consuming token with value: `}` and kind: `OPERATOR` (consumed inside production: `CLASSE`)                            
 - Expected token with value: `}`                            
-<<<<<<< Updated upstream
-- Current token index: 53
-=======
-- Current token index: 80
->>>>>>> Stashed changes
+- Current token index: 62
 - Exiting grammar production: `CLASSE`
 
 Analyzing Element: `CLASSE_LIST` of production
