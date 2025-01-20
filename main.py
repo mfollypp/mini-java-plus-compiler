@@ -382,7 +382,7 @@ class MIPSCodeGenerator:
             self.code.append("addiu $sp, $sp, -4")
             for child in node.children:
                 self.generate_code(child)
-            self.code.append("lw $ra 4($sp)")
+            # self.code.append("lw $ra 4($sp)")
             # colocar popstack para limpar argumentos do método
             self.code.append("lw $fp 0($sp)")
             self.code.append("jr $ra")
@@ -498,12 +498,13 @@ class MIPSCodeGenerator:
                 elif operator == "!=":
                     self.code.append(f"sne $a0, $t0, $a0")
             else:
-                return
+                return True
             
         elif node.value == "REXP_1":
             if len(node.children) == 2:
                 self.push_stack(None)
                 self.generate_code(node.children[1])
+                return True
 
         elif node.value == "AEXP":
             # MEXP
@@ -519,8 +520,7 @@ class MIPSCodeGenerator:
                 elif operator == "-":
                     self.code.append(f"sub $a0, $t0, $a0")
             else:
-                self.code.append(f"lw $a0 4($sp)")
-                self.pop_stack()
+                return True
 
         elif node.value == "AEXP_1":
             if len(node.children) == 0:
@@ -539,7 +539,7 @@ class MIPSCodeGenerator:
                 elif operator == "-":
                     self.code.append(f"sub $a0, $t0, $a0")
             else:
-                return
+                return True
                     
         
         # TODO : ajeitar mult do num_aux = num * 3
@@ -568,7 +568,7 @@ class MIPSCodeGenerator:
                 self.pop_stack()
                 self.code.append(f"mul $a0, $t0, $a0")
             else:
-                return
+                return True
                 
         elif node.value == "SEXP":
             if node.children[0].kind == "NUMBER":
