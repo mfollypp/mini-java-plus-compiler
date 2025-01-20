@@ -461,11 +461,8 @@ class MIPSCodeGenerator:
                 return reg
             else:
                 self.generate_code(node.children[0])
-                self.push_stack(None)
                 resp = self.generate_code(node.children[1])
                 if(not resp):
-                    self.code.append(f"lw $a0 4($sp)")
-                    self.pop_stack()
                     return "$a0"
                 self.code.append(f"lw $t0 4($sp)")
                 self.code.append(f"and $a0, $t0, $a0")
@@ -473,13 +470,11 @@ class MIPSCodeGenerator:
             
         elif node.value == "EXP_1":
             if len(node.children) == 3:
-                self.generate_code(node.children[1])
                 self.push_stack(None)
+                self.generate_code(node.children[1])
                 resp = self.generate_code(node.children[2])
                 if(not resp):
-                    self.code.append(f"lw $t0 4($sp)")
-                    self.pop_stack()
-                    return "$t0"
+                    return "$a0"
                 self.code.append(f"lw $t0 4($sp)")
                 self.code.append(f"and $a0, $t0, $a0")
                 return "$a0"
@@ -487,7 +482,6 @@ class MIPSCodeGenerator:
         elif node.value == "REXP":
             # AEXP
             self.generate_code(node.children[0])
-            self.push_stack(None)
             # REXP_1
             resp = self.generate_code(node.children[1])
             if resp:
@@ -500,20 +494,17 @@ class MIPSCodeGenerator:
                     self.code.append(f"seq $a0, $t0, $a0")
                 elif operator == "!=":
                     self.code.append(f"sne $a0, $t0, $a0")
-            else:
-                self.code.append(f"lw $a0 4($sp)")
-                self.pop_stack()
-        
+            else
+                return
+            
         elif node.value == "REXP_1":
             if len(node.children) == 2:
+                self.push_stack(None)
                 self.generate_code(node.children[1])
 
-        elif node.value in ["AEXP", "AEXP_1"]:
-            if len(node.children) == 0:
-                return
+        elif node.value == "AEXP":
             # MEXP
             self.generate_code(node.children[0])
-            self.push_stack(None)
             # AEXP_1
             resp = self.generate_code(node.children[1])
             if resp:
@@ -527,14 +518,31 @@ class MIPSCodeGenerator:
             else:
                 self.code.append(f"lw $a0 4($sp)")
                 self.pop_stack()
-        
-        # TODO : ajeitar mult do num_aux = num * 3
-        elif node.value in ["MEXP", "MEXP_1"]:
+
+        elif node.value == "AEXP_1":
             if len(node.children) == 0:
                 return
+            self.push_stack(None)
+            #MEXP
+            self.generate_code(node.children[1])
+            #AEXP_1
+            resp = self.generate_code(node.children[2]
+            if resp:
+                operator = node.children[2].children[0].value
+                self.code.append(f"lw $t0 4($sp)")
+                self.pop_stack()
+                if operator == "+":
+                    self.code.append(f"add $a0, $t0, $a0")
+                elif operator == "-":
+                    self.code.append(f"sub $a0, $t0, $a0")
+            else:
+                return
+                    
+        
+        # TODO : ajeitar mult do num_aux = num * 3
+        elif node.value == "MEXP":
             # SEXP
             self.generate_code(node.children[0])
-            self.push_stack(None)
             # MEXP_1
             resp = self.generate_code(node.children[1])
             if resp:
@@ -542,8 +550,22 @@ class MIPSCodeGenerator:
                 self.pop_stack()
                 self.code.append(f"mul $a0, $t0, $a0")
             else:
-                self.code.append(f"lw $a0 4($sp)")
-                self.pop_stack()    
+                return
+
+        elif node.value == "MEXP_1":
+            if len(node.children) == 0:
+                return
+            self.push_stack(None)
+            #SEXP
+            self.generate_code(node.children[1])
+            # MEXP_1
+            resp = self.generate_code(node.children[2])
+            if resp:
+                self.code.append(f"lw $t0 4($sp)")
+                self.pop_stack()
+                self.code.append(f"mul $a0, $t0, $a0")
+            else:
+                return
                 
         elif node.value == "SEXP":
             if node.children[0].kind == "NUMBER":
