@@ -176,7 +176,7 @@ class SemanticAnalyzer:
         node_aux = copy.copy(node)
         
         if node.parent.value == "MAIN":
-            value = node.value if self.main_identifier_count == 0 else f"|MAIN|{node.value}"
+            value = node.value if self.main_identifier_count == 0 else f"|{next(iter(self.symbol_table))}|{node.value}"
             self.main_identifier_count += 1
             return value
                 
