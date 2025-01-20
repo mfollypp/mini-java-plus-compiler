@@ -31,6 +31,7 @@ class Scanner:
             ('IDENTIFIER',     r'[a-zA-Z][a-zA-Z0-9_]*'),
             ('NUMBER',         r'\b\d+\b'), 
             ('OPERATOR',       r'\(|\)|\[|\]|\{|\}|;|\.|,|=|<|>|>=|<=|==|!=|\+|-|\*|&&|!'), 
+            ('ERROR',          r'.'),
         ]
 
         self.regex = re.compile('|'.join(f'(?P<{name}>{pattern})' for name, pattern in self.token_specification)) # Usa grupo de captura -> funciona da esquerda para direita
@@ -44,7 +45,10 @@ class Scanner:
             kind = match.lastgroup # Grupo foi informado no grupo de captura
             value = match.group(kind)
             column = match.start() - line_start
-            
+
+            if kind == 'ERROR':
+                raise ValueError(f"Unrecognized token '{value}' at line {line}, column {column}")
+                
             if kind == 'WHITESPACE':
                 if '\n' in value:
                     line += value.count('\n')
@@ -172,7 +176,7 @@ class SemanticAnalyzer:
         node_aux = copy.copy(node)
         
         if node.parent.value == "MAIN":
-            value = node.value if self.main_identifier_count == 0 else f"_MAIN_{node.value}"
+            value = node.value if self.main_identifier_count == 0 else f"|MAIN|{node.value}"
             self.main_identifier_count += 1
             return value
                 
@@ -193,13 +197,13 @@ class SemanticAnalyzer:
                     while node_aux.value != "CLASSE":
                         node_aux = node_aux.parent
                     class_name = node_aux.children[1].value
-            return f"_{class_name}_{node.value}_{node.value}"
+            return f"|{class_name}|{node.value}"
         
         while node_aux and node_aux.value and node_aux.value != "METODO":
             node_aux = node_aux.parent
         
         if(node_aux):
-            method_name = node_aux.children[2].value.split("_")[-1]
+            method_name = node_aux.children[2].value.split("|")[-1]
         else:
             node_aux = node
         
@@ -207,9 +211,12 @@ class SemanticAnalyzer:
             node_aux = node_aux.parent        
             
         if (node_aux):
-            class_name = node_aux.children[1].value.split("_")[0]  
-        
-        return f"_{class_name}_{method_name}_{node.value}"
+            class_name = node_aux.children[1].value.split("|")[0]  
+                    
+        if(node.parent.value in "METODO"):
+            return f"|{class_name}|{method_name}"
+            
+        return f"|{class_name}|{method_name}|{node.value}"
 
     def analyze(self, node):
         print(f"Analyzing node: {node.value}, of kind: {node.kind} with parent: {node.parent.value if node.parent else None}")
@@ -711,7 +718,12 @@ if __name__ == "__main__":
         } 
     }
     class Fac { 
+<<<<<<< Updated upstream
         public int ComputeFac(int num){
+=======
+        public int ComputeFac(int num, int num2){
+            int ComputeFac;
+>>>>>>> Stashed changes
             int num_aux;
             num_aux = num * 3;
             return num_aux ;
