@@ -340,12 +340,10 @@ class MIPSCodeGenerator:
         
         """Gera código MIPS a partir da AST."""
         if node.value == "PROG":
-            # Programa: desce para o MAIN e as classes
             for child in node.children:
                 self.generate_code(child)
 
         elif node.value == "MAIN":
-            # MAIN: Configura o ponto de entrada
             self.code.append(".text")
             self.code.append("main:")
             for child in node.children:
@@ -365,16 +363,13 @@ class MIPSCodeGenerator:
             self.generate_code(node.children[5])
 
         elif node.value in ["VAR"]:
-            #todo: validacao de tipo
             var_name = node.children[1].value
             self.push_stack(var_name)
         
         elif node.value == "PARAM":
             var_name = node.children[1].value
-            # TODO - Colocar só no dicionario do metodo e não na stack - Kevin
                     
         elif node.value == "METODO":
-            # Método: gera um rótulo para o método
             method_name = node.children[2].value
             params_node = node.children[4]
             terminals = self.get_leaves(params_node)
@@ -388,8 +383,6 @@ class MIPSCodeGenerator:
             self.code.append("addiu $sp $sp -4")
             for child in node.children:
                 self.generate_code(child)
-            # self.code.append("lw $ra 4($sp)")
-            # colocar popstack para limpar argumentos do método
             for var_name in self.stack:
                 if var_name:
                     if var_name.startswith(method_name):
@@ -461,8 +454,16 @@ class MIPSCodeGenerator:
             if len(node.children) == 3:
                 var_name = node.parent.children[0].value
                 expr_reg = self.generate_code(node.children[1])
-                offset = (self.stack.index(var_name) + 1) * 4
-                self.code.append(f"sw {expr_reg} {offset}($sp)")
+                node_aux = node
+                while node_aux.value != "METODO":
+                    node_aux = node_aux.parent
+                method_name = node_aux.children[2].value
+                if var_name in self.method_map[method_name]:
+                    offset = (self.method_map[method_name].index(var_name) + 1) * 4
+                    self.code.append(f"sw $a0 {offset}($fp)")
+                else:
+                    offset = (self.stack.index(var_name) + 1) * 4
+                    self.code.append(f"sw $a0 {offset}($sp)")
                     
             elif len(node.children) == 5:
                 expr_reg = self.generate_code(node.children[4])
@@ -556,8 +557,6 @@ class MIPSCodeGenerator:
             else:
                 return True
                     
-        
-        # TODO : ajeitar mult do num_aux = num * 3
         elif node.value == "MEXP":
             # SEXP
             self.generate_code(node.children[0])
@@ -603,26 +602,9 @@ class MIPSCodeGenerator:
             elif node.children[0].value == "null":
                 self.code.append(f"li $a0 0")
                 return reg
-            # elif node.children[0].value == "new":
-            # ! TODO
-            #     node_parent = node.parent
-            #     while node_parent != "CMD":
-            #         node_parent = node.parent
-            #     var_name = node_parent.children[0].value
-            #     exp_value = node.children[3].children[0].value
-            #     var_pos_stack = self.stack.index(var_name)
-            #     for _ in range(exp_value):
-            #         self.push_stack(var_name)
-            #     self.stack.insert(var_pos_stack, var_name)
-            #     self.generate_code(node.children[3])
-            #     self.code.append("mult $a0 4")
-            #     self.code.append("sub $sp $sp $a0")
             elif node.children[0].value == "PEXP":
                 self.generate_code(node.children[0])
-                # self.push_stack(None)
                 self.generate_code(node.children[1])
-                # self.code.append(f"lw $t0 4($sp)")
-                # self.code.append(f"add $a0 $a0 $t0")
                                 
         elif node.value == "PEXP":
             if len(node.children) == 2:
@@ -652,8 +634,6 @@ class MIPSCodeGenerator:
             if len(node.children) == 3:
                 method_name = node.children[1].value
                 self.code.append(f"sw $fp 0($sp)")
-                # self.push_stack(None)
-                # self.stack.insert(0, None)
                 self.code.append(f"addiu $sp $sp -4")
                 self.generate_code(node.children[2])
                 self.code.append(f"jal {method_name}")
@@ -670,7 +650,6 @@ class MIPSCodeGenerator:
                 self.generate_code(child)
 
         elif node.value == "EXPS_LIST":
-            # self.push_stack(None)
             self.code.append("sw $a0 0($sp)")
             self.code.append("addiu $sp $sp -4")
             if len(node.children) == 3:
@@ -711,13 +690,14 @@ def ast_to_graphviz(node, graph=None, parent=None, highlighted_nodes=None):
 
 if __name__ == "__main__":
 
+    # Exemplo do prof para testar
     code = """
-    class Factorial{ 
-        public static void main(String[] a){ 
+    class Factorial{
+        public static void main(String[] a){
             System.out.println(new Fac().ComputeFac(10));
-        } 
+        }
     }
-    class Fac { 
+    class Fac {
         public int ComputeFac(int num){
             int num_aux;
             if (num < 1)
@@ -725,9 +705,28 @@ if __name__ == "__main__":
             else
                 num_aux = num * (this.ComputeFac(num-1));
             return num_aux ;
-        } 
+        }
     }
     """
+
+    # code = """
+    # class Factorial{
+    #     public static void main(String[] a){
+    #         System.out.println(new Fac().ComputeFac(10));
+    #     }
+    # }
+    # class Fac {
+    #     public int ComputeFac(int num){
+    #         int num_aux;
+    #         num_aux = 1;
+    #         while(num != 1){
+    #             num_aux = num_aux * num;
+    #             num = num - 1;
+    #         }
+    #         return num_aux ;
+    #     }
+    # }
+    # """
 
     # code = """
     # class Factorial{ 
